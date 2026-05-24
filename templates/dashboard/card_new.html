@@ -1,0 +1,71 @@
+{% extends "layouts/dashboard.html" %}
+{% block dashboard_content %}
+<div style="max-width:640px;">
+    <h2 class="page-title">Create New Card</h2>
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px;">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div style="margin-bottom:20px;">
+                <label>{{ form.brand_name.label }}</label>
+                {{ form.brand_name(placeholder="e.g. DA Workforce") }}
+                {% for error in form.brand_name.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+            </div>
+            <div style="margin-bottom:20px;">
+                <label>{{ form.tagline.label }}</label>
+                {{ form.tagline(placeholder="Your tagline or motto") }}
+            </div>
+            <div style="margin-bottom:20px;">
+                <label>{{ form.logo.label }}</label>
+                {{ form.logo }}
+                {% for error in form.logo.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label>Links</label>
+                <div id="links-container">
+                    <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
+                        <input type="text" name="platform_0" placeholder="Platform (e.g. Instagram)" style="flex:1;" required>
+                        <input type="url" name="url_0" placeholder="https://..." style="flex:2;" required>
+                    </div>
+                </div>
+                <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
+            </div>
+
+            <input type="hidden" name="links" id="links-json" value="[]">
+            <div style="display:flex; gap:8px; padding-top:8px;">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-ghost">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+let linkCount = 1;
+function addLink() {
+    const container = document.getElementById('links-container');
+    const row = document.createElement('div');
+    row.className = 'link-row';
+    row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+    row.innerHTML = `
+        <input type="text" name="platform_${linkCount}" placeholder="Platform" style="flex:1;" required>
+        <input type="url" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
+    `;
+    container.appendChild(row);
+    linkCount++;
+}
+
+document.querySelector('form').addEventListener('submit', function() {
+    const links = [];
+    const rows = document.querySelectorAll('.link-row');
+    rows.forEach((row, i) => {
+        const platform = row.querySelector('input[type="text"]').value;
+        const url = row.querySelector('input[type="url"]').value;
+        if (platform && url) {
+            links.push({platform, url});
+        }
+    });
+    document.getElementById('links-json').value = JSON.stringify(links);
+});
+</script>
+{% endblock %}

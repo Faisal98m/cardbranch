@@ -1,0 +1,109 @@
+{% extends "layouts/base.html" %}
+{% block title %}CardBranch - Premium Business Cards{% endblock %}
+{% block content %}
+<nav style="background:var(--bg-secondary); border-bottom:1px solid var(--border); height:64px; display:flex; align-items:center; padding:0 48px;">
+    <div style="flex:1; display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto;">
+        <span style="font-size:18px; font-weight:600; color:var(--text-primary);">CardBranch</span>
+        <div style="display:flex; gap:12px; align-items:center;">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-ghost">Sign In</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+</nav>
+
+<section class="hero" style="padding:120px 24px 80px; text-align:center;">
+    <div style="max-width:680px; margin:0 auto;">
+        <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 14px; border-radius:20px; font-size:12px; font-weight:500; color:var(--accent); border:1px solid var(--accent-border); background:var(--accent-subtle); margin-bottom:24px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Now in beta
+        </span>
+        <h1 style="font-size:48px; font-weight:600; line-height:1.2; color:var(--text-primary); margin-bottom:20px;">Your brand, one scan away</h1>
+        <p style="font-size:18px; color:var(--text-secondary); max-width:520px; margin:0 auto 32px; line-height:1.6;">Create a digital business card with a hosted links page, QR code, and print-ready PDF. Order premium physical cards delivered to your door.</p>
+        <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="padding:12px 28px; font-size:15px;">Create your card</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-ghost" style="padding:12px 28px; font-size:15px;">See example</a>
+        </div>
+    </div>
+</section>
+
+<section style="padding:80px 24px; border-top:1px solid var(--border);">
+    <div style="max-width:1200px; margin:0 auto;">
+        <div class="features-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                <div style="width:40px; height:40px; background:var(--accent-subtle); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; color:var(--accent);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </div>
+                <h3 style="font-size:16px; font-weight:500; color:var(--text-primary); margin-bottom:8px;">Digital Links Page</h3>
+                <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Get a premium hosted page at your-brand.cardbranch.co.uk with all your social links in one place.</p>
+            </div>
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                <div style="width:40px; height:40px; background:var(--accent-subtle); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; color:var(--accent);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </div>
+                <h3 style="font-size:16px; font-weight:500; color:var(--text-primary); margin-bottom:8px;">Print-Ready PDF</h3>
+                <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Download a professional 85x55mm business card PDF, ready for any print shop worldwide.</p>
+            </div>
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+                <div style="width:40px; height:40px; background:var(--accent-subtle); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; color:var(--accent);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1"/><line x1="12" y1="3" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="21"/><line x1="3" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="21" y2="12"/></svg>
+                </div>
+                <h3 style="font-size:16px; font-weight:500; color:var(--text-primary); margin-bottom:8px;">QR Code Included</h3>
+                <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">Every card comes with a QR code that links directly to your links page for instant sharing.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="padding:80px 24px 120px; border-top:1px solid var(--border);">
+    <div style="max-width:1200px; margin:0 auto; text-align:center;">
+        <h2 style="font-size:24px; font-weight:500; color:var(--text-primary); margin-bottom:48px;">Simple pricing</h2>
+        <div class="pricing-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:900px; margin:0 auto;">
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px;">
+                <h3 style="font-size:14px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Starter</h3>
+                <p style="font-size:36px; font-weight:600; color:var(--text-primary); margin-bottom:24px;">Free</p>
+                <ul style="list-style:none; text-align:left; color:var(--text-secondary); font-size:14px; display:flex; flex-direction:column; gap:12px;">
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>1 digital card</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Links page</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>QR code</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>PDF download</li>
+                </ul>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-ghost" style="width:100%; margin-top:24px;">Get started</a>
+            </div>
+            <div style="background:var(--bg-card); border:1px solid var(--accent-border); border-radius:var(--radius-lg); padding:32px; position:relative;">
+                <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-size:11px; font-weight:600; padding:4px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.05em;">Popular</div>
+                <h3 style="font-size:14px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Professional</h3>
+                <p style="font-size:36px; font-weight:600; color:var(--text-primary); margin-bottom:4px;">£9.99</p>
+                <p style="font-size:13px; color:var(--text-dim); margin-bottom:24px;">per card pack</p>
+                <ul style="list-style:none; text-align:left; color:var(--text-secondary); font-size:14px; display:flex; flex-direction:column; gap:12px;">
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Up to 5 cards</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Custom logo</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Physical cards</li>
+                </ul>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="width:100%; margin-top:24px;">Choose Pro</a>
+            </div>
+            <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px;">
+                <h3 style="font-size:14px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Enterprise</h3>
+                <p style="font-size:36px; font-weight:600; color:var(--text-primary); margin-bottom:24px;">Custom</p>
+                <ul style="list-style:none; text-align:left; color:var(--text-secondary); font-size:14px; display:flex; flex-direction:column; gap:12px;">
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Unlimited cards</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Team accounts</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>API access</li>
+                    <li style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>White-label</li>
+                </ul>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-ghost" style="width:100%; margin-top:24px;">Contact us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    @media (max-width: 768px) {
+        .hero { padding: 80px 24px 48px; }
+        .hero h1 { font-size: 32px; }
+        .features-grid { grid-template-columns: 1fr; }
+        .pricing-grid { grid-template-columns: 1fr; }
+        nav { padding: 0 16px !important; }
+    }
+</style>
+{% endblock %}

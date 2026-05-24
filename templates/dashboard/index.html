@@ -1,0 +1,36 @@
+{% extends "layouts/dashboard.html" %}
+{% block dashboard_content %}
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+    <h2 class="page-title" style="margin-bottom:0;">My Cards</h2>
+    <a href="{{ url_for('dashboard.card_new') }}" class="btn btn-primary btn-sm">+ New Card</a>
+</div>
+
+{% if clients %}
+<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px;">
+    {% for client in clients %}
+    <div class="card-item" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; transition:border-color 0.15s;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px;">
+            <h3 style="font-size:16px; font-weight:500; color:var(--text-primary);">{{ client.brand_name }}</h3>
+        </div>
+        {% if client.tagline %}<p style="color:var(--text-secondary); font-size:13px; margin-bottom:8px;">{{ client.tagline }}</p>{% endif %}
+        <p style="color:var(--text-dim); font-size:12px; margin-bottom:16px; font-family:monospace;">cardbranch.co.uk/c/{{ client.slug }}</p>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ url_for('dashboard.card_view', id=client.id) }}" class="btn btn-ghost btn-sm">View</a>
+            <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center; padding:64px 20px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border);">
+    <p style="color:var(--text-secondary); font-size:15px; margin-bottom:16px;">You haven't created any cards yet.</p>
+    <a href="{{ url_for('dashboard.card_new') }}" class="btn btn-primary">Create Your First Card</a>
+</div>
+{% endif %}
+<style>
+    .card-item:hover,
+    .card-item:focus-visible {
+        border-color: var(--accent) !important;
+    }
+</style>
+{% endblock %}

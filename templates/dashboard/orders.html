@@ -1,0 +1,41 @@
+{% extends "layouts/dashboard.html" %}
+{% block dashboard_content %}
+<h2 class="page-title">Order History</h2>
+
+{% if orders %}
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Brand</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Tracking</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td style="font-weight:500;">#{{ order.id }}</td>
+                    <td>{{ order.client.brand_name }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>£{{ "%.2f"|format(order.amount_paid) }}</td>
+                    <td><span class="status-pill status-{{ order.status }}">{{ order.status.replace('_', ' ') }}</span></td>
+                    <td style="color:var(--text-secondary);">{{ order.tracking_number or '-' }}</td>
+                    <td style="color:var(--text-secondary);">{{ order.created_at.strftime('%d %b %Y') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div style="text-align:center; padding:64px 20px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border);">
+    <p style="color:var(--text-secondary); font-size:15px;">No orders yet. Create a card to get started.</p>
+</div>
+{% endif %}
+{% endblock %}

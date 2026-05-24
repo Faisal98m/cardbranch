@@ -1,0 +1,56 @@
+{% extends "layouts/admin.html" %}
+{% block admin_content %}
+<h2 class="page-title">Admin Overview</h2>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; margin-bottom:32px;">
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+        <p style="color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:8px;">Total Users</p>
+        <p style="font-size:28px; font-weight:600; color:var(--text-primary);">{{ total_users }}</p>
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+        <p style="color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:8px;">Total Cards</p>
+        <p style="font-size:28px; font-weight:600; color:var(--text-primary);">{{ total_cards }}</p>
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+        <p style="color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:8px;">Total Orders</p>
+        <p style="font-size:28px; font-weight:600; color:var(--text-primary);">{{ total_orders }}</p>
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+        <p style="color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:8px;">Total Revenue</p>
+        <p style="font-size:28px; font-weight:600; color:var(--text-primary);">£{{ "%.2f"|format(total_revenue) }}</p>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+        <h3 style="color:var(--accent); font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Recent Orders</h3>
+        {% if recent_orders %}
+        <ul style="list-style:none;">
+            {% for order in recent_orders %}
+            <li style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+                <span style="font-size:14px;">#{{ order.id }} - {{ order.client.brand_name if order.client else 'N/A' }}</span>
+                <span style="color:var(--text-secondary); font-size:13px;">£{{ "%.2f"|format(order.amount_paid) }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color:var(--text-dim);">No orders yet.</p>
+        {% endif %}
+    </div>
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
+        <h3 style="color:var(--accent); font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Recent Users</h3>
+        {% if recent_users %}
+        <ul style="list-style:none;">
+            {% for user in recent_users %}
+            <li style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+                <span style="font-size:14px;">{{ user.email }}</span>
+                <span style="color:var(--text-secondary); font-size:13px;">{{ user.created_at.strftime('%d %b %Y') }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color:var(--text-dim);">No users yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

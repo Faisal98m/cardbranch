@@ -1,0 +1,49 @@
+{% extends "layouts/admin.html" %}
+{% block admin_content %}
+<h2 class="page-title">All Orders</h2>
+
+<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Brand</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Tracking</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td style="font-weight:500;">{{ order.id }}</td>
+                    <td>{{ order.user.email }}</td>
+                    <td>{{ order.client.brand_name if order.client else 'N/A' }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>£{{ "%.2f"|format(order.amount_paid) }}</td>
+                    <td><span class="status-pill status-{{ order.status }}">{{ order.status.replace('_', ' ') }}</span></td>
+                    <td style="color:var(--text-secondary);">{{ order.tracking_number or '-' }}</td>
+                    <td>
+                        <form method="POST" style="display:flex; gap:6px; align-items:center;">
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <select name="status" style="width:auto; padding:6px 8px; font-size:12px;">
+                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="sent_to_print" {% if order.status == 'sent_to_print' %}selected{% endif %}>Sent to Print</option>
+                                <option value="dispatched" {% if order.status == 'dispatched' %}selected{% endif %}>Dispatched</option>
+                                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                            </select>
+                            <input type="text" name="tracking_number" placeholder="Tracking #" value="{{ order.tracking_number }}" style="width:100px; padding:6px 8px; font-size:12px;">
+                            <button type="submit" class="btn btn-ghost btn-sm">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
