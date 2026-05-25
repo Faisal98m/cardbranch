@@ -1,41 +1,168 @@
 {% extends "layouts/dashboard.html" %}
 {% block dashboard_content %}
-<div style="max-width:900px;">
-    <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
-        <div>
-            <h2 class="page-title" style="margin-bottom:4px;">{{ client.brand_name }}</h2>
-            {% if client.tagline %}<p style="color:var(--text-secondary); font-size:14px;">{{ client.tagline }}</p>{% endif %}
-            <p style="color:var(--text-dim); font-size:12px; margin-top:4px; font-family:monospace;">cardbranch.co.uk/c/{{ client.slug }}</p>
+<a href="{{ url_for('dashboard.index') }}" style="font-size:13px; color:var(--text-secondary); display:inline-flex; align-items:center; gap:6px; margin-bottom:16px; text-decoration:none;">
+  &larr; My Cards
+</a>
+
+<div style="margin-bottom:24px;">
+  <h1 style="font-size:22px; font-weight:500; color:var(--text-primary); margin:0 0 4px;">{{ client.brand_name }}</h1>
+  {% if client.tagline %}<p style="font-size:14px; color:var(--text-secondary); margin:0;">{{ client.tagline }}</p>{% endif %}
+</div>
+
+<div class="card-view-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;">
+
+  <!-- LEFT COLUMN — Business Card Preview -->
+  <div>
+    <p style="font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px;">Card Preview</p>
+
+    <div style="width:100%; max-width:300px; height:168px; border-radius:8px; background:#0b0b0b; border:0.5px solid #2a2a2a; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:space-between; padding:0 16px; box-sizing:border-box; margin-bottom:10px;" class="biz-card">
+      <div style="position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, #c9a96e, transparent);"></div>
+      <div style="display:flex; flex-direction:column; gap:4px; position:relative; z-index:2;">
+        <div style="font-size:22px; font-weight:600; line-height:1.1; color:#c0c0c0;">
+          <span style="color:#c9a96e;">{{ client.brand_name[0] }}</span>{{ client.brand_name[1:] }}
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn btn-ghost btn-sm">Edit</a>
-            <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn btn-primary btn-sm">Download PDF</a>
-            <a href="{{ url_for('dashboard.download_qr', id=client.id) }}" class="btn btn-ghost btn-sm">Download QR</a>
+        <div style="width:24px; height:0.5px; background:#c9a96e; margin:2px 0;"></div>
+        <div style="font-size:7px; color:#c9a96e; letter-spacing:0.15em; text-transform:uppercase; max-width:130px; line-height:1.5;">
+          {{ client.tagline }}
         </div>
+      </div>
+      <div style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <div style="width:58px; height:58px; background:#f0ece4; border-radius:3px; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
+          <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}"
+               style="width:50px; height:50px;" alt="QR Code"
+               onerror="this.style.display='none'">
+        </div>
+        <span style="font-size:5px; color:#888; text-transform:uppercase; letter-spacing:0.1em;">SCAN TO CONNECT</span>
+      </div>
     </div>
 
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
-            <h3 style="color:var(--accent); font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">QR Code</h3>
-            <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}" alt="QR Code for {{ client.brand_name }}" style="width:200px; height:200px; display:block; margin:0 auto;">
+    <div style="width:100%; max-width:300px; height:168px; border-radius:8px; background:#080808; border:0.5px solid #1e1e1e; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:space-between; padding:0 16px; box-sizing:border-box;" class="biz-card">
+      <div style="position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(90deg, transparent, #c9a96e, transparent);"></div>
+      <div style="display:flex; flex-direction:column; gap:3px; position:relative; z-index:2;">
+        <div style="font-size:11px; font-weight:600; color:#c9a96e; letter-spacing:0.2em; text-transform:uppercase;">{{ client.brand_name }}</div>
+        <div style="font-size:7px; color:#555;">{{ client.tagline }}</div>
+        <div style="font-size:7px; color:#c9a96e;">cardbranch.co.uk/c/{{ client.slug }}</div>
+      </div>
+      <div style="position:relative; z-index:2;">
+        <div style="width:72px; height:72px; background:#f0ece4; border-radius:3px; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
+          <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}"
+               style="width:64px; height:64px;" alt="QR Code"
+               onerror="this.style.display='none'">
         </div>
-        <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px;">
-            <h3 style="color:var(--accent); font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Links</h3>
-            {% if links %}
-            <ul style="list-style:none;">
-                {% for link in links %}
-                <li style="padding:10px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                    <span style="color:var(--text-primary); font-size:14px;">{{ link.platform }}</span>
-                    <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:var(--text-secondary); display:flex; align-items:center; gap:4px;">
-                        Visit <span style="font-size:14px;">&rarr;</span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p style="color:var(--text-dim); font-size:14px;">No links added yet.</p>
-            {% endif %}
-        </div>
+      </div>
     </div>
+
+    <p style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:6px;">85 &times; 55mm &middot; Print ready</p>
+  </div>
+
+  <!-- MIDDLE COLUMN — Links Page Preview -->
+  <div>
+    <p style="font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px;">Links Page Preview</p>
+
+    <div style="background:var(--bg-card); border:0.5px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+      <div style="background:#0a0a0a; padding:20px; display:flex; flex-direction:column; align-items:center; gap:8px; border-bottom:0.5px solid var(--border);">
+        {% if client.logo_filename %}
+        <img src="{{ url_for('static', filename='uploads/' + client.logo_filename) }}"
+             style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:1px solid #2a2a2a;" alt="{{ client.brand_name }}">
+        {% else %}
+        <div style="width:44px; height:44px; border-radius:50%; background:#1a1a1a; border:1px solid #2a2a2a; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; color:#c9a96e;">
+          {{ client.brand_name[0] }}
+        </div>
+        {% endif %}
+
+        <div style="font-size:14px; font-weight:600; color:#f4f4f5; text-align:center;">{{ client.brand_name }}</div>
+        <div style="font-size:9px; color:#71717a; text-transform:uppercase; letter-spacing:0.1em; text-align:center;">{{ client.tagline }}</div>
+
+        <div style="width:100%; display:flex; flex-direction:column; gap:5px; margin-top:4px;">
+          {% for link in links[:3] %}
+          <div style="background:#131313; border:0.5px solid #222; border-radius:4px; padding:6px 10px; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:10px; color:#6366f1;">&#x2B21;</span>
+            <span style="font-size:10px; color:#f4f4f5; text-transform:capitalize;">{{ link.platform }}</span>
+            <span style="font-size:10px; color:#444; margin-left:auto;">&rarr;</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div style="padding:14px 16px;">
+        <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--success); margin-bottom:10px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:var(--success); display:inline-block;"></span>
+          Live
+        </div>
+        <div style="font-size:12px; color:#6366f1; font-weight:500; margin-bottom:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+          cardbranch.co.uk/c/{{ client.slug }}
+        </div>
+        <a href="{{ url_for('public.card_links', slug=client.slug) }}" target="_blank" rel="noopener noreferrer"
+           style="display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:9px; background:transparent; border:0.5px solid var(--border); border-radius:6px; color:var(--text-primary); font-size:13px; text-decoration:none; box-sizing:border-box;">
+          &#x2197; View live page
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN — Actions -->
+  <div>
+    <p style="font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:12px;">Your Card</p>
+
+    <div style="background:var(--bg-card); border:0.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px;">
+      <p style="font-size:12px; color:var(--text-secondary); margin:0 0 6px;">Live links page</p>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:12px; color:#6366f1; font-weight:500; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+          cardbranch.co.uk/c/{{ client.slug }}
+        </span>
+        <button id="copy-btn" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}');this.innerText='Copied!';setTimeout(function(){this.innerText='Copy'}.bind(this),2000)"
+          style="font-size:11px; padding:3px 10px; border:0.5px solid var(--border); border-radius:4px; background:transparent; color:var(--text-secondary); cursor:pointer; white-space:nowrap;">
+          Copy
+        </button>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px; font-size:12px; color:var(--success);">
+        <span style="width:6px; height:6px; border-radius:50%; background:var(--success); display:inline-block;"></span>
+        Live
+      </div>
+    </div>
+
+    <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}"
+       style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; background:#6366f1; color:white; border:none; border-radius:6px; font-size:13px; font-weight:500; text-decoration:none; margin-bottom:8px; box-sizing:border-box;">
+      &darr; Download PDF
+    </a>
+
+    <a href="{{ url_for('dashboard.download_qr', id=client.id) }}"
+       style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; background:transparent; border:0.5px solid var(--border); border-radius:6px; color:var(--text-primary); font-size:13px; font-weight:500; text-decoration:none; margin-bottom:8px; box-sizing:border-box;">
+      &darr; Download QR
+    </a>
+
+    <button style="width:100%; padding:11px; background:#c9a96e; color:#0b0b0b; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:4px;">
+      Order 1000 Cards &mdash; &pound;85
+    </button>
+    <p style="font-size:11px; color:var(--text-dim); text-align:center; margin:0 0 8px;">Printed &amp; delivered to your door</p>
+
+    <a href="{{ url_for('dashboard.card_edit', id=client.id) }}"
+       style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; background:transparent; border:0.5px solid var(--border); border-radius:6px; color:var(--text-primary); font-size:13px; font-weight:500; text-decoration:none; box-sizing:border-box;">
+      &#x270E; Edit Card
+    </a>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px;">
+      <div style="text-align:center;">
+        <span style="display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px;">Created</span>
+        <span style="font-size:13px; font-weight:500; color:var(--text-primary);">{{ client.created_at.strftime('%d %b') }}</span>
+      </div>
+      <div style="text-align:center;">
+        <span style="display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px;">Links</span>
+        <span style="font-size:13px; font-weight:500; color:var(--text-primary);">{{ links|length }}</span>
+      </div>
+      <div style="text-align:center;">
+        <span style="display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px;">Slug</span>
+        <span style="font-size:13px; font-weight:500; color:var(--text-primary);">{{ client.slug }}</span>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<style>
+@media (max-width: 768px) {
+  .card-view-grid { grid-template-columns: 1fr !important; }
+  .biz-card { max-width: 100% !important; }
+}
+</style>
 {% endblock %}
