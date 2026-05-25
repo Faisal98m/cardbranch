@@ -29,13 +29,17 @@ def unique_slug(brand_name):
 def save_logo(file):
     ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else 'png'
     filename = f'{uuid.uuid4().hex}.{ext}'
-    filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    uploads_dir = current_app.config['UPLOAD_FOLDER']
+    os.makedirs(uploads_dir, exist_ok=True)
+    filepath = os.path.join(uploads_dir, filename)
     file.save(filepath)
     return filename
 
 
 def generate_qr(slug, site_url):
-    output_dir = os.path.join(current_app.config['GENERATED_FOLDER'], slug)
+    gen_dir = os.path.join(current_app.static_folder, 'generated')
+    os.makedirs(gen_dir, exist_ok=True)
+    output_dir = os.path.join(gen_dir, slug)
     os.makedirs(output_dir, exist_ok=True)
 
     url = f'{site_url.rstrip("/")}/c/{slug}'
@@ -46,7 +50,9 @@ def generate_qr(slug, site_url):
 
 
 def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
-    output_dir = os.path.join(current_app.config['GENERATED_FOLDER'], slug)
+    gen_dir = os.path.join(current_app.static_folder, 'generated')
+    os.makedirs(gen_dir, exist_ok=True)
+    output_dir = os.path.join(gen_dir, slug)
     os.makedirs(output_dir, exist_ok=True)
 
     card_w = 85 * mm_unit
