@@ -1,6 +1,12 @@
 {% extends "layouts/base.html" %}
 {% block title %}Dashboard - CardBranch{% endblock %}
 {% block content %}
+{% set current = request.endpoint %}
+
+<header class="mobile-header">
+  <span style="font-size:16px; font-weight:600; color:var(--text-primary);">CardBranch</span>
+</header>
+
 <div style="display:flex; min-height:100vh;">
     <aside class="sidebar" style="width:240px; background:var(--bg-secondary); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0;">
         <div style="height:64px; display:flex; align-items:center; padding:0 20px; border-bottom:1px solid var(--border);">
@@ -58,12 +64,39 @@
         {% block dashboard_content %}{% endblock %}
     </div>
 </div>
+
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <a href="{{ url_for('dashboard.index') }}" class="mobile-nav-item {% if current == 'dashboard.index' %}active{% endif %}">
+    <i class="ti ti-layout-grid" aria-hidden="true"></i>
+    <span>My Cards</span>
+  </a>
+  <a href="{{ url_for('dashboard.card_new') }}" class="mobile-nav-item {% if current == 'dashboard.card_new' %}active{% endif %}">
+    <i class="ti ti-plus" aria-hidden="true"></i>
+    <span>New Card</span>
+  </a>
+  <a href="{{ url_for('dashboard.orders') }}" class="mobile-nav-item {% if current == 'dashboard.orders' %}active{% endif %}">
+    <i class="ti ti-shopping-bag" aria-hidden="true"></i>
+    <span>Orders</span>
+  </a>
+  <a href="{{ url_for('auth.logout') }}" class="mobile-nav-item">
+    <i class="ti ti-logout" aria-hidden="true"></i>
+    <span>Sign Out</span>
+  </a>
+</nav>
+
 <style>
     .sidebar-item { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-radius:var(--radius-sm); font-size:14px; color:var(--text-secondary); transition:all 0.15s; }
     .sidebar-item:hover { background:var(--accent-subtle); color:var(--accent); }
+    .mobile-nav { display:none; position:fixed; bottom:0; left:0; right:0; height:60px; background:var(--bg-secondary); border-top:0.5px solid var(--border); flex-direction:row; align-items:center; justify-content:space-around; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
+    .mobile-nav-item { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--text-secondary); text-decoration:none; font-size:11px; padding:8px 16px; }
+    .mobile-nav-item i { font-size:20px; }
+    .mobile-nav-item:hover, .mobile-nav-item.active { color:var(--accent); }
+    .mobile-header { display:none; padding:14px 16px; border-bottom:0.5px solid var(--border); background:var(--bg-secondary); position:sticky; top:0; z-index:99; }
     @media (max-width: 768px) {
         .sidebar { display: none !important; }
-        .main-content { margin-left: 0 !important; width: 100% !important; }
+        .main-content { margin-left: 0 !important; width: 100% !important; padding-bottom: 72px !important; }
+        .mobile-nav { display:flex; }
+        .mobile-header { display:flex; align-items:center; }
     }
 </style>
 {% endblock %}
