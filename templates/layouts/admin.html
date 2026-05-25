@@ -62,5 +62,9 @@
 <style>
     .sidebar-item { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-radius:var(--radius-sm); font-size:14px; color:var(--text-secondary); transition:all 0.15s; }
     .sidebar-item:hover { background:var(--accent-subtle); color:var(--accent); }
+    @media (max-width: 768px) {
+        .sidebar { display: none !important; }
+        .main-content { margin-left: 0 !important; width: 100% !important; }
+    }
 </style>
 {% endblock %}

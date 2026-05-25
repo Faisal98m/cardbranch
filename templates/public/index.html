@@ -4,7 +4,7 @@
 <nav style="background:var(--bg-secondary); border-bottom:1px solid var(--border); height:64px; display:flex; align-items:center; padding:0 48px;">
     <div style="flex:1; display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto;">
         <span style="font-size:18px; font-weight:600; color:var(--text-primary);">CardBranch</span>
-        <div style="display:flex; gap:12px; align-items:center;">
+        <div class="nav-buttons" style="display:flex; gap:12px; align-items:center;">
             <a href="{{ url_for('auth.login') }}" class="btn btn-ghost">Sign In</a>
             <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get Started</a>
         </div>
@@ -103,9 +103,16 @@
     @media (max-width: 768px) {
         .hero { padding: 80px 24px 48px; }
         .hero h1 { font-size: 32px; }
-        .features-grid { grid-template-columns: 1fr; }
-        .pricing-grid { grid-template-columns: 1fr; }
+        .features-grid { grid-template-columns: 1fr !important; }
+        .pricing-grid { grid-template-columns: 1fr !important; }
         nav { padding: 0 16px !important; }
+    }
+    @media (max-width: 600px) {
+        nav .nav-buttons { gap: 8px !important; }
+        nav .nav-buttons a, nav .nav-buttons button {
+            padding: 6px 12px !important;
+            font-size: 12px !important;
+        }
     }
 </style>
 {% endblock %}
