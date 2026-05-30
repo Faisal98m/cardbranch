@@ -129,7 +129,7 @@
 
   </div>
 
-  <!-- RIGHT COLUMN — Actions -->
+  <!-- RIGHT COLUMN — Your Card -->
   <div>
 
     <div class="section-header">
@@ -137,55 +137,54 @@
       <span class="section-label">YOUR CARD</span>
     </div>
 
-    <div style="background:var(--bg-card); border:0.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:14px;">
-      <p style="font-size:12px; color:var(--text-secondary); margin:0 0 6px;">Live links page</p>
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-        <span style="font-size:12px; color:#6366f1; font-weight:500; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-          cardbranch.co.uk/c/{{ client.slug }}
-        </span>
-        <button id="copy-btn" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}');this.innerText='Copied!';setTimeout(function(){this.innerText='Copy'}.bind(this),2000)"
-          style="font-size:11px; padding:3px 10px; border:0.5px solid var(--border); border-radius:4px; background:transparent; color:var(--text-secondary); cursor:pointer; white-space:nowrap;font-family:inherit;">
-          Copy
-        </button>
+    <div class="your-card-panel">
+      <div class="your-card-info-row">
+        <div class="your-card-info-label">LIVE LINKS PAGE</div>
+        <div class="your-card-info-value">
+          <a href="{{ url_for('public.card_links', slug=client.slug) }}" target="_blank">
+            cardbranch.co.uk/c/{{ client.slug }}
+          </a>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')">
+            <i class="ti ti-copy" aria-hidden="true"></i> Copy
+          </button>
+        </div>
+        <div class="live-status">
+          <span class="live-dot"></span>
+          <span class="live-text">Live</span>
+        </div>
       </div>
-      <div style="display:flex; align-items:center; gap:5px; font-size:12px; color:var(--success);">
-        <span style="width:6px; height:6px; border-radius:50%; background:var(--success); display:inline-block;"></span>
-        Live
-      </div>
-    </div>
 
-    <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}"
-       style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; background:#6366f1; color:white; border:none; border-radius:6px; font-size:13px; font-weight:500; text-decoration:none; margin-bottom:8px; box-sizing:border-box;">
-      &darr; Download PDF
-    </a>
+      <hr class="your-card-divider">
 
-    <a href="{{ url_for('dashboard.download_qr', id=client.id) }}"
-       style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; background:transparent; border:0.5px solid var(--border); border-radius:6px; color:var(--text-primary); font-size:13px; font-weight:500; text-decoration:none; margin-bottom:8px; box-sizing:border-box;">
-      &darr; Download QR
-    </a>
+      <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-your-card btn-your-card-outline">
+        <i class="ti ti-download" aria-hidden="true"></i> Download PDF
+      </a>
+      <a href="{{ url_for('dashboard.download_qr', id=client.id) }}" class="btn-your-card btn-your-card-outline">
+        <i class="ti ti-qrcode" aria-hidden="true"></i> Download QR
+      </a>
+      <a href="#" class="btn-your-card btn-your-card-order">
+        <i class="ti ti-package" aria-hidden="true"></i> Order 1000 Cards &mdash; &pound;85
+      </a>
+      <p class="order-subtext">Printed &amp; delivered to your door</p>
+      <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn-your-card btn-your-card-edit">
+        <i class="ti ti-edit" aria-hidden="true"></i> Edit Card
+      </a>
 
-    <button style="width:100%; padding:11px; background:#c9a96e; color:#0b0b0b; border:none; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:4px;">
-      Order 1000 Cards &mdash; &pound;85
-    </button>
-    <p style="font-size:11px; color:var(--text-dim); text-align:center; margin:0 0 8px;">Printed &amp; delivered to your door</p>
+      <hr class="your-card-divider">
 
-    <a href="{{ url_for('dashboard.card_edit', id=client.id) }}"
-       style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:10px; background:transparent; border:0.5px solid var(--border); border-radius:6px; color:var(--text-primary); font-size:13px; font-weight:500; text-decoration:none; box-sizing:border-box;">
-      &#x270E; Edit Card
-    </a>
-
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px;">
-      <div style="text-align:center;">
-        <span style="display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px;">Created</span>
-        <span style="font-size:13px; font-weight:500; color:var(--text-primary);">{{ client.created_at.strftime('%d %b') }}</span>
-      </div>
-      <div style="text-align:center;">
-        <span style="display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px;">Links</span>
-        <span style="font-size:13px; font-weight:500; color:var(--text-primary);">{{ links|length }}</span>
-      </div>
-      <div style="text-align:center;">
-        <span style="display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:3px;">Slug</span>
-        <span style="font-size:13px; font-weight:500; color:var(--text-primary);">{{ client.slug }}</span>
+      <div class="meta-grid">
+        <div class="meta-cell">
+          <div class="meta-cell-label">CREATED</div>
+          <div class="meta-cell-value">{{ client.created_at.strftime('%d %b') }}</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-cell-label">LINKS</div>
+          <div class="meta-cell-value">{{ links|length }}</div>
+        </div>
+        <div class="meta-cell">
+          <div class="meta-cell-label">SLUG</div>
+          <div class="meta-cell-value" style="font-size:10px;">{{ client.slug }}</div>
+        </div>
       </div>
     </div>
 
@@ -319,6 +318,130 @@
 }
 .social-pill .arrow {
   color: #c9a84c;
+}
+.your-card-panel {
+  background: #f5f0e8;
+  border: 0.5px solid #e0d5bf;
+  border-radius: 12px;
+  padding: 14px;
+}
+.your-card-info-row {
+  background: #fff;
+  border: 0.5px solid #e0d5bf;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.your-card-info-label {
+  font-size: 10px;
+  color: #b09a6a;
+  letter-spacing: 0.05em;
+  margin-bottom: 3px;
+}
+.your-card-info-value {
+  font-size: 13px;
+  color: #7a6030;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.your-card-info-value a {
+  color: #c9a84c;
+  text-decoration: none;
+  font-size: 12px;
+}
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4caf50;
+  flex-shrink: 0;
+}
+.live-text {
+  font-size: 11px;
+  color: #4caf50;
+}
+.copy-btn {
+  font-size: 10px;
+  color: #8a6e28;
+  border: 0.5px solid #d4bc88;
+  background: #fff8ec;
+  border-radius: 5px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.your-card-divider {
+  border: none;
+  border-top: 0.5px solid #e0d5bf;
+  margin: 10px 0;
+}
+.btn-your-card {
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  text-decoration: none;
+}
+.btn-your-card-outline {
+  background: #fff;
+  border: 0.5px solid #d4bc88;
+  color: #7a6030;
+}
+.btn-your-card-order {
+  background: #c9a84c;
+  border: none;
+  color: #3d2a00;
+  font-size: 13px;
+}
+.btn-your-card-edit {
+  background: transparent;
+  border: 0.5px solid #d4bc88;
+  color: #8a6e28;
+}
+.order-subtext {
+  text-align: center;
+  font-size: 10px;
+  color: #b09a6a;
+  margin-top: -4px;
+  margin-bottom: 10px;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+.meta-cell {
+  background: #fff;
+  border: 0.5px solid #e0d5bf;
+  border-radius: 8px;
+  padding: 8px 6px;
+  text-align: center;
+}
+.meta-cell-label {
+  font-size: 9px;
+  color: #b09a6a;
+  letter-spacing: 0.06em;
+  margin-bottom: 3px;
+}
+.meta-cell-value {
+  font-size: 13px;
+  color: #7a6030;
+  font-weight: 500;
 }
 @media (max-width: 768px) {
   .card-view-grid { grid-template-columns: 1fr !important; }
