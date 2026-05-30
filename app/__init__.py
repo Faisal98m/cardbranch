@@ -40,11 +40,13 @@ def create_app(config_name=None):
     from app.public.routes import public_bp
     from app.dashboard.routes import dashboard_bp
     from app.admin.routes import admin_bp
+    from app.checkout.routes import checkout_bp
 
     app.register_blueprint(auth_bp, url_prefix='/')
     app.register_blueprint(public_bp, url_prefix='/')
     app.register_blueprint(dashboard_bp, url_prefix='/')
     app.register_blueprint(admin_bp, url_prefix='/')
+    app.register_blueprint(checkout_bp, url_prefix='/')
 
     with app.app_context():
         db.create_all()

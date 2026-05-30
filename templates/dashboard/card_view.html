@@ -65,7 +65,7 @@
         <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-card-outline">
           <i class="ti ti-download" aria-hidden="true"></i> Download PDF
         </a>
-        <a href="#" class="btn-card-gold">
+        <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-card-gold">
           <i class="ti ti-package" aria-hidden="true"></i> Order Prints
         </a>
       </div>
@@ -160,8 +160,8 @@
       <a href="{{ url_for('dashboard.download_qr', id=client.id) }}" class="btn-your-card btn-your-card-outline">
         <i class="ti ti-qrcode" aria-hidden="true"></i> Download QR
       </a>
-      <a href="#" class="btn-your-card btn-your-card-order">
-        <i class="ti ti-package" aria-hidden="true"></i> Order 1000 Cards &mdash; &pound;85
+      <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-your-card btn-your-card-order">
+        <i class="ti ti-package" aria-hidden="true"></i> Order Cards
       </a>
       <p class="order-subtext">Printed &amp; delivered to your door</p>
       <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn-your-card btn-your-card-edit">

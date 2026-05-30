@@ -1,0 +1,52 @@
+{% extends "layouts/dashboard.html" %}
+{% block dashboard_content %}
+<div style="max-width:520px; margin:48px auto; text-align:center;">
+  <div style="width:56px; height:56px; background:rgba(76,175,80,0.1); border:0.5px solid rgba(76,175,80,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+    <i class="ti ti-check" style="font-size:24px; color:#4caf50;" aria-hidden="true"></i>
+  </div>
+  <h1 style="font-size:22px; font-weight:500; color:var(--text-primary); margin:0 0 8px;">Order Confirmed</h1>
+  <p style="font-size:14px; color:var(--text-secondary); margin:0 0 32px;">Thanks for your order. Your cards are being prepared.</p>
+
+  <div style="background:#1a1a1a; border:0.5px solid rgba(201,168,76,0.3); border-radius:12px; padding:20px; text-align:left; margin-bottom:24px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <span style="font-size:12px; color:#555;">Brand</span>
+      <span style="font-size:12px; color:var(--text-primary);">{{ client.brand_name }}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <span style="font-size:12px; color:#555;">Tier</span>
+      <span style="font-size:12px; color:var(--text-primary);">{{ tiers[order.tier].label }}</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <span style="font-size:12px; color:#555;">Quantity</span>
+      <span style="font-size:12px; color:var(--text-primary);">{{ order.quantity }} cards</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <span style="font-size:12px; color:#555;">Amount paid</span>
+      <span style="font-size:12px; color:#c9a84c; font-weight:600;">£{{ "%.2f"|format(order.amount_paid) }}</span>
+    </div>
+    <div style="border-top:0.5px solid rgba(201,168,76,0.12); padding-top:12px; margin-top:4px;">
+      <span style="font-size:12px; color:#555;">Delivery to</span>
+      <div style="font-size:12px; color:var(--text-primary); margin-top:4px; line-height:1.6;">
+        {{ order.delivery_name }}<br>
+        {{ order.delivery_line1 }}<br>
+        {% if order.delivery_line2 %}{{ order.delivery_line2 }}<br>{% endif %}
+        {{ order.delivery_city }}<br>
+        {{ order.delivery_postcode }}
+      </div>
+    </div>
+  </div>
+
+  <a href="{{ url_for('dashboard.orders') }}" class="btn btn-ghost" style="width:100%; justify-content:center; margin-bottom:10px;">
+    View My Orders
+  </a>
+  <a href="{{ url_for('dashboard.card_view', id=client.id) }}" style="font-size:13px; color:#555; text-decoration:none;">
+    &larr; Back to card
+  </a>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  div[style*="max-width:520px"] { margin: 24px auto !important; }
+}
+</style>
+{% endblock %}
