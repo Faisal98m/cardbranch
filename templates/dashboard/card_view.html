@@ -21,24 +21,22 @@
 
     <div class="card-group">
       <span class="face-badge">FRONT</span>
-      <div class="card-face">
-        <div style="height:168px; background:#0b0b0b; display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
-          <div style="display:flex; flex-direction:column; gap:4px;">
-            <div style="font-size:22px; font-weight:600; line-height:1.1; color:#c0c0c0;">
-              <span style="color:#c9a96e;">{{ client.brand_name[0] }}</span>{{ client.brand_name[1:] }}
+      <div class="card-face" style="padding:10px 12px; height:72px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; height:100%;">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <div class="card-face-name">
+              <span style="color:#c9a84c;">{{ client.brand_name[0] }}</span><span class="rest">{{ client.brand_name[1:] }}</span>
             </div>
-            <div style="width:24px; height:0.5px; background:#c9a96e; margin:2px 0;"></div>
-            <div style="font-size:7px; color:#c9a96e; letter-spacing:0.15em; text-transform:uppercase; max-width:130px; line-height:1.5;">
-              {{ client.tagline }}
-            </div>
+            <div style="width:20px; height:0.5px; background:#c9a84c; margin:1px 0;"></div>
+            <div class="card-face-tagline">{{ client.tagline }}</div>
           </div>
-          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-            <div style="width:58px; height:58px; background:#f0ece4; border-radius:3px; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
+            <div style="width:42px; height:42px; background:#f0ece4; border-radius:2px; display:flex; align-items:center; justify-content:center; padding:3px; box-sizing:border-box;">
               <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}"
-                   style="width:50px; height:50px;" alt="QR Code"
-                   onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:11px;color:#888>QR not found</span>'">
+                   style="width:36px; height:36px;" alt="QR Code"
+                   onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:9px;color:#888>QR</span>'">
             </div>
-            <span style="font-size:5px; color:#888; text-transform:uppercase; letter-spacing:0.1em;">SCAN TO CONNECT</span>
+            <span style="font-size:4.5px; color:#666; text-transform:uppercase; letter-spacing:0.1em;">SCAN TO CONNECT</span>
           </div>
         </div>
       </div>
@@ -46,17 +44,17 @@
       <hr class="card-group-divider">
 
       <span class="face-badge">BACK</span>
-      <div class="card-face">
-        <div style="height:168px; background:#080808; display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
-          <div style="display:flex; flex-direction:column; gap:3px;">
-            <div style="font-size:11px; font-weight:600; color:#c9a96e; letter-spacing:0.2em; text-transform:uppercase;">{{ client.brand_name }}</div>
-            <div style="font-size:7px; color:#555;">{{ client.tagline }}</div>
-            <div style="font-size:7px; color:#c9a96e;">cardbranch.co.uk/c/{{ client.slug }}</div>
+      <div class="card-face" style="padding:10px 12px; height:72px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; height:100%;">
+          <div style="display:flex; flex-direction:column; gap:2px;">
+            <div style="font-size:11px; font-weight:600; color:#c9a84c; letter-spacing:0.15em; text-transform:uppercase;">{{ client.brand_name }}</div>
+            <div class="card-face-tagline">{{ client.tagline }}</div>
+            <div class="card-face-url">cardbranch.co.uk/c/{{ client.slug }}</div>
           </div>
-          <div style="width:72px; height:72px; background:#f0ece4; border-radius:3px; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
+          <div style="width:52px; height:52px; background:#f0ece4; border-radius:2px; display:flex; align-items:center; justify-content:center; padding:3px; box-sizing:border-box;">
             <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}"
-                 style="width:64px; height:64px;" alt="QR Code"
-                 onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:11px;color:#888>QR not found</span>'">
+                 style="width:46px; height:46px;" alt="QR Code"
+                 onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:9px;color:#888>QR</span>'">
           </div>
         </div>
       </div>
@@ -67,7 +65,7 @@
         <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-card-outline">
           <i class="ti ti-download" aria-hidden="true"></i> Download PDF
         </a>
-        <a href="#" class="btn-card-primary">
+        <a href="#" class="btn-card-gold">
           <i class="ti ti-package" aria-hidden="true"></i> Order Prints
         </a>
       </div>
@@ -87,33 +85,33 @@
       <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:12px;">
         {% if client.logo_filename %}
         <img src="{{ url_for('static', filename='uploads/' + client.logo_filename) }}"
-             style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid #e0d5bf;" alt="{{ client.brand_name }}">
+             style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid #2a2a2a;" alt="{{ client.brand_name }}">
         {% else %}
-        <div style="width:40px; height:40px; border-radius:50%; background:#e8e0d0; border:1px solid #e0d5bf; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#a08840;">
+        <div style="width:38px; height:38px; border-radius:50%; background:#111; border:1px solid #2a2a2a; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#c9a84c;">
           {{ client.brand_name[0] }}
         </div>
         {% endif %}
-        <div style="font-size:13px; font-weight:600; color:#5a4a2a;">{{ client.brand_name }}</div>
-        <div style="font-size:9px; color:#a09070; text-transform:uppercase; letter-spacing:0.1em;">{{ client.tagline }}</div>
+        <div style="font-size:13px; font-weight:500; color:#c9a84c;">{{ client.brand_name }}</div>
+        <div style="font-size:9px; color:#555; text-transform:uppercase; letter-spacing:0.1em;">{{ client.tagline }}</div>
       </div>
 
       {% for link in links %}
       <a href="{{ link.url }}" class="social-pill" target="_blank" rel="noopener noreferrer">
-        <span style="display:flex; align-items:center; gap:6px;">
+        <span>
           {% if link.platform|lower == 'instagram' %}
-          <i class="ti ti-brand-instagram" aria-hidden="true" style="font-size:14px;color:#b09a6a;"></i>
+          <i class="ti ti-brand-instagram" aria-hidden="true"></i>
           {% elif link.platform|lower == 'tiktok' %}
-          <i class="ti ti-brand-tiktok" aria-hidden="true" style="font-size:14px;color:#b09a6a;"></i>
+          <i class="ti ti-brand-tiktok" aria-hidden="true"></i>
           {% elif link.platform|lower == 'linkedin' %}
-          <i class="ti ti-brand-linkedin" aria-hidden="true" style="font-size:14px;color:#b09a6a;"></i>
+          <i class="ti ti-brand-linkedin" aria-hidden="true"></i>
           {% elif link.platform|lower == 'website' %}
-          <i class="ti ti-world" aria-hidden="true" style="font-size:14px;color:#b09a6a;"></i>
+          <i class="ti ti-world" aria-hidden="true"></i>
           {% else %}
-          <i class="ti ti-link" aria-hidden="true" style="font-size:14px;color:#b09a6a;"></i>
+          <i class="ti ti-link" aria-hidden="true"></i>
           {% endif %}
-          <span style="font-size:11px;color:#7a6a48;">{{ link.platform }}</span>
+          {{ link.platform }}
         </span>
-        <i class="ti ti-arrow-right" aria-hidden="true" style="color:#c9a84c;font-size:12px;"></i>
+        <i class="ti ti-arrow-right arrow" aria-hidden="true"></i>
       </a>
       {% endfor %}
 
@@ -121,7 +119,7 @@
         <a href="{{ url_for('public.card_links', slug=client.slug) }}" class="btn-card-outline" target="_blank" rel="noopener noreferrer">
           <i class="ti ti-eye" aria-hidden="true"></i> Preview page
         </a>
-        <button class="btn-card-outline" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')" style="border:none;cursor:pointer;font-family:inherit;">
+        <button class="btn-card-outline" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')" style="font-family:inherit;">
           <i class="ti ti-copy" aria-hidden="true"></i> Copy link
         </button>
       </div>
@@ -202,19 +200,18 @@
 .section-accent {
   width: 3px;
   height: 16px;
-  border-radius: 2px;
-  background: var(--accent);
+  background: #c9a84c;
   flex-shrink: 0;
 }
 .section-label {
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.08em;
-  color: var(--text-secondary);
+  color: #888;
 }
 .card-group {
-  background: #f5f0e8;
-  border: 0.5px solid #e0d5bf;
+  background: #1a1a1a;
+  border: 0.5px solid rgba(201,168,76,0.3);
   border-radius: 12px;
   padding: 12px;
   margin-bottom: 14px;
@@ -222,17 +219,17 @@
 .face-badge {
   display: inline-block;
   font-size: 9px;
-  color: #a08840;
-  border: 0.5px solid rgba(201,168,76,0.4);
+  color: #c9a84c;
+  border: 0.5px solid rgba(201,168,76,0.3);
   border-radius: 4px;
   padding: 2px 6px;
   margin-bottom: 6px;
-  background: #fff8ec;
+  background: rgba(201,168,76,0.06);
 }
 .card-face {
-  background: #fff;
+  background: #0d0d0d;
   border-radius: 8px;
-  border: 0.5px solid #e0d5bf;
+  border: 0.5px solid #2a2a2a;
   position: relative;
   overflow: hidden;
   margin-bottom: 6px;
@@ -244,17 +241,36 @@
   left: 0;
   right: 0;
   height: 1.5px;
-  background: linear-gradient(90deg, rgba(201,168,76,0.2), #c9a84c, rgba(201,168,76,0.2));
+  background: linear-gradient(90deg, rgba(201,168,76,0.1), #c9a84c, rgba(201,168,76,0.1));
+}
+.card-face-name {
+  color: #c9a84c;
+  font-size: 14px;
+  font-weight: 500;
+}
+.card-face-name .rest {
+  color: #fff;
+}
+.card-face-tagline {
+  color: #888;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+.card-face-url {
+  color: #777;
+  font-size: 8px;
+  margin-top: 2px;
 }
 .card-group-divider {
   border: none;
-  border-top: 0.5px solid #e0d5bf;
+  border-top: 0.5px solid rgba(201,168,76,0.12);
   margin: 8px 0;
 }
 .card-group-meta {
   text-align: center;
   font-size: 9px;
-  color: #b09a6a;
+  color: #555;
   margin-top: 8px;
 }
 .card-actions {
@@ -268,40 +284,43 @@
   border-radius: 8px;
   font-size: 11px;
   font-weight: 500;
-  background: #fff;
-  border: 0.5px solid #d4bc88;
-  color: #7a6030;
+  background: transparent;
+  border: 0.5px solid #333;
+  color: #aaa;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
 }
-.btn-card-primary {
+.btn-card-gold {
   flex: 1;
   padding: 8px 0;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 500;
-  background: rgba(201,168,76,0.13);
-  border: 0.5px solid #c9a84c;
-  color: #8a6e28;
+  background: rgba(201,168,76,0.1);
+  border: 0.5px solid rgba(201,168,76,0.5);
+  color: #c9a84c;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   text-decoration: none;
+  cursor: pointer;
 }
 .links-section {
-  background: #f5f0e8;
-  border: 0.5px solid #e0d5bf;
+  background: #1a1a1a;
+  border: 0.5px solid rgba(201,168,76,0.3);
   border-radius: 12px;
   padding: 14px 12px;
   margin-bottom: 14px;
 }
 .social-pill {
-  background: #fff;
-  border: 0.5px solid #e0d5bf;
+  background: #111;
+  border: 0.5px solid #2a2a2a;
   border-radius: 8px;
   padding: 8px 10px;
   display: flex;
@@ -309,39 +328,43 @@
   justify-content: space-between;
   margin-bottom: 6px;
   text-decoration: none;
-  color: #555;
+}
+.social-pill span {
+  color: #888;
   font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .social-pill i {
-  font-size: 14px;
-  color: #b09a6a;
+  font-size: 13px;
+  color: #555;
 }
 .social-pill .arrow {
   color: #c9a84c;
 }
 .your-card-panel {
-  background: #f5f0e8;
-  border: 0.5px solid #e0d5bf;
+  background: #1a1a1a;
+  border: 0.5px solid rgba(201,168,76,0.3);
   border-radius: 12px;
   padding: 14px;
 }
 .your-card-info-row {
-  background: #fff;
-  border: 0.5px solid #e0d5bf;
+  background: #111;
+  border: 0.5px solid #2a2a2a;
   border-radius: 8px;
   padding: 10px 12px;
   margin-bottom: 8px;
 }
 .your-card-info-label {
-  font-size: 10px;
-  color: #b09a6a;
-  letter-spacing: 0.05em;
+  font-size: 9px;
+  color: #555;
+  letter-spacing: 0.06em;
   margin-bottom: 3px;
 }
 .your-card-info-value {
-  font-size: 13px;
-  color: #7a6030;
-  font-weight: 500;
+  font-size: 12px;
+  color: #c9a84c;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -349,7 +372,17 @@
 .your-card-info-value a {
   color: #c9a84c;
   text-decoration: none;
-  font-size: 12px;
+  font-size: 11px;
+}
+.copy-btn {
+  font-size: 9px;
+  color: #888;
+  border: 0.5px solid #333;
+  background: #1a1a1a;
+  border-radius: 4px;
+  padding: 2px 7px;
+  cursor: pointer;
+  font-family: inherit;
 }
 .live-status {
   display: flex;
@@ -358,28 +391,19 @@
   margin-top: 4px;
 }
 .live-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #4caf50;
   flex-shrink: 0;
 }
 .live-text {
-  font-size: 11px;
-  color: #4caf50;
-}
-.copy-btn {
   font-size: 10px;
-  color: #8a6e28;
-  border: 0.5px solid #d4bc88;
-  background: #fff8ec;
-  border-radius: 5px;
-  padding: 3px 8px;
-  cursor: pointer;
+  color: #4caf50;
 }
 .your-card-divider {
   border: none;
-  border-top: 0.5px solid #e0d5bf;
+  border-top: 0.5px solid rgba(201,168,76,0.12);
   margin: 10px 0;
 }
 .btn-your-card {
@@ -395,27 +419,28 @@
   cursor: pointer;
   margin-bottom: 8px;
   text-decoration: none;
+  font-family: inherit;
 }
 .btn-your-card-outline {
-  background: #fff;
-  border: 0.5px solid #d4bc88;
-  color: #7a6030;
+  background: transparent;
+  border: 0.5px solid #333;
+  color: #aaa;
 }
 .btn-your-card-order {
   background: #c9a84c;
   border: none;
-  color: #3d2a00;
+  color: #1a1000;
   font-size: 13px;
 }
 .btn-your-card-edit {
   background: transparent;
-  border: 0.5px solid #d4bc88;
-  color: #8a6e28;
+  border: 0.5px solid rgba(201,168,76,0.3);
+  color: #c9a84c;
 }
 .order-subtext {
   text-align: center;
   font-size: 10px;
-  color: #b09a6a;
+  color: #555;
   margin-top: -4px;
   margin-bottom: 10px;
 }
@@ -426,21 +451,21 @@
   margin-top: 4px;
 }
 .meta-cell {
-  background: #fff;
-  border: 0.5px solid #e0d5bf;
-  border-radius: 8px;
+  background: #111;
+  border: 0.5px solid #2a2a2a;
+  border-radius: 6px;
   padding: 8px 6px;
   text-align: center;
 }
 .meta-cell-label {
   font-size: 9px;
-  color: #b09a6a;
+  color: #555;
   letter-spacing: 0.06em;
   margin-bottom: 3px;
 }
 .meta-cell-value {
-  font-size: 13px;
-  color: #7a6030;
+  font-size: 12px;
+  color: #aaa;
   font-weight: 500;
 }
 @media (max-width: 768px) {
