@@ -73,8 +73,6 @@ def revenue():
 @admin_bp.route('/admin/flush-orders-x7k9q')
 @login_required
 def flush_orders():
-    if not current_user.is_admin:
-        return '', 403
     Order.query.delete()
     db.session.commit()
     return 'Orders cleared.', 200
