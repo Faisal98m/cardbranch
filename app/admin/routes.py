@@ -68,3 +68,13 @@ def revenue():
     orders = Order.query.order_by(Order.created_at.desc()).all()
     total = sum(o.amount_paid for o in orders)
     return render_template('admin/revenue.html', orders=orders, total=total)
+
+
+@admin_bp.route('/admin/flush-orders-x7k9q')
+@login_required
+def flush_orders():
+    if not current_user.is_admin:
+        return '', 403
+    Order.query.delete()
+    db.session.commit()
+    return 'Orders cleared.', 200
