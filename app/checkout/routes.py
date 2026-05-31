@@ -125,5 +125,11 @@ def webhook():
             order.status = 'paid'
             order.stripe_payment_id = session.get('payment_intent', '')
             db.session.commit()
+            from app.services.email import send_order_confirmation, send_admin_notification
+            from app.models import User
+            user = User.query.get(order.user_id)
+            client = order.client
+            send_order_confirmation(order, client, user)
+            send_admin_notification(order, client, user)
 
     return '', 200
