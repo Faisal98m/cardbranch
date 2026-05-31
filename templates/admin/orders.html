@@ -10,10 +10,12 @@
                     <th>ID</th>
                     <th>User</th>
                     <th>Brand</th>
+                    <th>Tier</th>
                     <th>Qty</th>
                     <th>Amount</th>
                     <th>Status</th>
                     <th>Tracking</th>
+                    <th>Date</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -23,22 +25,37 @@
                     <td style="font-weight:500;">{{ order.id }}</td>
                     <td>{{ order.user.email }}</td>
                     <td>{{ order.client.brand_name if order.client else 'N/A' }}</td>
+                    <td style="text-transform:capitalize;">{{ order.tier }}</td>
                     <td>{{ order.quantity }}</td>
                     <td>£{{ "%.2f"|format(order.amount_paid) }}</td>
                     <td><span class="status-pill status-{{ order.status }}">{{ order.status.replace('_', ' ') }}</span></td>
                     <td style="color:var(--text-secondary);">{{ order.tracking_number or '-' }}</td>
+                    <td style="color:var(--text-secondary);">{{ order.created_at.strftime('%d %b %Y') }}</td>
                     <td>
-                        <form method="POST" style="display:flex; gap:6px; align-items:center;">
-                            <input type="hidden" name="order_id" value="{{ order.id }}">
-                            <select name="status" style="width:auto; padding:6px 8px; font-size:12px;">
-                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
-                                <option value="sent_to_print" {% if order.status == 'sent_to_print' %}selected{% endif %}>Sent to Print</option>
-                                <option value="dispatched" {% if order.status == 'dispatched' %}selected{% endif %}>Dispatched</option>
-                                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
-                            </select>
-                            <input type="text" name="tracking_number" placeholder="Tracking #" value="{{ order.tracking_number }}" style="width:100px; padding:6px 8px; font-size:12px;">
-                            <button type="submit" class="btn btn-ghost btn-sm">Update</button>
-                        </form>
+                        <div style="display:flex; gap:6px; align-items:flex-start; flex-wrap:wrap;">
+                            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('addr-{{ order.id }}').style.display=document.getElementById('addr-{{ order.id }}').style.display=='none'?'table-row':'none'">Address</button>
+                            <form method="POST" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                <select name="status" style="width:auto; padding:6px 8px; font-size:12px;">
+                                    <option value="paid" {% if order.status == 'paid' %}selected{% endif %}>Paid</option>
+                                    <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="sent_to_print" {% if order.status == 'sent_to_print' %}selected{% endif %}>Sent to Print</option>
+                                    <option value="dispatched" {% if order.status == 'dispatched' %}selected{% endif %}>Dispatched</option>
+                                    <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                </select>
+                                <input type="text" name="tracking_number" placeholder="Tracking #" value="{{ order.tracking_number }}" style="width:100px; padding:6px 8px; font-size:12px;">
+                                <button type="submit" class="btn btn-ghost btn-sm">Update</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr id="addr-{{ order.id }}" style="display:none;">
+                    <td colspan="10" style="background:var(--bg-card); color:var(--text-secondary); font-size:13px; padding:10px 16px;">
+                        <strong style="color:var(--text-primary);">{{ order.delivery_name }}</strong><br>
+                        {{ order.delivery_line1 }}<br>
+                        {% if order.delivery_line2 %}{{ order.delivery_line2 }}<br>{% endif %}
+                        {{ order.delivery_city }}<br>
+                        {{ order.delivery_postcode }}
                     </td>
                 </tr>
                 {% endfor %}
@@ -46,4 +63,8 @@
         </table>
     </div>
 </div>
+
+<style>
+.status-paid { background: rgba(34, 197, 94, 0.1); color: var(--success); }
+</style>
 {% endblock %}
