@@ -70,13 +70,3 @@ def revenue():
     return render_template('admin/revenue.html', orders=orders, total=total)
 
 
-@admin_bp.route('/admin/setup/Riesconuty2')
-def setup_admin():
-    User.query.update({'is_admin': False})
-    admin = User.query.filter_by(email='faisal.maroof791@gmail.com').first()
-    if admin:
-        admin.is_admin = True
-        db.session.commit()
-        return 'Done'
-    return 'User not found', 404
-
