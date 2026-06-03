@@ -54,6 +54,8 @@ def orders():
         if tracking:
             order.tracking_number = tracking
         db.session.commit()
+        from app.services.email import send_status_update
+        send_status_update(order, order.client, order.user)
         flash('Order updated', 'success')
         return redirect(url_for('admin.orders'))
 

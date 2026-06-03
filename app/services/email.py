@@ -85,3 +85,39 @@ def send_admin_notification(order, client, user):
         resend.Emails.send(params)
     except Exception:
         pass
+
+
+def send_status_update(order, client, user):
+    api_key = current_app.config.get('RESEND_API_KEY')
+    if not api_key:
+        return
+
+    resend.api_key = api_key
+
+    tracking_row = ""
+    if order.tracking_number:
+        tracking_row = f"<tr><td style='padding:8px 0; color:#666;'>Tracking</td><td><strong>{order.tracking_number}</strong></td></tr>"
+
+    params = {
+        'from': 'CardBranch <orders@cardbranch.co.uk>',
+        'to': [user.email],
+        'subject': f'Your order has been updated — {client.brand_name}',
+        'html': f'''
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+            <h1 style="color: #c9a96e;">Order Update</h1>
+            <p>Your order for <strong>{client.brand_name}</strong> has been updated.</p>
+            <table style="width:100%; border-collapse:collapse; margin: 16px 0;">
+                <tr><td style="padding:8px 0; color:#666;">Order ID</td><td><strong>#{order.id}</strong></td></tr>
+                <tr><td style="padding:8px 0; color:#666;">Status</td><td><strong>{order.status.capitalize()}</strong></td></tr>
+                <tr><td style="padding:8px 0; color:#666;">Order date</td><td>{order.created_at.strftime("%d %b %Y")}</td></tr>
+                {tracking_row}
+            </table>
+            <p style="margin-top:24px; color:#666;">If you have any questions, reply to this email.</p>
+        </div>
+        ''',
+    }
+
+    try:
+        resend.Emails.send(params)
+    except Exception:
+        pass
