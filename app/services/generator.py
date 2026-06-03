@@ -2,12 +2,10 @@ import os
 import uuid
 import re
 import qrcode
-from flask import current_app
 from reportlab.lib.pagesizes import mm
 from reportlab.lib.units import mm as mm_unit
 from reportlab.pdfgen import canvas
-from reportlab.lib.utils import ImageReader
-from PIL import Image
+from app.services.r2 import upload_file
 
 
 def slugify(text):
@@ -29,35 +27,29 @@ def unique_slug(brand_name):
 def save_logo(file):
     ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else 'png'
     filename = f'{uuid.uuid4().hex}.{ext}'
-    uploads_dir = current_app.config['UPLOAD_FOLDER']
-    os.makedirs(uploads_dir, exist_ok=True)
-    filepath = os.path.join(uploads_dir, filename)
-    file.save(filepath)
-    return filename
+    tmp_path = f'/tmp/{filename}'
+    file.save(tmp_path)
+    r2_key = f'uploads/{filename}'
+    upload_file(tmp_path, r2_key)
+    os.remove(tmp_path)
+    return r2_key
 
 
 def generate_qr(slug, site_url):
-    gen_dir = os.path.join(current_app.static_folder, 'generated')
-    os.makedirs(gen_dir, exist_ok=True)
-    output_dir = os.path.join(gen_dir, slug)
-    os.makedirs(output_dir, exist_ok=True)
-
     url = f'{site_url.rstrip("/")}/c/{slug}'
     qr = qrcode.make(url)
-    qr_path = os.path.join(output_dir, 'qr.png')
-    qr.save(qr_path)
-    return qr_path
+    tmp_path = f'/tmp/{slug}_qr.png'
+    qr.save(tmp_path)
+    r2_key = f'generated/{slug}/qr.png'
+    upload_file(tmp_path, r2_key)
+    return tmp_path
 
 
 def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
-    gen_dir = os.path.join(current_app.static_folder, 'generated')
-    os.makedirs(gen_dir, exist_ok=True)
-    output_dir = os.path.join(gen_dir, slug)
-    os.makedirs(output_dir, exist_ok=True)
-
     card_w = 85 * mm_unit
     card_h = 55 * mm_unit
-    pdf_path = os.path.join(output_dir, 'card.pdf')
+    pdf_path = f'/tmp/{slug}_card.pdf'
+    qr_img_path = f'/tmp/{slug}_qr.png'
 
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
@@ -103,19 +95,16 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
         c.setLineWidth(0.5)
         c.line(10 * mm_unit, 8 * mm_unit, card_w - 10 * mm_unit, 8 * mm_unit)
 
-        qr_img_path = os.path.join(output_dir, 'qr.png')
         if os.path.exists(qr_img_path):
             c.setFillColor(cream)
             qr_box_x = card_w - 32 * mm_unit
             qr_box_y = card_h - 38 * mm_unit
             qr_box_size = 26 * mm_unit
             c.rect(qr_box_x, qr_box_y, qr_box_size, qr_box_size, fill=1, stroke=0)
-
             c.drawImage(qr_img_path,
                         qr_box_x + 2 * mm_unit,
                         qr_box_y + 2 * mm_unit,
                         width=22 * mm_unit, height=22 * mm_unit)
-
             c.setFillColor(gold)
             c.setFont('Helvetica', 5)
             c.drawCentredString(qr_box_x + qr_box_size / 2, qr_box_y - 2 * mm_unit, 'SCAN TO CONNECT')
@@ -138,7 +127,6 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
         c.setFont('Helvetica', 6)
         c.drawString(10 * mm_unit, card_h - 30 * mm_unit, url)
 
-        qr_img_path = os.path.join(output_dir, 'qr.png')
         if os.path.exists(qr_img_path):
             qr_size = 30 * mm_unit
             qr_x = card_w - qr_size - 10 * mm_unit
@@ -149,10 +137,15 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
     c.showPage()
     draw_back()
     c.save()
+
+    upload_file(pdf_path, f'generated/{slug}/card.pdf')
     return pdf_path
 
 
 def generate_assets(slug, brand_name, tagline, site_url):
-    qr_path = generate_qr(slug, site_url)
-    pdf_path = generate_pdf(slug, brand_name, tagline, site_url)
-    return qr_path, pdf_path
+    qr_tmp = generate_qr(slug, site_url)
+    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url)
+    if os.path.exists(qr_tmp):
+        os.remove(qr_tmp)
+    if os.path.exists(pdf_tmp):
+        os.remove(pdf_tmp)
