@@ -32,7 +32,7 @@
           </div>
           <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
             <div style="width:42px; height:42px; background:#f0ece4; border-radius:2px; display:flex; align-items:center; justify-content:center; padding:3px; box-sizing:border-box;">
-              <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}"
+              <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
                    style="width:36px; height:36px;" alt="QR Code"
                    onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:9px;color:#888>QR</span>'">
             </div>
@@ -52,7 +52,7 @@
             <div class="card-face-url">cardbranch.co.uk/c/{{ client.slug }}</div>
           </div>
           <div style="width:52px; height:52px; background:#f0ece4; border-radius:2px; display:flex; align-items:center; justify-content:center; padding:3px; box-sizing:border-box;">
-            <img src="{{ url_for('static', filename='generated/' + client.slug + '/qr.png') }}"
+            <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
                  style="width:46px; height:46px;" alt="QR Code"
                  onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:9px;color:#888>QR</span>'">
           </div>
@@ -84,7 +84,7 @@
     <div class="links-section">
       <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:12px;">
         {% if client.logo_filename %}
-        <img src="{{ url_for('static', filename='uploads/' + client.logo_filename) }}"
+        <img src="{{ r2_url }}/{{ client.logo_filename }}"
              style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid #2a2a2a;" alt="{{ client.brand_name }}">
         {% else %}
         <div style="width:38px; height:38px; border-radius:50%; background:#111; border:1px solid #2a2a2a; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#c9a84c;">

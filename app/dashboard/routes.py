@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app, send_from_directory
+from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import login_required, current_user
 from app.models import Client, Link, Order, db
 from app.dashboard.forms import CardForm, LinkForm
@@ -116,22 +116,16 @@ def orders():
 @dashboard_bp.route('/card/<int:id>/download/pdf')
 @login_required
 def download_pdf(id):
+    import os
     client = Client.query.filter_by(id=id, user_id=current_user.id).first_or_404()
-    return send_from_directory(
-        current_app.config['GENERATED_FOLDER'],
-        f'{client.slug}/card.pdf',
-        as_attachment=True,
-        download_name=f'{client.slug}-card.pdf'
-    )
+    public_url = os.environ['R2_PUBLIC_URL'].rstrip('/')
+    return redirect(f"{public_url}/generated/{client.slug}/card.pdf")
 
 
 @dashboard_bp.route('/card/<int:id>/download/qr')
 @login_required
 def download_qr(id):
+    import os
     client = Client.query.filter_by(id=id, user_id=current_user.id).first_or_404()
-    return send_from_directory(
-        current_app.config['GENERATED_FOLDER'],
-        f'{client.slug}/qr.png',
-        as_attachment=True,
-        download_name=f'{client.slug}-qr.png'
-    )
+    public_url = os.environ['R2_PUBLIC_URL'].rstrip('/')
+    return redirect(f"{public_url}/generated/{client.slug}/qr.png")

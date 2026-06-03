@@ -48,6 +48,11 @@ def create_app(config_name=None):
     app.register_blueprint(admin_bp, url_prefix='/')
     app.register_blueprint(checkout_bp, url_prefix='/')
 
+    @app.context_processor
+    def inject_r2_url():
+        import os
+        return {'r2_url': os.environ.get('R2_PUBLIC_URL', '').rstrip('/')}
+
     with app.app_context():
         db.create_all()
 

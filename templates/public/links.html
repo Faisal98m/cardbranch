@@ -4,7 +4,7 @@
 <div style="min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:48px 20px;">
     <div style="text-align:center; max-width:480px; width:100%;">
         {% if client.logo_filename %}
-        <img src="{{ url_for('static', filename='uploads/' + client.logo_filename) }}"
+        <img src="{{ r2_url }}/{{ client.logo_filename }}"
              alt="{{ client.brand_name }}"
              style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:2px solid var(--border);">
         {% endif %}
