@@ -2,12 +2,12 @@
 {% block admin_content %}
 <h2 class="page-title">Revenue</h2>
 
-<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px;">
-    <p style="color:var(--text-dim); font-size:12px; text-transform:uppercase; letter-spacing:0.08em; font-weight:600; margin-bottom:8px;">Total Revenue</p>
-    <p style="font-size:36px; font-weight:600; color:var(--text-primary);">£{{ "%.2f"|format(total) }}</p>
+<div class="card-stripe" style="padding:24px; margin-bottom:24px;">
+    <p class="section-label" style="margin-bottom:8px;">Total Revenue</p>
+    <p class="stat-value" style="font-size:26px;">£{{ "%.2f"|format(total) }}</p>
 </div>
 
-<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+<div class="card-stripe" style="overflow:hidden; padding:0;">
     <div style="overflow-x:auto;">
         <table>
             <thead>

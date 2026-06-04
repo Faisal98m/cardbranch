@@ -6,10 +6,10 @@
         {% if client.logo_filename %}
         <img src="{{ r2_url }}/{{ client.logo_filename }}"
              alt="{{ client.brand_name }}"
-             style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:2px solid var(--border);">
+             style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:2px solid var(--border-light);">
         {% endif %}
 
-        <h1 style="font-size:22px; font-weight:600; color:var(--text-primary); margin-bottom:4px;">
+        <h1 style="font-size:22px; font-weight:400; color:var(--text-primary); margin-bottom:4px;">
             {{ client.brand_name }}
         </h1>
 
@@ -22,9 +22,9 @@
         <div style="display:flex; flex-direction:column; gap:12px;">
             {% for link in links %}
             <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer"
-               class="link-button"
-               style="display:flex; align-items:center; gap:12px; background:var(--bg-card); padding:14px 20px; border-radius:var(--radius); color:var(--text-primary); font-size:13px; font-weight:500; border:1px solid var(--border); transition:all 0.15s;">
-                <span style="width:32px; height:32px; border-radius:50%; background:var(--bg-elevated); display:flex; align-items:center; justify-content:center; color:var(--accent); flex-shrink:0;">
+               class="link-button card-stripe"
+               style="display:flex; align-items:center; gap:12px; padding:14px 20px; color:var(--text-primary); font-size:13px; font-weight:500; transition:all 0.15s;">
+                <span style="width:32px; height:32px; border-radius:50%; background:#f0dde0; display:flex; align-items:center; justify-content:center; color:#6b1f2a; flex-shrink:0;">
                     {% if link.platform|lower == 'instagram' %}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
                     {% elif link.platform|lower == 'tiktok' %}
@@ -43,13 +43,13 @@
             {% endfor %}
         </div>
 
-        <p style="margin-top:48px; color:var(--text-dim); font-size:12px;">Powered by <span style="color:var(--accent);">CardBranch</span></p>
+        <p style="margin-top:48px; color:var(--text-dim); font-size:12px;">Powered by <span style="color:#6b1f2a;">CardBranch</span></p>
     </div>
 </div>
 <style>
     .link-button:hover,
     .link-button:focus-visible {
-        border-color: var(--accent) !important;
+        border-color: #6b1f2a !important;
         background: var(--accent-subtle) !important;
     }
 </style>

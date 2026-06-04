@@ -2,7 +2,7 @@
 {% block admin_content %}
 <h2 class="page-title">All Orders</h2>
 
-<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+<div class="card-stripe" style="overflow:hidden; padding:0;">
     <div style="overflow-x:auto;">
         <table>
             <thead>
@@ -64,7 +64,5 @@
     </div>
 </div>
 
-<style>
-.status-paid { background: rgba(34, 197, 94, 0.1); color: var(--success); }
-</style>
+
 {% endblock %}

@@ -3,8 +3,8 @@
 {% block content %}
 <div style="display:flex; min-height:100vh;">
     <aside class="sidebar" style="width:240px; background:var(--bg-secondary); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0;">
-        <div style="height:64px; display:flex; align-items:center; padding:0 20px; border-bottom:1px solid var(--border);">
-            <a href="{{ url_for('admin.index') }}" style="font-size:16px; font-weight:600; color:var(--text-primary);">CardBranch Admin</a>
+        <div style="height:64px; display:flex; align-items:center; padding:0 20px; background:#6b1f2a;">
+            <a href="{{ url_for('admin.index') }}" style="font-size:16px; font-weight:400; font-family:'DM Serif Display',serif; color:#faf8f4;">CardBranch Admin</a>
         </div>
         <nav style="flex:1; padding:16px 12px; display:flex; flex-direction:column; gap:2px;">
             <a href="{{ url_for('admin.index') }}" class="sidebar-item">
@@ -60,8 +60,8 @@
     </div>
 </div>
 <style>
-    .sidebar-item { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-radius:var(--radius-sm); font-size:14px; color:var(--text-secondary); transition:all 0.15s; }
-    .sidebar-item:hover { background:var(--accent-subtle); color:var(--accent); }
+    .sidebar-item { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-radius:var(--radius-sm); font-size:14px; color:#8a7e72; transition:all 0.15s; }
+    .sidebar-item:hover { background:#f0dde0; color:#6b1f2a; }
     @media (max-width: 768px) {
         .sidebar { display: none !important; }
         .main-content { margin-left: 0 !important; width: 100% !important; }

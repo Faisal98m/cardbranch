@@ -2,7 +2,7 @@
 {% block dashboard_content %}
 <div style="max-width:640px;">
     <h2 class="page-title">Edit {{ client.brand_name }}</h2>
-    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px;">
+    <div class="card-stripe" style="padding:32px;">
         <form method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div style="margin-bottom:20px;">

@@ -3,7 +3,7 @@
 <h2 class="page-title">Order History</h2>
 
 {% if orders %}
-<div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;">
+<div class="card-stripe" style="overflow:hidden; padding:0;">
     <div style="overflow-x:auto;">
         <table>
             <thead>
@@ -34,7 +34,7 @@
     </div>
 </div>
 {% else %}
-<div style="text-align:center; padding:64px 20px; background:var(--bg-card); border-radius:var(--radius-lg); border:1px solid var(--border);">
+<div class="card-stripe" style="text-align:center; padding:64px 20px;">
     <p style="color:var(--text-secondary); font-size:15px;">No orders yet. Create a card to get started.</p>
 </div>
 {% endif %}
