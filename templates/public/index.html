@@ -1,8 +1,8 @@
 {% extends "layouts/base.html" %}
 {% block title %}CardBranch - Premium Business Cards{% endblock %}
 {% block content %}
-<nav style="background:#6b1f2a; height:64px; display:flex; align-items:center; padding:0 48px;">
-    <div style="flex:1; display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto;">
+<nav style="background:#6b1f2a; width:100%; height:64px; display:flex; align-items:center;">
+    <div style="flex:1; display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto; padding:0 48px;">
         <span style="font-size:18px; font-weight:400; font-family:'DM Serif Display',serif; color:#faf8f4;">CardBranch</span>
         <div class="nav-buttons" style="display:flex; gap:12px; align-items:center;">
             <a href="{{ url_for('auth.login') }}" style="font-family:'Inter',sans-serif; font-size:12px; color:rgba(250,248,244,0.55); text-decoration:none; padding:6px 16px; border-radius:4px; border:1.5px solid rgba(250,248,244,0.3);">Sign In</a>
@@ -105,7 +105,7 @@
         .hero h1 { font-size: 32px; }
         .features-grid { grid-template-columns: 1fr !important; }
         .pricing-grid { grid-template-columns: 1fr !important; }
-        nav { padding: 0 16px !important; }
+        nav > div { padding: 0 16px !important; }
     }
     @media (max-width: 600px) {
         nav .nav-buttons { gap: 8px !important; }
