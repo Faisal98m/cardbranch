@@ -52,7 +52,7 @@ def card_new():
         db.session.commit()
 
         site_url = current_app.config['SITE_URL']
-        generate_assets(slug, brand_name, tagline, site_url)
+        generate_assets(slug, brand_name, tagline, site_url, logo_filename=logo_filename)
 
         flash('Card created successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
@@ -97,7 +97,7 @@ def card_edit(id):
         db.session.commit()
 
         site_url = current_app.config['SITE_URL']
-        generate_assets(client.slug, brand_name, client.tagline, site_url)
+        generate_assets(client.slug, brand_name, client.tagline, site_url, logo_filename=client.logo_filename)
 
         flash('Card updated successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
