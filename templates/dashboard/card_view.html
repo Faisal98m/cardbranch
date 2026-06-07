@@ -168,6 +168,10 @@
         <i class="ti ti-edit" aria-hidden="true"></i> Edit Card
       </a>
 
+      <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}" style="margin-top:8px;" onsubmit="return confirm('Delete this card? This cannot be undone.');">
+        <button type="submit" style="width:100%; padding:10px 16px; border-radius:var(--radius-sm); border:1px solid #6b1f2a; background:transparent; color:#6b1f2a; font-size:14px; font-family:'Inter',sans-serif; cursor:pointer;">Delete Card</button>
+      </form>
+
       <hr class="your-card-divider">
 
       <div class="meta-grid">

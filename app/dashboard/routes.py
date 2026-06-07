@@ -106,6 +106,20 @@ def card_edit(id):
     return render_template('dashboard/card_edit.html', form=form, client=client, links=links)
 
 
+@dashboard_bp.route('/card/<int:id>/delete', methods=['POST'])
+@login_required
+def card_delete(id):
+    client = Client.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    order_count = Order.query.filter_by(client_id=client.id).count()
+    if order_count > 0:
+        flash('This card has existing orders and cannot be deleted.', 'error')
+        return redirect(url_for('dashboard.card_view', id=client.id))
+    db.session.delete(client)
+    db.session.commit()
+    flash('Card deleted.', 'success')
+    return redirect(url_for('dashboard.index'))
+
+
 @dashboard_bp.route('/orders')
 @login_required
 def orders():
