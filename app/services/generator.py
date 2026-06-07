@@ -46,102 +46,109 @@ def generate_qr(slug, site_url):
 
 
 def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
+    import os
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+
     card_w = 85 * mm_unit
     card_h = 55 * mm_unit
     pdf_path = f'/tmp/{slug}_card.pdf'
     qr_img_path = f'/tmp/{slug}_qr.png'
 
+    fonts_dir = os.path.join(os.path.dirname(__file__), '..', 'static', 'fonts')
+    fonts_dir = os.path.abspath(fonts_dir)
+
+    try:
+        pdfmetrics.registerFont(TTFont('PlayfairBold', os.path.join(fonts_dir, 'PlayfairDisplaySC-Bold.ttf')))
+        pdfmetrics.registerFont(TTFont('PlayfairRegular', os.path.join(fonts_dir, 'PlayfairDisplaySC-Regular.ttf')))
+        name_font = 'PlayfairBold'
+        tag_font = 'PlayfairRegular'
+    except Exception:
+        name_font = 'Helvetica-Bold'
+        tag_font = 'Helvetica'
+
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
     oxblood = (0.420, 0.122, 0.165)
     linen = (0.941, 0.922, 0.894)
-    linen_dark = (0.859, 0.839, 0.808)
     off_white = (0.980, 0.973, 0.957)
-    off_white_dim = (0.980, 0.973, 0.957, 0.45)
 
     has_tagline = bool(tagline and tagline.strip())
     initial = brand_name[0].upper() if brand_name else 'B'
 
     def draw_front():
-        # Full oxblood background
         c.setFillColorRGB(*oxblood)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
         if has_tagline:
-            # A1 layout — centred logo box, name, divider, tagline
-            logo_box_size = 14 * mm_unit
+            # A1 layout — logo box, name, divider, tagline — vertically centred as a group
+            logo_box_size = 12 * mm_unit
+            group_h = logo_box_size + 4 * mm_unit + 5 * mm_unit + 2 * mm_unit + 4 * mm_unit
+            group_y_start = (card_h + group_h) / 2
+
             logo_box_x = (card_w - logo_box_size) / 2
-            logo_box_y = card_h - 18 * mm_unit
+            logo_box_y = group_y_start - logo_box_size
 
             # Logo border box
-            c.setStrokeColorRGB(0.980, 0.973, 0.957)
-            c.setLineWidth(0.4)
+            c.setStrokeColorRGB(*off_white)
+            c.setLineWidth(0.35)
             c.setFillColorRGB(*oxblood)
-            c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.5 * mm_unit, fill=1, stroke=1)
+            c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.2 * mm_unit, fill=1, stroke=1)
 
-            # Initial inside box
-            c.setFillColorRGB(0.980, 0.973, 0.957)
-            c.setFont('Helvetica', 11)
+            # Initial
+            c.setFillColorRGB(*off_white)
+            c.setFont(name_font, 9)
             c.drawCentredString(
                 logo_box_x + logo_box_size / 2,
-                logo_box_y + logo_box_size / 2 - 4,
+                logo_box_y + logo_box_size / 2 - 3,
                 initial
             )
 
             # Brand name
-            c.setFillColorRGB(0.980, 0.973, 0.957)
-            c.setFont('Helvetica', 12)
             name_y = logo_box_y - 6 * mm_unit
+            c.setFillColorRGB(*off_white)
+            c.setFont(name_font, 13)
             c.drawCentredString(card_w / 2, name_y, brand_name)
 
-            # Divider line
-            divider_w = 12 * mm_unit
-            divider_y = name_y - 3 * mm_unit
+            # Divider
+            divider_w = 10 * mm_unit
+            divider_y = name_y - 3.5 * mm_unit
             c.setStrokeColorRGB(0.980, 0.973, 0.957)
-            c.setLineWidth(0.3)
-            c.line(
-                card_w / 2 - divider_w / 2, divider_y,
-                card_w / 2 + divider_w / 2, divider_y
-            )
+            c.setLineWidth(0.25)
+            c.line(card_w / 2 - divider_w / 2, divider_y, card_w / 2 + divider_w / 2, divider_y)
 
             # Tagline
             c.setFillColorRGB(0.980, 0.973, 0.957)
-            c.setFont('Helvetica', 6)
+            c.setFont(tag_font, 5.5)
             c.drawCentredString(card_w / 2, divider_y - 3.5 * mm_unit, tagline.upper())
 
         else:
             # A3 layout — large logo box centred, brand name small below
-            logo_box_size = 20 * mm_unit
+            logo_box_size = 18 * mm_unit
             logo_box_x = (card_w - logo_box_size) / 2
-            logo_box_y = (card_h - logo_box_size) / 2 + 4 * mm_unit
+            logo_box_y = (card_h - logo_box_size) / 2 + 3 * mm_unit
 
-            # Logo border box
-            c.setStrokeColorRGB(0.980, 0.973, 0.957)
-            c.setLineWidth(0.4)
+            c.setStrokeColorRGB(*off_white)
+            c.setLineWidth(0.35)
             c.setFillColorRGB(*oxblood)
             c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 2 * mm_unit, fill=1, stroke=1)
 
-            # Initial inside box — larger
-            c.setFillColorRGB(0.980, 0.973, 0.957)
-            c.setFont('Helvetica', 16)
+            c.setFillColorRGB(*off_white)
+            c.setFont(name_font, 14)
             c.drawCentredString(
                 logo_box_x + logo_box_size / 2,
                 logo_box_y + logo_box_size / 2 - 5,
                 initial
             )
 
-            # Brand name small below
-            c.setFillColorRGB(0.980, 0.973, 0.957)
-            c.setFont('Helvetica', 7)
-            name_y = logo_box_y - 5 * mm_unit
-            c.drawCentredString(card_w / 2, name_y, brand_name.upper())
+            c.setFillColorRGB(*off_white)
+            c.setFont(tag_font, 6.5)
+            c.drawCentredString(card_w / 2, logo_box_y - 4.5 * mm_unit, brand_name.upper())
 
     def draw_back():
-        # Linen background
         c.setFillColorRGB(*linen)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
-        # QR code centred
         if os.path.exists(qr_img_path):
             qr_size = 28 * mm_unit
             qr_x = (card_w - qr_size) / 2
