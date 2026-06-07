@@ -117,11 +117,12 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
             # A1 layout — logo box, name, divider, tagline — vertically centred as a group
             logo_box_size = 12 * mm_unit
             gap_logo_name = 5 * mm_unit
-            gap_name_div = 3.5 * mm_unit
-            gap_div_tag = 3.5 * mm_unit
+            name_h = 5 * mm_unit
+            gap_name_div = 4 * mm_unit
+            gap_div_tag = 4 * mm_unit
             tag_h = 2 * mm_unit
-            group_h = logo_box_size + gap_logo_name + gap_name_div + gap_div_tag + tag_h
-            group_y_start = (card_h + group_h) / 2
+            group_h = logo_box_size + gap_logo_name + name_h + gap_name_div + tag_h
+            group_y_start = (card_h / 2) + (group_h / 2)
 
             logo_box_x = (card_w - logo_box_size) / 2
             logo_box_y = group_y_start - logo_box_size
@@ -211,10 +212,10 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
         if os.path.exists(qr_img_path):
-            qr_size = 30 * mm_unit
-            qr_x = (card_w - qr_size) / 2
-            qr_y = (card_h - qr_size) / 2
-            c.drawImage(qr_img_path, qr_x, qr_y, width=qr_size, height=qr_size, mask='auto')
+            qr_size = 32 * mm_unit
+            qr_x = round((card_w - qr_size) / 2)
+            qr_y = round((card_h - qr_size) / 2)
+            c.drawImage(qr_img_path, qr_x, qr_y, width=qr_size, height=qr_size)
 
     draw_front()
     c.showPage()
