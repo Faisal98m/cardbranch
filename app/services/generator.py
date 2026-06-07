@@ -116,16 +116,16 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
         if has_tagline:
             # A1 layout — logo box, name, divider, tagline — vertically centred as a group
             logo_box_size = 12 * mm_unit
-            gap_logo_name = 5 * mm_unit
+            gap_logo_name = 4 * mm_unit
             name_h = 5 * mm_unit
-            gap_name_div = 4 * mm_unit
-            gap_div_tag = 4 * mm_unit
+            gap_name_div = 3.5 * mm_unit
+            gap_div_tag = 3.5 * mm_unit
             tag_h = 2 * mm_unit
-            group_h = logo_box_size + gap_logo_name + name_h + gap_name_div + tag_h
+            group_h = logo_box_size + gap_logo_name + name_h + gap_name_div + gap_div_tag + tag_h
             group_y_start = (card_h / 2) + (group_h / 2)
 
             logo_box_x = (card_w - logo_box_size) / 2
-            logo_box_y = group_y_start - logo_box_size
+            logo_box_y = group_y_start - logo_box_size - (group_h * 0.05)
 
             # Logo border box
             c.setStrokeColorRGB(*off_white)
