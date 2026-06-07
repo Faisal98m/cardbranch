@@ -53,85 +53,100 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
 
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
-    gold = (0.788, 0.663, 0.431)
-    silver = (0.753, 0.753, 0.753)
-    cream = (0.941, 0.925, 0.894)
-    dark_bg = (0.043, 0.043, 0.043)
-    grey = (0.5, 0.5, 0.5)
+    oxblood = (0.420, 0.122, 0.165)
+    linen = (0.941, 0.922, 0.894)
+    linen_dark = (0.859, 0.839, 0.808)
+    off_white = (0.980, 0.973, 0.957)
+    off_white_dim = (0.980, 0.973, 0.957, 0.45)
+
+    has_tagline = bool(tagline and tagline.strip())
+    initial = brand_name[0].upper() if brand_name else 'B'
 
     def draw_front():
-        c.setFillColor(dark_bg)
+        # Full oxblood background
+        c.setFillColorRGB(*oxblood)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
-        words = brand_name.split()
-        first_word = words[0] if words else brand_name
+        if has_tagline:
+            # A1 layout — centred logo box, name, divider, tagline
+            logo_box_size = 14 * mm_unit
+            logo_box_x = (card_w - logo_box_size) / 2
+            logo_box_y = card_h - 18 * mm_unit
 
-        if len(first_word) >= 2:
-            first_letter = first_word[0]
-            rest_first = first_word[1:]
-            rest_name = ' '.join(words[1:])
+            # Logo border box
+            c.setStrokeColorRGB(0.980, 0.973, 0.957)
+            c.setLineWidth(0.4)
+            c.setFillColorRGB(*oxblood)
+            c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.5 * mm_unit, fill=1, stroke=1)
 
-            c.setFillColor(gold)
-            c.setFont('Helvetica-Bold', 18)
-            c.drawString(10 * mm_unit, card_h - 15 * mm_unit, first_letter)
+            # Initial inside box
+            c.setFillColorRGB(0.980, 0.973, 0.957)
+            c.setFont('Helvetica', 11)
+            c.drawCentredString(
+                logo_box_x + logo_box_size / 2,
+                logo_box_y + logo_box_size / 2 - 4,
+                initial
+            )
 
-            x_offset = 10 * mm_unit + c.stringWidth(first_letter, 'Helvetica-Bold', 18)
-            c.setFillColor(silver)
-            c.drawString(x_offset, card_h - 15 * mm_unit, rest_first)
+            # Brand name
+            c.setFillColorRGB(0.980, 0.973, 0.957)
+            c.setFont('Helvetica', 12)
+            name_y = logo_box_y - 6 * mm_unit
+            c.drawCentredString(card_w / 2, name_y, brand_name)
 
-            if rest_name:
-                c.drawString(10 * mm_unit, card_h - 22 * mm_unit, rest_name)
+            # Divider line
+            divider_w = 12 * mm_unit
+            divider_y = name_y - 3 * mm_unit
+            c.setStrokeColorRGB(0.980, 0.973, 0.957)
+            c.setLineWidth(0.3)
+            c.line(
+                card_w / 2 - divider_w / 2, divider_y,
+                card_w / 2 + divider_w / 2, divider_y
+            )
+
+            # Tagline
+            c.setFillColorRGB(0.980, 0.973, 0.957)
+            c.setFont('Helvetica', 6)
+            c.drawCentredString(card_w / 2, divider_y - 3.5 * mm_unit, tagline.upper())
+
         else:
-            c.setFillColor(gold)
-            c.setFont('Helvetica-Bold', 18)
-            c.drawString(10 * mm_unit, card_h - 15 * mm_unit, brand_name)
+            # A3 layout — large logo box centred, brand name small below
+            logo_box_size = 20 * mm_unit
+            logo_box_x = (card_w - logo_box_size) / 2
+            logo_box_y = (card_h - logo_box_size) / 2 + 4 * mm_unit
 
-        if tagline:
-            c.setFillColor(gold)
-            c.setFont('Helvetica', 8)
-            c.drawString(10 * mm_unit, card_h - 28 * mm_unit, tagline)
+            # Logo border box
+            c.setStrokeColorRGB(0.980, 0.973, 0.957)
+            c.setLineWidth(0.4)
+            c.setFillColorRGB(*oxblood)
+            c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 2 * mm_unit, fill=1, stroke=1)
 
-        c.setStrokeColor(gold)
-        c.setLineWidth(0.5)
-        c.line(10 * mm_unit, 8 * mm_unit, card_w - 10 * mm_unit, 8 * mm_unit)
+            # Initial inside box — larger
+            c.setFillColorRGB(0.980, 0.973, 0.957)
+            c.setFont('Helvetica', 16)
+            c.drawCentredString(
+                logo_box_x + logo_box_size / 2,
+                logo_box_y + logo_box_size / 2 - 5,
+                initial
+            )
 
-        if os.path.exists(qr_img_path):
-            c.setFillColor(cream)
-            qr_box_x = card_w - 32 * mm_unit
-            qr_box_y = card_h - 38 * mm_unit
-            qr_box_size = 26 * mm_unit
-            c.rect(qr_box_x, qr_box_y, qr_box_size, qr_box_size, fill=1, stroke=0)
-            c.drawImage(qr_img_path,
-                        qr_box_x + 2 * mm_unit,
-                        qr_box_y + 2 * mm_unit,
-                        width=22 * mm_unit, height=22 * mm_unit)
-            c.setFillColor(gold)
-            c.setFont('Helvetica', 5)
-            c.drawCentredString(qr_box_x + qr_box_size / 2, qr_box_y - 2 * mm_unit, 'SCAN TO CONNECT')
+            # Brand name small below
+            c.setFillColorRGB(0.980, 0.973, 0.957)
+            c.setFont('Helvetica', 7)
+            name_y = logo_box_y - 5 * mm_unit
+            c.drawCentredString(card_w / 2, name_y, brand_name.upper())
 
     def draw_back():
-        c.setFillColor(dark_bg)
+        # Linen background
+        c.setFillColorRGB(*linen)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
-        c.setFillColor(gold)
-        c.setFont('Helvetica-Bold', 14)
-        c.drawString(10 * mm_unit, card_h - 15 * mm_unit, brand_name)
-
-        if tagline:
-            c.setFillColor(grey)
-            c.setFont('Helvetica', 7)
-            c.drawString(10 * mm_unit, card_h - 22 * mm_unit, tagline)
-
-        url = f'{site_url.rstrip("/")}/c/{slug}'
-        c.setFillColor(gold)
-        c.setFont('Helvetica', 6)
-        c.drawString(10 * mm_unit, card_h - 30 * mm_unit, url)
-
+        # QR code centred
         if os.path.exists(qr_img_path):
-            qr_size = 30 * mm_unit
-            qr_x = card_w - qr_size - 10 * mm_unit
+            qr_size = 28 * mm_unit
+            qr_x = (card_w - qr_size) / 2
             qr_y = (card_h - qr_size) / 2
-            c.drawImage(qr_img_path, qr_x, qr_y, width=qr_size, height=qr_size)
+            c.drawImage(qr_img_path, qr_x, qr_y, width=qr_size, height=qr_size, mask='auto')
 
     draw_front()
     c.showPage()
