@@ -262,8 +262,10 @@
         .features-grid { grid-template-columns: 1fr !important; }
         .pricing-grid { grid-template-columns: 1fr !important; }
         .example-row { grid-template-columns: 1fr !important; gap: 32px !important; }
-    .example-row-reverse > :first-child { order: 2; }
-    .example-row-reverse > :last-child { order: 1; }
+    .example-row > :first-child { order: 2; }
+    .example-row > :last-child { order: 1; }
+    .example-row-reverse > :first-child { order: 1; }
+    .example-row-reverse > :last-child { order: 2; }
         nav > div { padding: 0 16px !important; }
     }
     @media (max-width: 600px) {
