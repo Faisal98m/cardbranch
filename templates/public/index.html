@@ -98,7 +98,7 @@
     </div>
 
     <!-- ROW 2: Text left, phone right -->
-    <div class="example-row" style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; margin-bottom:80px;">
+    <div class="example-row example-row-reverse" style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; margin-bottom:80px;">
       <div>
         <div style="font-size:11px; font-weight:500; color:#6b1f2a; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:12px; font-family:'Inter',sans-serif;">02 — Your links page</div>
         <h3 style="font-size:24px; font-weight:400; color:var(--text-primary); margin:0 0 14px; font-family:'DM Serif Display',serif;">One scan, all your links</h3>
@@ -262,6 +262,8 @@
         .features-grid { grid-template-columns: 1fr !important; }
         .pricing-grid { grid-template-columns: 1fr !important; }
         .example-row { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .example-row-reverse > :first-child { order: 2; }
+    .example-row-reverse > :last-child { order: 1; }
         nav > div { padding: 0 16px !important; }
     }
     @media (max-width: 600px) {
