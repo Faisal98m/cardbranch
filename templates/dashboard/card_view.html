@@ -25,9 +25,9 @@
         <div style="display:flex; align-items:center; justify-content:space-between; height:100%;">
           <div style="display:flex; flex-direction:column; gap:2px;">
             <div class="card-face-name">
-              <span style="color:#c9a84c;">{{ client.brand_name[0] }}</span><span class="rest">{{ client.brand_name[1:] }}</span>
+              <span style="color:#6b1f2a;">{{ client.brand_name[0] }}</span><span class="rest">{{ client.brand_name[1:] }}</span>
             </div>
-            <div style="width:20px; height:0.5px; background:#c9a84c; margin:1px 0;"></div>
+            <div style="width:20px; height:0.5px; background:#6b1f2a; margin:1px 0;"></div>
             <div class="card-face-tagline">{{ client.tagline }}</div>
           </div>
           <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
@@ -47,7 +47,7 @@
       <div class="card-face" style="padding:10px 12px; height:72px;">
         <div style="display:flex; align-items:center; justify-content:space-between; height:100%;">
           <div style="display:flex; flex-direction:column; gap:2px;">
-            <div style="font-size:11px; font-weight:600; color:#c9a84c; letter-spacing:0.15em; text-transform:uppercase;">{{ client.brand_name }}</div>
+            <div style="font-size:11px; font-weight:600; color:#6b1f2a; letter-spacing:0.15em; text-transform:uppercase;">{{ client.brand_name }}</div>
             <div class="card-face-tagline">{{ client.tagline }}</div>
             <div class="card-face-url">cardbranch.co.uk/c/{{ client.slug }}</div>
           </div>
@@ -87,11 +87,11 @@
         <img src="{{ r2_url }}/{{ client.logo_filename }}"
              style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--border);" alt="{{ client.brand_name }}">
         {% else %}
-        <div style="width:38px; height:38px; border-radius:50%; background:var(--bg-elevated); border:1px solid var(--border-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#c9a84c;">
+        <div style="width:38px; height:38px; border-radius:50%; background:var(--bg-elevated); border:1px solid var(--border-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#6b1f2a;">
           {{ client.brand_name[0] }}
         </div>
         {% endif %}
-        <div style="font-size:13px; font-weight:500; color:#c9a84c;">{{ client.brand_name }}</div>
+        <div style="font-size:13px; font-weight:500; color:#6b1f2a;">{{ client.brand_name }}</div>
         <div style="font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em;">{{ client.tagline }}</div>
       </div>
 
@@ -169,7 +169,7 @@
       </a>
 
       <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}" style="margin-top:8px;" onsubmit="return confirm('Delete this card? This cannot be undone.');">
-        <button type="submit" style="width:100%; padding:10px 16px; border-radius:var(--radius-sm); border:1px solid #6b1f2a; background:transparent; color:#6b1f2a; font-size:14px; font-family:'Inter',sans-serif; cursor:pointer;">Delete Card</button>
+        <button type="submit" class="btn-your-card btn-your-card-outline">Delete Card</button>
       </form>
 
       <hr class="your-card-divider">
@@ -204,13 +204,13 @@
 .section-accent {
   width: 3px;
   height: 16px;
-  background: #c9a84c;
+  background: #6b1f2a;
   flex-shrink: 0;
 }
 
 .card-group {
   background: var(--bg-secondary);
-  border: 0.5px solid rgba(201,168,76,0.3);
+  border: 0.5px solid rgba(107,31,42,0.25);
   border-radius: 12px;
   padding: 12px;
   margin-bottom: 14px;
@@ -218,12 +218,12 @@
 .face-badge {
   display: inline-block;
   font-size: 9px;
-  color: #c9a84c;
-  border: 0.5px solid rgba(201,168,76,0.3);
+  color: #6b1f2a;
+  border: 0.5px solid rgba(107,31,42,0.25);
   border-radius: 4px;
   padding: 2px 6px;
   margin-bottom: 6px;
-  background: rgba(201,168,76,0.06);
+  background: rgba(107,31,42,0.04);
 }
 .card-face {
   background: #ffffff;
@@ -240,10 +240,10 @@
   left: 0;
   right: 0;
   height: 1.5px;
-  background: linear-gradient(90deg, rgba(201,168,76,0.1), #c9a84c, rgba(201,168,76,0.1));
+  background: linear-gradient(90deg, rgba(107,31,42,0.08), #6b1f2a, rgba(107,31,42,0.08));
 }
 .card-face-name {
-  color: #c9a84c;
+  color: #6b1f2a;
   font-size: 14px;
   font-weight: 500;
 }
@@ -263,7 +263,7 @@
 }
 .card-group-divider {
   border: none;
-  border-top: 0.5px solid rgba(201,168,76,0.12);
+  border-top: 0.5px solid var(--border-light);
   margin: 8px 0;
 }
 .card-group-meta {
@@ -300,9 +300,9 @@
   border-radius: 8px;
   font-size: 11px;
   font-weight: 500;
-  background: rgba(201,168,76,0.1);
-  border: 0.5px solid rgba(201,168,76,0.5);
-  color: #c9a84c;
+  background: rgba(107,31,42,0.06);
+  border: 0.5px solid rgba(107,31,42,0.4);
+  color: #6b1f2a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -312,7 +312,7 @@
 }
 .links-section {
   background: var(--bg-secondary);
-  border: 0.5px solid rgba(201,168,76,0.3);
+  border: 0.5px solid rgba(107,31,42,0.25);
   border-radius: 12px;
   padding: 14px 12px;
   margin-bottom: 14px;
@@ -340,11 +340,11 @@
   color: var(--text-dim);
 }
 .social-pill .arrow {
-  color: #c9a84c;
+  color: #6b1f2a;
 }
 .your-card-panel {
   background: var(--bg-secondary);
-  border: 0.5px solid rgba(201,168,76,0.3);
+  border: 0.5px solid rgba(107,31,42,0.25);
   border-radius: 12px;
   padding: 14px;
 }
@@ -363,13 +363,13 @@
 }
 .your-card-info-value {
   font-size: 12px;
-  color: #c9a84c;
+  color: #6b1f2a;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .your-card-info-value a {
-  color: #c9a84c;
+  color: #6b1f2a;
   text-decoration: none;
   font-size: 11px;
 }
@@ -402,7 +402,7 @@
 }
 .your-card-divider {
   border: none;
-  border-top: 0.5px solid rgba(201,168,76,0.12);
+  border-top: 0.5px solid var(--border-light);
   margin: 10px 0;
 }
 .btn-your-card {
@@ -426,15 +426,15 @@
   color: var(--text-secondary);
 }
 .btn-your-card-order {
-  background: #c9a84c;
+  background: #6b1f2a;
   border: none;
-  color: #ffffff;
+  color: #faf8f4;
   font-size: 13px;
 }
 .btn-your-card-edit {
   background: transparent;
-  border: 0.5px solid rgba(201,168,76,0.3);
-  color: #c9a84c;
+  border: 0.5px solid rgba(107,31,42,0.25);
+  color: #6b1f2a;
 }
 .order-subtext {
   text-align: center;
