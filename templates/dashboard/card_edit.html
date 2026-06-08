@@ -1,51 +1,295 @@
 {% extends "layouts/dashboard.html" %}
 {% block dashboard_content %}
-<div style="max-width:640px;">
-    <h2 class="page-title">Edit {{ client.brand_name }}</h2>
-    <div class="card-stripe" style="padding:32px;">
-        <form method="POST" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <div style="margin-bottom:20px;">
-                <label>{{ form.brand_name.label }}</label>
-                {{ form.brand_name(value=client.brand_name) }}
-                {% for error in form.brand_name.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
-            </div>
-            <div style="margin-bottom:20px;">
-                <label>{{ form.tagline.label }}</label>
-                {{ form.tagline(value=client.tagline) }}
-            </div>
-            <div style="margin-bottom:20px;">
-                <label>{{ form.logo.label }}</label>
-                {{ form.logo }}
-                {% if client.logo_filename %}
-                <p style="color:var(--text-dim); font-size:12px; margin-top:4px;">Current: {{ client.logo_filename }}</p>
-                {% endif %}
-            </div>
 
-            <div style="margin-bottom:20px;">
-                <label>Links</label>
-                <div id="links-container">
-                    {% for link in links %}
-                    <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
-                        <input type="text" name="platform_{{ loop.index0 }}" value="{{ link.platform }}" placeholder="Platform" style="flex:1;" required>
-                        <input type="url" name="url_{{ loop.index0 }}" value="{{ link.url }}" placeholder="https://..." style="flex:2;" required>
-                    </div>
+{% set colour_map = {
+    'oxblood': {'bg_hex': '#6b1f2a', 'light': False},
+    'navy':    {'bg_hex': '#1a2744', 'light': False},
+    'forest':  {'bg_hex': '#1a3d2b', 'light': False},
+    'slate':   {'bg_hex': '#2d3748', 'light': False},
+    'charcoal':{'bg_hex': '#1a1714', 'light': False},
+    'linen':   {'bg_hex': '#f0ebe4', 'light': True},
+    'sage':    {'bg_hex': '#e8ede8', 'light': True},
+    'blush':   {'bg_hex': '#f5ece8', 'light': True},
+} %}
+
+<style>
+.card-new-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+    max-width: 960px;
+}
+@media (max-width: 768px) {
+    .card-new-grid {
+        grid-template-columns: 1fr;
+    }
+    .card-new-preview-col {
+        order: -1;
+    }
+}
+.card-new-preview-wrap {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.card-new-preview-card {
+    width: 100%;
+    aspect-ratio: 85 / 55;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    transition: background 0.3s ease;
+}
+.card-new-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+.card-new-swatch-wrap {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.card-new-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.15s, transform 0.15s;
+}
+.card-new-swatch.selected {
+    border-color: var(--accent);
+    transform: scale(1.15);
+}
+.card-new-swatch-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: capitalize;
+}
+.card-preview-inner {
+    width: 92%;
+    height: 88%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    position: relative;
+}
+.card-preview-logo-box {
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: border-color 0.3s;
+}
+.card-preview-name {
+    font-family: 'Playfair Display SC', serif;
+    font-weight: 700;
+    text-align: center;
+    transition: color 0.3s;
+    line-height: 1.1;
+}
+.card-preview-divider {
+    width: 40px;
+    height: 1px;
+    transition: background 0.3s;
+}
+.card-preview-tagline {
+    font-family: 'Playfair Display SC', serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    transition: color 0.3s;
+}
+.card-back-preview {
+    width: 100%;
+    aspect-ratio: 85 / 55;
+    border-radius: 8px;
+    background: #f0ebe4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.card-back-qr-placeholder {
+    width: 38%;
+    aspect-ratio: 1;
+    background: #e0d8d0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+
+<h2 class="page-title">Edit {{ client.brand_name }}</h2>
+
+<div class="card-new-grid">
+    <!-- FORM COLUMN -->
+    <div>
+        <div class="card-stripe" style="padding: 28px;">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <div style="margin-bottom: 20px;">
+                    <label>{{ form.brand_name.label }}</label>
+                    {{ form.brand_name(id="input-brand", value=client.brand_name) }}
+                    {% for error in form.brand_name.errors %}
+                    <span style="color:var(--danger); font-size:12px;">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
+
+                <div style="margin-bottom: 20px;">
+                    <label>{{ form.tagline.label }}</label>
+                    {{ form.tagline(id="input-tagline", value=client.tagline) }}
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label>{{ form.logo.label }}</label>
+                    {{ form.logo }}
+                    {% if client.logo_filename %}
+                    <p style="color:var(--text-dim); font-size:12px; margin-top:4px;">Current logo on file</p>
+                    {% endif %}
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:8px;">Card Colour</label>
+                    <div class="card-new-swatches">
+                        <div style="width:100%; font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Dark</div>
+                        {% for style, cfg in colour_map.items() %}
+                        {% if not cfg.light %}
+                        <div class="card-new-swatch-wrap" data-style="{{ style }}" onclick="selectColour('{{ style }}', '{{ cfg.bg_hex }}', false)">
+                            <div class="card-new-swatch {% if client.card_style == style %}selected{% endif %}" style="background:{{ cfg.bg_hex }};"></div>
+                            <span class="card-new-swatch-label">{{ style }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        <div style="width:100%; font-size:11px; color:var(--text-dim); margin-top:8px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Light</div>
+                        {% for style, cfg in colour_map.items() %}
+                        {% if cfg.light %}
+                        <div class="card-new-swatch-wrap" data-style="{{ style }}" onclick="selectColour('{{ style }}', '{{ cfg.bg_hex }}', true)">
+                            <div class="card-new-swatch {% if client.card_style == style %}selected{% endif %}" style="background:{{ cfg.bg_hex }};"></div>
+                            <span class="card-new-swatch-label">{{ style }}</span>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="card_style" id="card-style-input" value="{{ client.card_style }}">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label>Links</label>
+                    <div id="links-container">
+                        {% for link in links %}
+                        <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
+                            <input type="text" name="platform_{{ loop.index0 }}" value="{{ link.platform }}" placeholder="Platform" style="flex:1;" required>
+                            <input type="url" name="url_{{ loop.index0 }}" value="{{ link.url }}" placeholder="https://..." style="flex:2;" required>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
+                </div>
+
+                <input type="hidden" name="links" id="links-json" value="">
+                <div style="display:flex; gap:8px; padding-top:8px;">
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('dashboard.card_view', id=client.id) }}" class="btn btn-ghost">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PREVIEW COLUMN -->
+    <div class="card-new-preview-col">
+        <div class="card-new-preview-wrap">
+            <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:4px;">Preview</p>
+
+            <!-- Front -->
+            <div class="card-new-preview-card" id="preview-front"
+                 style="background: {{ colour_map[client.card_style]['bg_hex'] }};">
+                <div class="card-preview-inner" id="preview-inner">
+                    <!-- JS renders content here -->
+                </div>
             </div>
 
-            <input type="hidden" name="links" id="links-json" value="">
-            <div style="display:flex; gap:8px; padding-top:8px;">
-                {{ form.submit(class="btn btn-primary") }}
-                <a href="{{ url_for('dashboard.card_view', id=client.id) }}" class="btn btn-ghost">Cancel</a>
+            <!-- Back -->
+            <div class="card-back-preview">
+                <div class="card-back-qr-placeholder">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0a090" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+                </div>
             </div>
-        </form>
+
+            <p style="font-size:11px; color:var(--text-dim); text-align:center;">Front &amp; back preview</p>
+        </div>
     </div>
 </div>
 
 <script>
+let currentBg = '{{ colour_map[client.card_style]["bg_hex"] }}';
+let isLight = {{ 'true' if colour_map[client.card_style]['light'] else 'false' }};
 let linkCount = {{ links|length }};
+
+function selectColour(style, hex, light) {
+    currentBg = hex;
+    isLight = light;
+    document.getElementById('card-style-input').value = style;
+    document.getElementById('preview-front').style.background = hex;
+    document.querySelectorAll('.card-new-swatch').forEach(s => s.classList.remove('selected'));
+    const wrap = document.querySelector(`.card-new-swatch-wrap[data-style="${style}"]`);
+    if (wrap) wrap.querySelector('.card-new-swatch').classList.add('selected');
+    updatePreview();
+}
+
+function updatePreview() {
+    const brand = document.getElementById('input-brand').value.trim() || '{{ client.brand_name }}';
+    const tagline = document.getElementById('input-tagline').value.trim();
+    const textColour = isLight ? '#1a1714' : '#faf8f4';
+    const inner = document.getElementById('preview-inner');
+
+    if (tagline) {
+        // A1 layout
+        inner.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
+                <div class="card-preview-logo-box"
+                     style="width:22%; aspect-ratio:1; border:1px solid ${textColour}44; background:${currentBg}; margin-bottom:6%;">
+                    <span style="font-family:'Playfair Display SC',serif; font-weight:700; font-size:clamp(10px,2.5vw,16px); color:${textColour};">
+                        ${brand.charAt(0).toUpperCase()}
+                    </span>
+                </div>
+                <div class="card-preview-name" style="font-size:clamp(11px,2vw,15px); color:${textColour}; margin-bottom:4%;">${brand}</div>
+                <div class="card-preview-divider" style="background:${textColour}66; margin-bottom:4%;"></div>
+                <div class="card-preview-tagline" style="font-size:clamp(7px,1.2vw,9px); color:${textColour}aa;">${tagline.toUpperCase()}</div>
+            </div>`;
+    } else {
+        // A3 layout
+        inner.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
+                <div class="card-preview-logo-box"
+                     style="width:32%; aspect-ratio:1; border:1px solid ${textColour}44; background:${currentBg}; margin-bottom:5%;">
+                    <span style="font-family:'Playfair Display SC',serif; font-weight:700; font-size:clamp(12px,3vw,20px); color:${textColour};">
+                        ${brand.charAt(0).toUpperCase()}
+                    </span>
+                </div>
+                <div style="font-family:'Playfair Display SC',serif; font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;">${brand.toUpperCase()}</div>
+            </div>`;
+    }
+}
+
+document.getElementById('input-brand').addEventListener('input', updatePreview);
+document.getElementById('input-tagline').addEventListener('input', updatePreview);
+
 function addLink() {
     const container = document.getElementById('links-container');
     const row = document.createElement('div');
@@ -61,15 +305,15 @@ function addLink() {
 
 document.querySelector('form').addEventListener('submit', function() {
     const links = [];
-    const rows = document.querySelectorAll('.link-row');
-    rows.forEach(row => {
+    document.querySelectorAll('.link-row').forEach(row => {
         const platform = row.querySelector('input[type="text"]').value;
         const url = row.querySelector('input[type="url"]').value;
-        if (platform && url) {
-            links.push({platform, url});
-        }
+        if (platform && url) links.push({platform, url});
     });
     document.getElementById('links-json').value = JSON.stringify(links);
 });
+
+// Init preview on load
+updatePreview();
 </script>
 {% endblock %}

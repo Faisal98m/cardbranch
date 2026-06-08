@@ -107,7 +107,17 @@ def card_edit(id):
         return redirect(url_for('dashboard.card_view', id=client.id))
 
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
-    return render_template('dashboard/card_edit.html', form=form, client=client, links=links)
+    colour_map = {
+        'oxblood': {'bg_hex': '#6b1f2a', 'light': False},
+        'navy':    {'bg_hex': '#1a2744', 'light': False},
+        'forest':  {'bg_hex': '#1a3d2b', 'light': False},
+        'slate':   {'bg_hex': '#2d3748', 'light': False},
+        'charcoal':{'bg_hex': '#1a1714', 'light': False},
+        'linen':   {'bg_hex': '#f0ebe4', 'light': True},
+        'sage':    {'bg_hex': '#e8ede8', 'light': True},
+        'blush':   {'bg_hex': '#f5ece8', 'light': True},
+    }
+    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, colour_map=colour_map)
 
 
 @dashboard_bp.route('/card/<int:id>/delete', methods=['POST'])
