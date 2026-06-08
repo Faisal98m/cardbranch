@@ -1,71 +1,368 @@
 {% extends "layouts/dashboard.html" %}
 {% block dashboard_content %}
-<div style="max-width:640px;">
-    <h2 class="page-title">Create New Card</h2>
-    <div class="card-stripe" style="padding:32px;">
-        <form method="POST" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <div style="margin-bottom:20px;">
-                <label>{{ form.brand_name.label }}</label>
-                {{ form.brand_name(placeholder="e.g. DA Workforce") }}
-                {% for error in form.brand_name.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
-            </div>
-            <div style="margin-bottom:20px;">
-                <label>{{ form.tagline.label }}</label>
-                {{ form.tagline(placeholder="Your tagline or motto") }}
-            </div>
-            <div style="margin-bottom:20px;">
-                <label>{{ form.logo.label }}</label>
-                {{ form.logo }}
-                {% for error in form.logo.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
-            </div>
 
-            <div style="margin-bottom:20px;">
-                <label>Links</label>
-                <div id="links-container">
-                    <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
-                        <input type="text" name="platform_0" placeholder="Platform (e.g. Instagram)" style="flex:1;" required>
-                        <input type="url" name="url_0" placeholder="https://..." style="flex:2;" required>
-                    </div>
-                </div>
-                <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
-            </div>
+<h2 class="page-title" style="margin-bottom:24px;">Create New Card</h2>
 
-            <input type="hidden" name="links" id="links-json" value="[]">
-            <div style="display:flex; gap:8px; padding-top:8px;">
-                {{ form.submit(class="btn btn-primary") }}
-                <a href="{{ url_for('dashboard.index') }}" class="btn btn-ghost">Cancel</a>
-            </div>
-        </form>
+<div class="card-new-layout">
+
+  <!-- LEFT: Form -->
+  <div class="card-stripe" style="padding:32px;">
+    <form method="POST" enctype="multipart/form-data" id="card-form">
+      {{ form.hidden_tag() }}
+
+      <div style="margin-bottom:20px;">
+        <label>{{ form.brand_name.label }}</label>
+        {{ form.brand_name(placeholder="e.g. Da Workforce", id="brand-input") }}
+        {% for error in form.brand_name.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label>{{ form.tagline.label }} <span style="font-size:11px; color:var(--text-dim); font-weight:400;">(optional)</span></label>
+        {{ form.tagline(placeholder="Your tagline or motto", id="tagline-input") }}
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label>{{ form.logo.label }} <span style="font-size:11px; color:var(--text-dim); font-weight:400;">(optional)</span></label>
+        {{ form.logo }}
+        {% for error in form.logo.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label>Links</label>
+        <div id="links-container">
+          <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
+            <input type="text" name="platform_0" placeholder="Platform (e.g. Instagram)" style="flex:1;" required>
+            <input type="url" name="url_0" placeholder="https://..." style="flex:2;" required>
+          </div>
+        </div>
+        <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
+      </div>
+
+      <!-- Colour picker -->
+      <div style="margin-bottom:24px;">
+        <label style="display:block; margin-bottom:12px;">Card colour</label>
+        <input type="hidden" name="card_style" id="card-style-input" value="oxblood">
+
+        <p class="card-new-swatch-label">Dark</p>
+        <div class="card-new-swatches">
+          <div class="card-new-swatch-wrap" data-style="oxblood" data-bg="#6b1f2a" data-text="#faf8f4">
+            <div class="card-new-swatch selected" style="background:#6b1f2a;"></div>
+            <span class="card-new-swatch-name">Oxblood</span>
+          </div>
+          <div class="card-new-swatch-wrap" data-style="navy" data-bg="#1a2744" data-text="#faf8f4">
+            <div class="card-new-swatch" style="background:#1a2744;"></div>
+            <span class="card-new-swatch-name">Navy</span>
+          </div>
+          <div class="card-new-swatch-wrap" data-style="forest" data-bg="#1a3d2b" data-text="#faf8f4">
+            <div class="card-new-swatch" style="background:#1a3d2b;"></div>
+            <span class="card-new-swatch-name">Forest</span>
+          </div>
+          <div class="card-new-swatch-wrap" data-style="slate" data-bg="#2d3748" data-text="#faf8f4">
+            <div class="card-new-swatch" style="background:#2d3748;"></div>
+            <span class="card-new-swatch-name">Slate</span>
+          </div>
+          <div class="card-new-swatch-wrap" data-style="charcoal" data-bg="#1a1714" data-text="#faf8f4">
+            <div class="card-new-swatch" style="background:#1a1714; border:1px solid #3a3734;"></div>
+            <span class="card-new-swatch-name">Charcoal</span>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border); margin:14px 0;"></div>
+
+        <p class="card-new-swatch-label">Light</p>
+        <div class="card-new-swatches">
+          <div class="card-new-swatch-wrap" data-style="linen" data-bg="#f0ebe4" data-text="#1a1714">
+            <div class="card-new-swatch" style="background:#f0ebe4; border:1.5px solid #c8bfb4;"></div>
+            <span class="card-new-swatch-name">Linen</span>
+          </div>
+          <div class="card-new-swatch-wrap" data-style="sage" data-bg="#e8ede8" data-text="#1a1714">
+            <div class="card-new-swatch" style="background:#e8ede8; border:1.5px solid #b8c8b8;"></div>
+            <span class="card-new-swatch-name">Sage</span>
+          </div>
+          <div class="card-new-swatch-wrap" data-style="blush" data-bg="#f5ece8" data-text="#1a1714">
+            <div class="card-new-swatch" style="background:#f5ece8; border:1.5px solid #d8c0b8;"></div>
+            <span class="card-new-swatch-name">Blush</span>
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" name="links" id="links-json" value="[]">
+      <div style="display:flex; gap:8px; padding-top:8px;">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('dashboard.index') }}" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- RIGHT: Live preview -->
+  <div class="card-new-preview">
+    <p class="card-new-preview-title">Live preview</p>
+
+    <div>
+      <p class="card-new-face-label">FRONT</p>
+      <div class="card-new-face" id="preview-front" style="background:#6b1f2a; box-shadow:0 6px 20px rgba(107,31,42,0.35);">
+        <div class="card-new-logo-box" id="preview-logo" style="width:34px; height:34px; font-size:15px; color:#faf8f4; border:1.5px solid rgba(250,248,244,0.4);">D</div>
+        <div class="card-new-brand" id="preview-brand" style="color:#faf8f4;">Da Workforce</div>
+        <div class="card-new-divider" id="preview-divider" style="width:22px; background:rgba(250,248,244,0.35);"></div>
+        <div class="card-new-tag" id="preview-tag" style="color:rgba(250,248,244,0.6);"></div>
+      </div>
     </div>
+
+    <div>
+      <p class="card-new-face-label">BACK</p>
+      <div class="card-new-face" style="background:#faf8f4; border:1.5px solid #d8d0c4; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+        <svg viewBox="0 0 56 56" width="44" height="44">
+          <rect x="2" y="2" width="16" height="16" rx="1.5" fill="none" stroke="#1a1714" stroke-width="2"/>
+          <rect x="5" y="5" width="10" height="10" rx="0.5" fill="#1a1714"/>
+          <rect x="38" y="2" width="16" height="16" rx="1.5" fill="none" stroke="#1a1714" stroke-width="2"/>
+          <rect x="41" y="5" width="10" height="10" rx="0.5" fill="#1a1714"/>
+          <rect x="2" y="38" width="16" height="16" rx="1.5" fill="none" stroke="#1a1714" stroke-width="2"/>
+          <rect x="5" y="41" width="10" height="10" rx="0.5" fill="#1a1714"/>
+          <rect x="22" y="2" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="28" y="2" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="22" y="8" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="28" y="14" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="22" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="30" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="38" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="22" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="30" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="46" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="22" y="38" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="30" y="46" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="38" y="38" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="46" y="46" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="2" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="10" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="16" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
+          <rect x="38" y="46" width="16" height="3" fill="#1a1714" opacity="0.4"/>
+          <rect x="38" y="51" width="10" height="3" fill="#1a1714" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+
+    <p style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:10px;">85 × 55mm · Print ready</p>
+  </div>
+
 </div>
+
+<style>
+.card-new-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 28px;
+  align-items: stretch;
+}
+.card-new-preview {
+  position: sticky;
+  top: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.card-new-preview-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px;
+}
+.card-new-face-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.card-new-face {
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1.75 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 16px;
+  transition: background 0.2s;
+  box-sizing: border-box;
+}
+.card-new-logo-box {
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display SC', Georgia, serif;
+  transition: all 0.2s;
+}
+.card-new-brand {
+  font-family: 'Playfair Display SC', Georgia, serif;
+  font-size: 14px;
+  font-weight: 700;
+  transition: color 0.2s;
+  text-align: center;
+}
+.card-new-divider {
+  height: 1px;
+  transition: background 0.2s;
+}
+.card-new-tag {
+  font-family: 'Playfair Display SC', Georgia, serif;
+  font-size: 6.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+  text-align: center;
+}
+.card-new-swatches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.card-new-swatch-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.card-new-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: transform 0.1s;
+}
+.card-new-swatch:hover { transform: scale(1.1); }
+.card-new-swatch.selected {
+  border-color: #6b1f2a;
+  box-shadow: 0 0 0 3px rgba(107,31,42,0.2);
+}
+.card-new-swatch-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+.card-new-swatch-name {
+  font-size: 9px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+@media (max-width: 768px) {
+  .card-new-layout { grid-template-columns: 1fr !important; }
+  .card-new-preview { position: static; margin-top: 8px; }
+}
+</style>
 
 <script>
 let linkCount = 1;
+let currentBg = '#6b1f2a';
+let isLight = false;
+
 function addLink() {
-    const container = document.getElementById('links-container');
-    const row = document.createElement('div');
-    row.className = 'link-row';
-    row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
-    row.innerHTML = `
-        <input type="text" name="platform_${linkCount}" placeholder="Platform" style="flex:1;" required>
-        <input type="url" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
-    `;
-    container.appendChild(row);
-    linkCount++;
+  const container = document.getElementById('links-container');
+  const row = document.createElement('div');
+  row.className = 'link-row';
+  row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+  row.innerHTML = `
+    <input type="text" name="platform_${linkCount}" placeholder="Platform" style="flex:1;" required>
+    <input type="url" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
+  `;
+  container.appendChild(row);
+  linkCount++;
 }
 
-document.querySelector('form').addEventListener('submit', function() {
-    const links = [];
-    const rows = document.querySelectorAll('.link-row');
-    rows.forEach((row, i) => {
-        const platform = row.querySelector('input[type="text"]').value;
-        const url = row.querySelector('input[type="url"]').value;
-        if (platform && url) {
-            links.push({platform, url});
-        }
-    });
-    document.getElementById('links-json').value = JSON.stringify(links);
+document.getElementById('card-form').addEventListener('submit', function() {
+  const links = [];
+  document.querySelectorAll('.link-row').forEach(row => {
+    const platform = row.querySelector('input[type="text"]').value;
+    const url = row.querySelector('input[type="url"]').value;
+    if (platform && url) links.push({ platform, url });
+  });
+  document.getElementById('links-json').value = JSON.stringify(links);
 });
+
+function updatePreview() {
+  const brand = document.getElementById('brand-input').value.trim() || 'Your Brand';
+  const tag = document.getElementById('tagline-input').value.trim();
+  const initial = brand[0].toUpperCase();
+  const logoEl = document.getElementById('preview-logo');
+  const brandEl = document.getElementById('preview-brand');
+  const dividerEl = document.getElementById('preview-divider');
+  const tagEl = document.getElementById('preview-tag');
+  const frontEl = document.getElementById('preview-front');
+
+  logoEl.textContent = initial;
+  brandEl.textContent = brand;
+
+  if (tag) {
+    dividerEl.style.display = 'block';
+    tagEl.style.display = 'block';
+    tagEl.textContent = tag;
+    logoEl.style.width = '34px';
+    logoEl.style.height = '34px';
+    logoEl.style.fontSize = '15px';
+    brandEl.style.fontSize = '14px';
+  } else {
+    dividerEl.style.display = 'none';
+    tagEl.style.display = 'none';
+    logoEl.style.width = '46px';
+    logoEl.style.height = '46px';
+    logoEl.style.fontSize = '22px';
+    brandEl.style.fontSize = '9px';
+  }
+
+  if (isLight) {
+    logoEl.style.color = '#1a1714';
+    logoEl.style.borderColor = 'rgba(26,23,20,0.35)';
+    brandEl.style.color = '#1a1714';
+    tagEl.style.color = 'rgba(26,23,20,0.55)';
+    dividerEl.style.background = 'rgba(26,23,20,0.25)';
+    frontEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)';
+    frontEl.style.border = '1.5px solid #d8d0c4';
+  } else {
+    logoEl.style.color = '#faf8f4';
+    logoEl.style.borderColor = 'rgba(250,248,244,0.4)';
+    brandEl.style.color = '#faf8f4';
+    tagEl.style.color = 'rgba(250,248,244,0.6)';
+    dividerEl.style.background = 'rgba(250,248,244,0.35)';
+    frontEl.style.boxShadow = '0 6px 20px ' + currentBg + '66';
+    frontEl.style.border = 'none';
+  }
+}
+
+document.querySelectorAll('.card-new-swatch-wrap').forEach(wrap => {
+  wrap.addEventListener('click', () => {
+    document.querySelectorAll('.card-new-swatch').forEach(s => s.classList.remove('selected'));
+    wrap.querySelector('.card-new-swatch').classList.add('selected');
+    currentBg = wrap.dataset.bg;
+    isLight = wrap.dataset.text === '#1a1714';
+    document.getElementById('preview-front').style.background = currentBg;
+    document.getElementById('card-style-input').value = wrap.dataset.style;
+    updatePreview();
+  });
+});
+
+document.getElementById('brand-input').addEventListener('input', updatePreview);
+document.getElementById('tagline-input').addEventListener('input', updatePreview);
+
+// Apply default colour on load
+const defaultSwatch = document.querySelector('.card-new-swatch-wrap[data-style="oxblood"]');
+if (defaultSwatch) {
+  currentBg = defaultSwatch.dataset.bg;
+  isLight = defaultSwatch.dataset.text === '#1a1714';
+  document.getElementById('preview-front').style.background = currentBg;
+}
+updatePreview();
 </script>
+
 {% endblock %}
