@@ -1,5 +1,21 @@
 {% extends "layouts/dashboard.html" %}
 {% block dashboard_content %}
+
+{% set colour_map = {
+    'oxblood': '#6b1f2a',
+    'navy':    '#1a2744',
+    'forest':  '#1a3d2b',
+    'slate':   '#2d3748',
+    'charcoal':'#1a1714',
+    'linen':   '#f0ebe4',
+    'sage':    '#e8ede8',
+    'blush':   '#f5ece8'
+} %}
+{% set light_styles = ['linen', 'sage', 'blush'] %}
+{% set card_bg = colour_map.get(client.card_style, '#6b1f2a') %}
+{% set is_light = client.card_style in light_styles %}
+{% set card_text = '#1a1714' if is_light else '#faf8f4' %}
+
 <a href="{{ url_for('dashboard.index') }}" style="font-size:13px; color:var(--text-secondary); display:inline-flex; align-items:center; gap:6px; margin-bottom:16px; text-decoration:none;">
   &larr; My Cards
 </a>
@@ -9,192 +25,216 @@
   {% if client.tagline %}<p style="font-size:14px; color:var(--text-secondary); margin:0;">{{ client.tagline }}</p>{% endif %}
 </div>
 
-<div class="card-view-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;">
+<div class="card-view-grid">
 
-  <!-- LEFT COLUMN — Business Card Preview -->
-  <div>
-
+  <!-- COL 1: BUSINESS CARD -->
+  <div class="cv-col">
     <div class="section-header">
       <div class="section-accent"></div>
       <span class="section-label">BUSINESS CARD</span>
     </div>
+    <div class="cv-panel">
+      <div class="cv-panel-body">
 
-    <div class="card-group">
-      <span class="face-badge">FRONT</span>
-      <div class="card-face" style="padding:10px 12px; height:72px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; height:100%;">
-          <div style="display:flex; flex-direction:column; gap:2px;">
-            <div class="card-face-name">
-              <span style="color:#6b1f2a;">{{ client.brand_name[0] }}</span><span class="rest">{{ client.brand_name[1:] }}</span>
+        <div class="card-lbl">Front</div>
+        <div class="card-front" style="background: {{ card_bg }};">
+          <div class="card-inner">
+            {% if client.tagline %}
+            <!-- A1 layout -->
+            <div class="logo-box" style="border-color: {{ card_text }}44;">
+              {% if client.logo_filename %}
+              <img src="{{ r2_url }}/{{ client.logo_filename }}"
+                   style="width:100%; height:100%; object-fit:contain; border-radius:3px;"
+                   alt="{{ client.brand_name }}">
+              {% else %}
+              <span class="logo-initial" style="color: {{ card_text }};">{{ client.brand_name[0] }}</span>
+              {% endif %}
             </div>
-            <div style="width:20px; height:0.5px; background:#6b1f2a; margin:1px 0;"></div>
-            <div class="card-face-tagline">{{ client.tagline }}</div>
-          </div>
-          <div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
-            <div style="width:42px; height:42px; background:#f0ece4; border-radius:2px; display:flex; align-items:center; justify-content:center; padding:3px; box-sizing:border-box;">
-              <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
-                   style="width:36px; height:36px;" alt="QR Code"
-                   onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:9px;color:#888>QR</span>'">
+            <div class="preview-name" style="color: {{ card_text }};">{{ client.brand_name }}</div>
+            <div class="preview-divider" style="background: {{ card_text }}55;"></div>
+            <div class="preview-tagline" style="color: {{ card_text }}99;">{{ client.tagline }}</div>
+            {% else %}
+            <!-- A3 layout -->
+            <div class="logo-box logo-box-lg" style="border-color: {{ card_text }}44;">
+              {% if client.logo_filename %}
+              <img src="{{ r2_url }}/{{ client.logo_filename }}"
+                   style="width:100%; height:100%; object-fit:contain; border-radius:4px;"
+                   alt="{{ client.brand_name }}">
+              {% else %}
+              <span class="logo-initial logo-initial-lg" style="color: {{ card_text }};">{{ client.brand_name[0] }}</span>
+              {% endif %}
             </div>
-            <span style="font-size:4.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em;">SCAN TO CONNECT</span>
+            <div class="preview-name-sm" style="color: {{ card_text }}99;">{{ client.brand_name|upper }}</div>
+            {% endif %}
           </div>
         </div>
-      </div>
 
-      <hr class="card-group-divider">
-
-      <span class="face-badge">BACK</span>
-      <div class="card-face" style="padding:10px 12px; height:72px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; height:100%;">
-          <div style="display:flex; flex-direction:column; gap:2px;">
-            <div style="font-size:11px; font-weight:600; color:#6b1f2a; letter-spacing:0.15em; text-transform:uppercase;">{{ client.brand_name }}</div>
-            <div class="card-face-tagline">{{ client.tagline }}</div>
-            <div class="card-face-url">cardbranch.co.uk/c/{{ client.slug }}</div>
-          </div>
-          <div style="width:52px; height:52px; background:#f0ece4; border-radius:2px; display:flex; align-items:center; justify-content:center; padding:3px; box-sizing:border-box;">
+        <div style="height:10px;"></div>
+        <div class="card-lbl">Back</div>
+        <div class="card-back">
+          <div class="qr-wrap">
             <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
-                 style="width:46px; height:46px;" alt="QR Code"
-                 onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:9px;color:#888>QR</span>'">
+                 style="width:100%; height:100%;" alt="QR Code"
+                 onerror="this.style.display='none';this.parentElement.innerHTML='<svg width=24 height=24 viewBox=\'0 0 24 24\' fill=none stroke=\'#b0a090\' stroke-width=1.5><rect x=3 y=3 width=7 height=7/><rect x=14 y=3 width=7 height=7/><rect x=3 y=14 width=7 height=7/><rect x=14 y=14 width=3 height=3/></svg>'">
           </div>
         </div>
+
+        <p style="text-align:center; font-size:9px; color:var(--text-dim); margin-top:8px;">85 &times; 55mm &middot; Print ready</p>
       </div>
 
-      <p class="card-group-meta">85 &times; 55mm &middot; Print ready</p>
-
-      <div class="card-actions">
-        <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-card-outline">
+      <div class="cv-panel-footer">
+        <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-ghost">
           <i class="ti ti-download" aria-hidden="true"></i> Download PDF
         </a>
-        <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-card-gold">
-          <i class="ti ti-package" aria-hidden="true"></i> Order Prints
+        <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-primary">
+          <i class="ti ti-printer" aria-hidden="true"></i> Order prints
         </a>
       </div>
     </div>
-
   </div>
 
-  <!-- MIDDLE COLUMN — Links Page Preview -->
-  <div>
-
+  <!-- COL 2: LINKS PAGE -->
+  <div class="cv-col">
     <div class="section-header">
       <div class="section-accent"></div>
       <span class="section-label">LINKS PAGE</span>
     </div>
-
-    <div class="links-section">
-      <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:12px;">
-        {% if client.logo_filename %}
-        <img src="{{ r2_url }}/{{ client.logo_filename }}"
-             style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--border);" alt="{{ client.brand_name }}">
-        {% else %}
-        <div style="width:38px; height:38px; border-radius:50%; background:var(--bg-elevated); border:1px solid var(--border-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:#6b1f2a;">
-          {{ client.brand_name[0] }}
+    <div class="cv-panel">
+      <div class="cv-panel-body">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; padding:10px 0 8px;">
+          {% if client.logo_filename %}
+          <img src="{{ r2_url }}/{{ client.logo_filename }}"
+               style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid var(--border);"
+               alt="{{ client.brand_name }}">
+          {% else %}
+          <div style="width:36px; height:36px; border-radius:50%; background:#6b1f2a; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; color:#faf8f4;">
+            {{ client.brand_name[0] }}
+          </div>
+          {% endif %}
+          <div style="font-size:12px; font-weight:500; color:var(--text-primary);">{{ client.brand_name }}</div>
+          {% if client.tagline %}
+          <div style="font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em; text-align:center;">{{ client.tagline }}</div>
+          {% endif %}
         </div>
-        {% endif %}
-        <div style="font-size:13px; font-weight:500; color:#6b1f2a;">{{ client.brand_name }}</div>
-        <div style="font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.1em;">{{ client.tagline }}</div>
+
+        <div style="height:0.5px; background:var(--border-light); margin:6px 0 8px;"></div>
+
+        {% for link in links %}
+        <a href="{{ link.url }}" class="link-pill" target="_blank" rel="noopener noreferrer">
+          <span style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary);">
+            {% if link.platform|lower == 'instagram' %}<i class="ti ti-brand-instagram" aria-hidden="true"></i>
+            {% elif link.platform|lower == 'tiktok' %}<i class="ti ti-brand-tiktok" aria-hidden="true"></i>
+            {% elif link.platform|lower == 'linkedin' %}<i class="ti ti-brand-linkedin" aria-hidden="true"></i>
+            {% elif link.platform|lower == 'website' %}<i class="ti ti-world" aria-hidden="true"></i>
+            {% else %}<i class="ti ti-link" aria-hidden="true"></i>
+            {% endif %}
+            {{ link.platform }}
+          </span>
+          <i class="ti ti-arrow-right" aria-hidden="true" style="font-size:11px; color:var(--text-dim);"></i>
+        </a>
+        {% endfor %}
       </div>
 
-      {% for link in links %}
-      <a href="{{ link.url }}" class="social-pill" target="_blank" rel="noopener noreferrer">
-        <span>
-          {% if link.platform|lower == 'instagram' %}
-          <i class="ti ti-brand-instagram" aria-hidden="true"></i>
-          {% elif link.platform|lower == 'tiktok' %}
-          <i class="ti ti-brand-tiktok" aria-hidden="true"></i>
-          {% elif link.platform|lower == 'linkedin' %}
-          <i class="ti ti-brand-linkedin" aria-hidden="true"></i>
-          {% elif link.platform|lower == 'website' %}
-          <i class="ti ti-world" aria-hidden="true"></i>
-          {% else %}
-          <i class="ti ti-link" aria-hidden="true"></i>
-          {% endif %}
-          {{ link.platform }}
-        </span>
-        <i class="ti ti-arrow-right arrow" aria-hidden="true"></i>
-      </a>
-      {% endfor %}
-
-      <div class="card-actions" style="margin-top:10px;">
-        <a href="{{ url_for('public.card_links', slug=client.slug) }}" class="btn-card-outline" target="_blank" rel="noopener noreferrer">
-          <i class="ti ti-eye" aria-hidden="true"></i> Preview page
-        </a>
-        <button class="btn-card-outline" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')" style="font-family:inherit;">
-          <i class="ti ti-copy" aria-hidden="true"></i> Copy link
-        </button>
+      <div class="cv-panel-footer">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <a href="{{ url_for('public.card_links', slug=client.slug) }}" class="btn-ghost" target="_blank" rel="noopener noreferrer">
+            <i class="ti ti-eye" aria-hidden="true"></i> Preview
+          </a>
+          <button class="btn-ghost" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')" style="font-family:inherit; cursor:pointer;">
+            <i class="ti ti-copy" aria-hidden="true"></i> Copy link
+          </button>
+        </div>
       </div>
     </div>
-
   </div>
 
-  <!-- RIGHT COLUMN — Your Card -->
-  <div>
-
+  <!-- COL 3: YOUR CARD -->
+  <div class="cv-col">
     <div class="section-header">
       <div class="section-accent"></div>
       <span class="section-label">YOUR CARD</span>
     </div>
-
-    <div class="your-card-panel">
-      <div class="your-card-info-row">
-        <div class="your-card-info-label">LIVE LINKS PAGE</div>
-        <div class="your-card-info-value">
-          <a href="{{ url_for('public.card_links', slug=client.slug) }}" target="_blank">
-            cardbranch.co.uk/c/{{ client.slug }}
-          </a>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')">
-            <i class="ti ti-copy" aria-hidden="true"></i> Copy
+    <div class="cv-panel">
+      <div class="cv-panel-body">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em;">Live links page</div>
+          <div class="live-badge"><div class="live-dot"></div>Live</div>
+        </div>
+        <div class="url-row">
+          <a href="{{ url_for('public.card_links', slug=client.slug) }}"
+             style="font-size:11px; color:var(--text-secondary); text-decoration:none; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
+             target="_blank">cardbranch.co.uk/c/{{ client.slug }}</a>
+          <button onclick="navigator.clipboard.writeText('{{ request.host_url }}c/{{ client.slug }}')"
+                  style="background:none; border:none; cursor:pointer; color:var(--text-dim); font-family:inherit; padding:0;">
+            <i class="ti ti-copy" aria-hidden="true" style="font-size:13px;"></i>
           </button>
         </div>
-        <div class="live-status">
-          <span class="live-dot"></span>
-          <span class="live-text">Live</span>
+
+        <div class="meta-grid">
+          <div class="meta-cell">
+            <div class="meta-label">CREATED</div>
+            <div class="meta-value">{{ client.created_at.strftime('%d %b') }}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-label">LINKS</div>
+            <div class="meta-value">{{ links|length }}</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-label">SLUG</div>
+            <div class="meta-value" style="font-size:9px; word-break:break-all;">{{ client.slug }}</div>
+          </div>
         </div>
       </div>
 
-      <hr class="your-card-divider">
-
-      <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-your-card btn-your-card-outline">
-        <i class="ti ti-download" aria-hidden="true"></i> Download PDF
-      </a>
-      <a href="{{ url_for('dashboard.download_qr', id=client.id) }}" class="btn-your-card btn-your-card-outline">
-        <i class="ti ti-qrcode" aria-hidden="true"></i> Download QR
-      </a>
-      <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-your-card btn-your-card-order">
-        <i class="ti ti-package" aria-hidden="true"></i> Order Cards
-      </a>
-      <p class="order-subtext">Printed &amp; delivered to your door</p>
-      <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn-your-card btn-your-card-edit">
-        <i class="ti ti-edit" aria-hidden="true"></i> Edit Card
-      </a>
-
-      <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}" style="margin-top:8px;" onsubmit="return confirm('Delete this card? This cannot be undone.');">
-        <button type="submit" class="btn-your-card btn-your-card-outline">Delete Card</button>
-      </form>
-
-      <hr class="your-card-divider">
-
-      <div class="meta-grid">
-        <div class="meta-cell">
-          <div class="meta-cell-label">CREATED</div>
-          <div class="meta-cell-value">{{ client.created_at.strftime('%d %b') }}</div>
-        </div>
-        <div class="meta-cell">
-          <div class="meta-cell-label">LINKS</div>
-          <div class="meta-cell-value">{{ links|length }}</div>
-        </div>
-        <div class="meta-cell">
-          <div class="meta-cell-label">SLUG</div>
-          <div class="meta-cell-value" style="font-size:10px;">{{ client.slug }}</div>
-        </div>
+      <div class="cv-panel-footer">
+        <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-primary">
+          <i class="ti ti-shopping-cart" aria-hidden="true"></i> Order cards
+        </a>
+        <p style="text-align:center; font-size:10px; color:var(--text-dim); margin:0;">Printed &amp; delivered to your door</p>
+        <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn-ghost">
+          <i class="ti ti-edit" aria-hidden="true"></i> Edit card
+        </a>
+        <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}"
+              onsubmit="return confirm('Delete this card? This cannot be undone.');">
+          <button type="submit" class="btn-ghost btn-danger" style="font-family:inherit; cursor:pointer; width:100%;">
+            <i class="ti ti-trash" aria-hidden="true"></i> Delete card
+          </button>
+        </form>
       </div>
     </div>
-
   </div>
 
 </div>
 
 <style>
+.card-view-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .card-view-grid { grid-template-columns: 1fr !important; }
+}
+.cv-col { display: flex; flex-direction: column; }
+.cv-panel {
+  background: var(--bg-secondary);
+  border: 0.5px solid rgba(107,31,42,0.2);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.cv-panel-body { flex: 1; }
+.cv-panel-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 0.5px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .section-header {
   display: flex;
   align-items: center;
@@ -207,268 +247,201 @@
   background: #6b1f2a;
   flex-shrink: 0;
 }
-
-.card-group {
-  background: var(--bg-secondary);
-  border: 0.5px solid rgba(107,31,42,0.25);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 14px;
-}
-.face-badge {
-  display: inline-block;
+.section-label {
   font-size: 9px;
-  color: #6b1f2a;
-  border: 0.5px solid rgba(107,31,42,0.25);
-  border-radius: 4px;
-  padding: 2px 6px;
-  margin-bottom: 6px;
-  background: rgba(107,31,42,0.04);
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
 }
-.card-face {
-  background: #ffffff;
-  border-radius: 8px;
-  border: 0.5px solid var(--border-light);
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 6px;
-}
-.card-face::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1.5px;
-  background: linear-gradient(90deg, rgba(107,31,42,0.08), #6b1f2a, rgba(107,31,42,0.08));
-}
-.card-face-name {
-  color: #6b1f2a;
-  font-size: 14px;
-  font-weight: 500;
-}
-.card-face-name .rest {
-  color: #1a1714;
-}
-.card-face-tagline {
-  color: #8a7e72;
+.card-lbl {
   font-size: 9px;
   letter-spacing: 0.08em;
-  margin-top: 2px;
-}
-.card-face-url {
-  color: #8a7e72;
-  font-size: 8px;
-  margin-top: 2px;
-}
-.card-group-divider {
-  border: none;
-  border-top: 0.5px solid var(--border-light);
-  margin: 8px 0;
-}
-.card-group-meta {
-  text-align: center;
-  font-size: 9px;
+  text-transform: uppercase;
   color: var(--text-dim);
-  margin-top: 8px;
+  margin-bottom: 5px;
 }
-.card-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 10px;
-}
-.btn-card-outline {
-  flex: 1;
-  padding: 8px 0;
+.card-front {
+  width: 100%;
+  aspect-ratio: 85 / 55;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.card-inner {
+  width: 88%;
+  height: 84%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.logo-box {
+  width: 20%;
+  aspect-ratio: 1;
+  border: 1px solid;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 9%;
+  flex-shrink: 0;
+}
+.logo-box-lg {
+  width: 30%;
+  margin-bottom: 6%;
+}
+.logo-initial {
   font-size: 11px;
+  font-weight: 700;
+  font-family: 'Playfair Display SC', Georgia, serif;
+}
+.logo-initial-lg {
+  font-size: 16px;
+}
+.preview-name {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: 'Playfair Display SC', Georgia, serif;
+  text-align: center;
+  margin-bottom: 5%;
+}
+.preview-name-sm {
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  font-family: 'Playfair Display SC', Georgia, serif;
+  text-align: center;
+}
+.preview-divider {
+  width: 28px;
+  height: 1px;
+  margin-bottom: 5%;
+}
+.preview-tagline {
+  font-size: 5.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: 'Playfair Display SC', Georgia, serif;
+}
+.card-back {
+  width: 100%;
+  aspect-ratio: 85 / 55;
+  border-radius: 8px;
+  background: #f0ebe4 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qr-wrap {
+  width: 36%;
+  aspect-ratio: 1;
+  background: #e0d8d0;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 3px;
+}
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #6b1f2a;
+  border: none;
+  color: #faf8f4;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 0;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 500;
   background: transparent;
   border: 0.5px solid var(--border);
   color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
   text-decoration: none;
   cursor: pointer;
-  font-family: inherit;
 }
-.btn-card-gold {
-  flex: 1;
-  padding: 8px 0;
+.btn-danger {
+  color: #a03030 !important;
+  border-color: rgba(160,48,48,0.25) !important;
+}
+.link-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
   border-radius: 8px;
-  font-size: 11px;
-  font-weight: 500;
-  background: rgba(107,31,42,0.06);
-  border: 0.5px solid rgba(107,31,42,0.4);
-  color: #6b1f2a;
+  border: 0.5px solid var(--border-light);
+  background: var(--bg-elevated);
+  margin-bottom: 6px;
+  text-decoration: none;
+}
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #2d6a3f;
+  background: #eaf3de;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+.live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #639922;
+  flex-shrink: 0;
+}
+.url-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  text-decoration: none;
-  cursor: pointer;
-}
-.links-section {
-  background: var(--bg-secondary);
-  border: 0.5px solid rgba(107,31,42,0.25);
-  border-radius: 12px;
-  padding: 14px 12px;
-  margin-bottom: 14px;
-}
-.social-pill {
+  gap: 6px;
   background: var(--bg-elevated);
   border: 0.5px solid var(--border-light);
   border-radius: 8px;
   padding: 8px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  text-decoration: none;
-}
-.social-pill span {
-  color: var(--text-secondary);
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.social-pill i {
-  font-size: 13px;
-  color: var(--text-dim);
-}
-.social-pill .arrow {
-  color: #6b1f2a;
-}
-.your-card-panel {
-  background: var(--bg-secondary);
-  border: 0.5px solid rgba(107,31,42,0.25);
-  border-radius: 12px;
-  padding: 14px;
-}
-.your-card-info-row {
-  background: var(--bg-elevated);
-  border: 0.5px solid var(--border-light);
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-}
-.your-card-info-label {
-  font-size: 9px;
-  color: var(--text-dim);
-  letter-spacing: 0.06em;
-  margin-bottom: 3px;
-}
-.your-card-info-value {
-  font-size: 12px;
-  color: #6b1f2a;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.your-card-info-value a {
-  color: #6b1f2a;
-  text-decoration: none;
-  font-size: 11px;
-}
-.copy-btn {
-  font-size: 9px;
-  color: var(--text-dim);
-  border: 0.5px solid var(--border);
-  background: var(--bg-secondary);
-  border-radius: 4px;
-  padding: 2px 7px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.live-status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 4px;
-}
-.live-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-  flex-shrink: 0;
-}
-.live-text {
-  font-size: 10px;
-  color: #22c55e;
-}
-.your-card-divider {
-  border: none;
-  border-top: 0.5px solid var(--border-light);
-  margin: 10px 0;
-}
-.btn-your-card {
-  width: 100%;
-  padding: 10px 0;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  margin-bottom: 8px;
-  text-decoration: none;
-  font-family: inherit;
-}
-.btn-your-card-outline {
-  background: transparent;
-  border: 0.5px solid var(--border);
-  color: var(--text-secondary);
-}
-.btn-your-card-order {
-  background: #6b1f2a;
-  border: none;
-  color: #faf8f4;
-  font-size: 13px;
-}
-.btn-your-card-edit {
-  background: transparent;
-  border: 0.5px solid rgba(107,31,42,0.25);
-  color: #6b1f2a;
-}
-.order-subtext {
-  text-align: center;
-  font-size: 10px;
-  color: var(--text-dim);
-  margin-top: -4px;
   margin-bottom: 10px;
 }
 .meta-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin-top: 4px;
+  gap: 1px;
+  background: var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
 }
 .meta-cell {
   background: var(--bg-elevated);
-  border: 0.5px solid var(--border-light);
-  border-radius: 6px;
   padding: 8px 6px;
   text-align: center;
 }
-.meta-cell-label {
+.meta-label {
   font-size: 9px;
   color: var(--text-dim);
   letter-spacing: 0.06em;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
-.meta-cell-value {
+.meta-value {
   font-size: 12px;
-  color: var(--text-secondary);
   font-weight: 500;
-}
-@media (max-width: 768px) {
-  .card-view-grid { grid-template-columns: 1fr !important; }
+  color: var(--text-secondary);
 }
 </style>
 {% endblock %}
