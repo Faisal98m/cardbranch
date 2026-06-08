@@ -33,14 +33,12 @@
       <div class="section-accent"></div>
       <span class="section-label">BUSINESS CARD</span>
     </div>
-    <div class="cv-panel">
-      <div class="cv-panel-body">
-
+    <div class="cv-panel" style="background:transparent; border:none; padding:0; gap:10px;">
+      <div>
         <div class="card-lbl">Front</div>
-        <div class="card-front" style="background: {{ card_bg }};">
+        <div class="card-front" style="background: {{ card_bg }}; width:100%; aspect-ratio:85/55; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
           <div class="card-inner">
             {% if client.tagline %}
-            <!-- A1 layout -->
             <div class="logo-box" style="border-color: {{ card_text }}44;">
               {% if client.logo_filename %}
               <img src="{{ r2_url }}/{{ client.logo_filename }}"
@@ -54,7 +52,6 @@
             <div class="preview-divider" style="background: {{ card_text }}55;"></div>
             <div class="preview-tagline" style="color: {{ card_text }}99;">{{ client.tagline }}</div>
             {% else %}
-            <!-- A3 layout -->
             <div class="logo-box logo-box-lg" style="border-color: {{ card_text }}44;">
               {% if client.logo_filename %}
               <img src="{{ r2_url }}/{{ client.logo_filename }}"
@@ -68,28 +65,21 @@
             {% endif %}
           </div>
         </div>
+      </div>
 
-        <div style="height:10px;"></div>
+      <div>
         <div class="card-lbl">Back</div>
-        <div class="card-back" style="background:#f0ebe4;">
-          <div class="qr-wrap">
+        <div style="width:100%; aspect-ratio:85/55; border-radius:8px; background:#f0ebe4; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+          <div style="width:38%; aspect-ratio:1; border-radius:3px; overflow:hidden; background:#e0d8d0; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
             <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
-                 style="width:100%; height:100%;" alt="QR Code"
-                 onerror="this.style.display='none';this.parentElement.innerHTML='<svg width=24 height=24 viewBox=\'0 0 24 24\' fill=none stroke=\'#b0a090\' stroke-width=1.5><rect x=3 y=3 width=7 height=7/><rect x=14 y=3 width=7 height=7/><rect x=3 y=14 width=7 height=7/><rect x=14 y=14 width=3 height=3/></svg>'">
+                 style="width:100%; height:100%; display:block;"
+                 alt="QR Code"
+                 onerror="this.style.display='none'">
           </div>
         </div>
-
-        <p style="text-align:center; font-size:9px; color:var(--text-dim); margin-top:8px;">85 &times; 55mm &middot; Print ready</p>
       </div>
 
-      <div class="cv-panel-footer">
-        <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-ghost">
-          <i class="ti ti-download" aria-hidden="true"></i> Download PDF
-        </a>
-        <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-primary">
-          <i class="ti ti-printer" aria-hidden="true"></i> Order prints
-        </a>
-      </div>
+      <p style="text-align:center; font-size:9px; color:var(--text-dim); margin:0;">85 &times; 55mm &middot; Print ready</p>
     </div>
   </div>
 
@@ -191,6 +181,12 @@
           <i class="ti ti-shopping-cart" aria-hidden="true"></i> Order cards
         </a>
         <p style="text-align:center; font-size:10px; color:var(--text-dim); margin:0;">Printed &amp; delivered to your door</p>
+        <a href="{{ url_for('dashboard.download_pdf', id=client.id) }}" class="btn-ghost">
+          <i class="ti ti-download" aria-hidden="true"></i> Download PDF
+        </a>
+        <a href="{{ url_for('dashboard.download_qr', id=client.id) }}" class="btn-ghost">
+          <i class="ti ti-qrcode" aria-hidden="true"></i> Download QR
+        </a>
         <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn-ghost">
           <i class="ti ti-edit" aria-hidden="true"></i> Edit card
         </a>
@@ -324,27 +320,6 @@
   text-transform: uppercase;
   text-align: center;
   font-family: 'Playfair Display SC', Georgia, serif;
-}
-.card-back {
-  width: 100%;
-  aspect-ratio: 85 / 55;
-  border-radius: 8px;
-  background: #f0ebe4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.qr-wrap {
-  width: 38%;
-  aspect-ratio: 1;
-  background: #e0d8d0;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 4px;
-  box-sizing: border-box;
 }
 .btn-primary {
   display: flex;
