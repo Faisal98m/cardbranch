@@ -7,6 +7,17 @@ from reportlab.lib.units import mm as mm_unit
 from reportlab.pdfgen import canvas
 from app.services.r2 import upload_file
 
+CARD_COLOURS = {
+    'oxblood':  {'bg': (0.420, 0.122, 0.165), 'text': (0.980, 0.973, 0.957), 'light': False},
+    'navy':     {'bg': (0.102, 0.153, 0.267), 'text': (0.980, 0.973, 0.957), 'light': False},
+    'forest':   {'bg': (0.102, 0.239, 0.169), 'text': (0.980, 0.973, 0.957), 'light': False},
+    'slate':    {'bg': (0.176, 0.216, 0.282), 'text': (0.980, 0.973, 0.957), 'light': False},
+    'charcoal': {'bg': (0.102, 0.090, 0.082), 'text': (0.980, 0.973, 0.957), 'light': False},
+    'linen':    {'bg': (0.941, 0.922, 0.894), 'text': (0.102, 0.090, 0.082), 'light': True},
+    'sage':     {'bg': (0.910, 0.929, 0.910), 'text': (0.102, 0.090, 0.082), 'light': True},
+    'blush':    {'bg': (0.961, 0.925, 0.910), 'text': (0.102, 0.090, 0.082), 'light': True},
+}
+
 
 def slugify(text):
     slug = re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
@@ -67,7 +78,7 @@ def download_logo(logo_filename):
         return None
 
 
-def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
+def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood'):
     import os
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
@@ -102,15 +113,17 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
 
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
-    oxblood = (0.420, 0.122, 0.165)
+    colour = CARD_COLOURS.get(card_style, CARD_COLOURS['oxblood'])
+    front_bg = colour['bg']
+    text_colour = colour['text']
+    is_light = colour['light']
     linen = (0.941, 0.922, 0.894)
-    off_white = (0.980, 0.973, 0.957)
 
     has_tagline = bool(tagline and tagline.strip())
     initial = brand_name[0].upper() if brand_name else 'B'
 
     def draw_front():
-        c.setFillColorRGB(*oxblood)
+        c.setFillColorRGB(*front_bg)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
         if has_tagline:
@@ -128,9 +141,9 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
             logo_box_y = group_y_start - logo_box_size - (group_h * 0.05)
 
             # Logo border box
-            c.setStrokeColorRGB(*off_white)
+            c.setStrokeColorRGB(*text_colour)
             c.setLineWidth(0.35)
-            c.setFillColorRGB(*oxblood)
+            c.setFillColorRGB(*front_bg)
             c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.2 * mm_unit, fill=1, stroke=1)
 
             # Logo or initial inside box
@@ -146,7 +159,7 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
                     preserveAspectRatio=True
                 )
             else:
-                c.setFillColorRGB(*off_white)
+                c.setFillColorRGB(*text_colour)
                 c.setFont(name_font, 9)
                 c.drawCentredString(
                     logo_box_x + logo_box_size / 2,
@@ -156,19 +169,19 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
 
             # Brand name
             name_y = logo_box_y - 6 * mm_unit
-            c.setFillColorRGB(*off_white)
+            c.setFillColorRGB(*text_colour)
             c.setFont(name_font, 13)
             c.drawCentredString(card_w / 2, name_y, brand_name)
 
             # Divider
             divider_w = 10 * mm_unit
             divider_y = name_y - 3.5 * mm_unit
-            c.setStrokeColorRGB(0.980, 0.973, 0.957)
+            c.setStrokeColorRGB(*text_colour)
             c.setLineWidth(0.25)
             c.line(card_w / 2 - divider_w / 2, divider_y, card_w / 2 + divider_w / 2, divider_y)
 
             # Tagline
-            c.setFillColorRGB(0.980, 0.973, 0.957)
+            c.setFillColorRGB(*text_colour)
             c.setFont(tag_font, 5.5)
             c.drawCentredString(card_w / 2, divider_y - 3.5 * mm_unit, tagline.upper())
 
@@ -178,9 +191,9 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
             logo_box_x = (card_w - logo_box_size) / 2
             logo_box_y = (card_h - logo_box_size) / 2 + 3 * mm_unit
 
-            c.setStrokeColorRGB(*off_white)
+            c.setStrokeColorRGB(*text_colour)
             c.setLineWidth(0.35)
-            c.setFillColorRGB(*oxblood)
+            c.setFillColorRGB(*front_bg)
             c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 2 * mm_unit, fill=1, stroke=1)
 
             if logo_path and os.path.exists(logo_path):
@@ -195,7 +208,7 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
                     preserveAspectRatio=True
                 )
             else:
-                c.setFillColorRGB(*off_white)
+                c.setFillColorRGB(*text_colour)
                 c.setFont(name_font, 14)
                 c.drawCentredString(
                     logo_box_x + logo_box_size / 2,
@@ -203,7 +216,7 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
                     initial
                 )
 
-            c.setFillColorRGB(*off_white)
+            c.setFillColorRGB(*text_colour)
             c.setFont(tag_font, 6.5)
             c.drawCentredString(card_w / 2, logo_box_y - 4.5 * mm_unit, brand_name.upper())
 
@@ -226,10 +239,10 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None):
     return pdf_path
 
 
-def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None):
+def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_style='oxblood'):
     qr_tmp = generate_qr(slug, site_url)
     logo_tmp = download_logo(logo_filename)
-    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp)
+    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, card_style=card_style)
     if os.path.exists(qr_tmp):
         os.remove(qr_tmp)
     if pdf_tmp and os.path.exists(pdf_tmp):

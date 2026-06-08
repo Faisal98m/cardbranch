@@ -29,12 +29,15 @@ def card_new():
         if form.logo.data:
             logo_filename = save_logo(form.logo.data)
 
+        card_style = request.form.get('card_style', 'oxblood')
+
         client = Client(
             user_id=current_user.id,
             brand_name=brand_name,
             tagline=tagline,
             slug=slug,
             logo_filename=logo_filename,
+            card_style=card_style,
         )
         db.session.add(client)
         db.session.flush()
@@ -52,7 +55,7 @@ def card_new():
         db.session.commit()
 
         site_url = current_app.config['SITE_URL']
-        generate_assets(slug, brand_name, tagline, site_url, logo_filename=logo_filename)
+        generate_assets(slug, brand_name, tagline, site_url, logo_filename=logo_filename, card_style=card_style)
 
         flash('Card created successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
@@ -78,6 +81,7 @@ def card_edit(id):
         brand_name = form.brand_name.data.strip()
         client.brand_name = brand_name
         client.tagline = form.tagline.data.strip() if form.tagline.data else ''
+        client.card_style = request.form.get('card_style', client.card_style)
 
         if form.logo.data:
             client.logo_filename = save_logo(form.logo.data)
@@ -97,7 +101,7 @@ def card_edit(id):
         db.session.commit()
 
         site_url = current_app.config['SITE_URL']
-        generate_assets(client.slug, brand_name, client.tagline, site_url, logo_filename=client.logo_filename)
+        generate_assets(client.slug, brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_style=client.card_style)
 
         flash('Card updated successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
