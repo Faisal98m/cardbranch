@@ -33,9 +33,10 @@
       <div class="section-accent"></div>
       <span class="section-label">BUSINESS CARD</span>
     </div>
-    <div class="cv-panel" style="background:transparent; border:none; padding:0; gap:10px;">
-      <div>
-        <div class="card-lbl">Front</div>
+    <div class="cv-panel">
+      <div class="cv-panel-body" style="display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <div class="card-lbl">Front</div>
         <div class="card-front" style="background: {{ card_bg }}; width:100%; aspect-ratio:85/55; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
           <div class="card-inner">
             {% if client.tagline %}
@@ -65,21 +66,25 @@
             {% endif %}
           </div>
         </div>
-      </div>
+        </div>
 
-      <div>
-        <div class="card-lbl">Back</div>
-        <div style="width:100%; aspect-ratio:85/55; border-radius:8px; background:#f0ebe4 !important; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;">
-          <div style="width:38%; aspect-ratio:1; border-radius:3px; overflow:hidden; background:#e0d8d0; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
-            <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
-                 style="width:100%; height:100%; max-width:100%; max-height:100%; display:block; object-fit:contain;"
-                 alt="QR Code"
-                 onerror="this.style.display='none'">
+        <div>
+          <div class="card-lbl">Back</div>
+        <div style="width:100%; position:relative; padding-bottom:64.7%; border-radius:8px; overflow:hidden; background:#f0ebe4;">
+          <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center;">
+            <div style="width:38%; aspect-ratio:1; border-radius:3px; overflow:hidden; background:#e0d8d0; display:flex; align-items:center; justify-content:center; padding:4px; box-sizing:border-box;">
+              <img src="{{ r2_url }}/generated/{{ client.slug }}/qr.png"
+                   style="width:100%; height:100%; display:block; object-fit:contain;"
+                   alt="QR Code"
+                   onerror="this.style.display='none'">
+            </div>
           </div>
         </div>
+        </div>
       </div>
-
-      <p style="text-align:center; font-size:9px; color:var(--text-dim); margin:0;">85 &times; 55mm &middot; Print ready</p>
+      <div class="cv-panel-footer" style="border-top:none; padding-top:6px;">
+        <p style="text-align:center; font-size:9px; color:var(--text-dim); margin:0;">85 &times; 55mm &middot; Print ready</p>
+      </div>
     </div>
   </div>
 
