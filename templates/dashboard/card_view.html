@@ -16,6 +16,15 @@
 {% set is_light = client.card_style in light_styles %}
 {% set card_text = '#1a1714' if is_light else '#faf8f4' %}
 
+{% if request.args.get('order') == 'success' %}
+<div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:center; gap:12px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <div>
+    <p style="margin:0; font-size:14px; font-weight:600; color:#15803d;">Payment successful</p>
+    <p style="margin:4px 0 0; font-size:13px; color:#166534;">Your QR code and PDF are now ready to download.</p>
+  </div>
+</div>
+{% endif %}
 <a href="{{ url_for('dashboard.index') }}" style="font-size:13px; color:var(--text-secondary); display:inline-flex; align-items:center; gap:6px; margin-bottom:16px; text-decoration:none;">
   &larr; My Cards
 </a>
