@@ -79,9 +79,8 @@
 .cb-row p { font-size:15px; color:var(--text-secondary); line-height:1.7; margin-bottom:20px; }
 .cb-row-checks { display:flex; flex-direction:column; gap:10px; }
 .cb-row-checks div { display:flex; align-items:center; gap:10px; font-size:14px; color:var(--text-secondary); }
-.cb-mock-card { background:var(--bg-secondary); border:1px solid var(--border); border-radius:16px; padding:28px; }
-.cb-mock-label { font-size:10px; color:var(--text-dim); letter-spacing:0.1em; margin-bottom:8px; }
-.cb-mock-face { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:16px; height:84px; display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.cb-mock-card-photos { display:flex; flex-direction:column; gap:8px; align-items:center; }
+.cb-mock-photo { width:100%; max-width:380px; height:auto; display:block; }
 .cb-mock-qr-box { background:var(--bg-secondary); border:1px solid var(--border); border-radius:16px; padding:40px; display:flex; flex-direction:column; align-items:center; gap:20px; }
 .cb-example-phone-img { width:100%; max-width:320px; height:auto; }
 
@@ -140,24 +139,10 @@
     </div>
 
     <div class="cb-row">
-      <div class="cb-mock-card">
-        <p class="cb-mock-label">FRONT</p>
-        <div class="cb-mock-face">
-          <div>
-            <div style="font-size:14px; font-weight:600; color:var(--text-primary); margin-bottom:3px;">Da Workforce</div>
-            <div style="font-size:9px; color:var(--text-dim);">Delivering Drivers to You</div>
-          </div>
-          <div style="width:38px; height:38px; background:var(--bg-secondary); border-radius:4px; flex-shrink:0;"></div>
-        </div>
-        <p class="cb-mock-label" style="margin-top:8px;">BACK</p>
-        <div class="cb-mock-face" style="margin-bottom:0;">
-          <div>
-            <div style="font-size:10px; font-weight:600; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px;">Da Workforce</div>
-            <div style="font-size:8px; color:var(--text-dim);">cardbranch.co.uk/c/da-workforce</div>
-          </div>
-          <div style="width:38px; height:38px; background:var(--bg-secondary); border-radius:4px; flex-shrink:0;"></div>
-        </div>
-        <p style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:10px;">85 &times; 55mm &middot; Print ready</p>
+      <div class="cb-mock-card-photos">
+        <img src="{{ url_for('static', filename='images/card-front.png') }}" alt="CardBranch business card front, printed example" class="cb-mock-photo">
+        <img src="{{ url_for('static', filename='images/card-back.png') }}" alt="CardBranch business card back with QR code, printed example" class="cb-mock-photo">
+        <p style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:4px;">85 &times; 55mm &middot; Print ready</p>
       </div>
       <div>
         <div class="cb-row-label">01 &mdash; Your business card</div>
