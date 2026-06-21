@@ -87,8 +87,8 @@
 
 @media (max-width: 900px) {
     .cb-row { grid-template-columns:1fr; gap:32px; margin-bottom:56px; }
-    .cb-row > :first-child { order:1; }
-    .cb-row > :last-child { order:2; }
+    .cb-row-text { order:1; }
+    .cb-row-visual { order:2; }
     .cb-hero-grid { grid-template-columns:1fr; gap:48px; }
     .cb-hero h1 { font-size:42px; }
     .cb-features-grid { grid-template-columns:1fr; gap:36px; }
@@ -140,12 +140,12 @@
     </div>
 
     <div class="cb-row">
-      <div class="cb-mock-card-photos">
+      <div class="cb-mock-card-photos cb-row-visual">
         <img src="{{ url_for('static', filename='images/card-front.png') }}" alt="CardBranch business card front, printed example" class="cb-mock-photo">
         <img src="{{ url_for('static', filename='images/card-back.png') }}" alt="CardBranch business card back with QR code, printed example" class="cb-mock-photo">
         <p style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:4px;">85 &times; 55mm &middot; Print ready</p>
       </div>
-      <div>
+      <div class="cb-row-text">
         <div class="cb-row-label">01 &mdash; Your business card</div>
         <h3>A print-ready card, designed for you</h3>
         <p>Get a professional 85&times;55mm business card PDF instantly. Take it to any print shop, or let us handle it &mdash; printed and delivered to your door.</p>
@@ -158,7 +158,7 @@
     </div>
 
     <div class="cb-row reverse">
-      <div>
+      <div class="cb-row-text">
         <div class="cb-row-label">02 &mdash; Your links page</div>
         <h3>One scan, all your links</h3>
         <p>When someone scans your card, they land on your hosted links page. All your social profiles, website, and contact details &mdash; one tap away.</p>
@@ -168,13 +168,13 @@
           <div><svg viewBox="0 0 24 24" fill="none" stroke="#1F5C46" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>Update links any time, card stays the same</div>
         </div>
       </div>
-      <div style="display:flex; justify-content:center;">
+      <div style="display:flex; justify-content:center;" class="cb-row-visual">
         <img src="{{ url_for('static', filename='images/example-phone.png') }}" alt="CardBranch links page example for Da Workforce" class="cb-example-phone-img">
       </div>
     </div>
 
     <div class="cb-row">
-      <div class="cb-qr-photo-wrap">
+      <div class="cb-qr-photo-wrap cb-row-visual">
         <img src="{{ url_for('static', filename='images/qr-card.png') }}" alt="CardBranch QR code, downloadable PNG example" class="cb-qr-photo">
         <div style="text-align:center;">
           <div style="font-size:12px; font-weight:500; color:var(--text-primary);">Da Workforce</div>
@@ -185,7 +185,7 @@
           Download PNG
         </div>
       </div>
-      <div>
+      <div class="cb-row-text">
         <div class="cb-row-label">03 &mdash; Your QR code</div>
         <h3>Share anywhere, instantly</h3>
         <p>Your QR code links directly to your links page. Put it on your card, email signature, or website. Download it as a PNG and use it wherever you need.</p>
