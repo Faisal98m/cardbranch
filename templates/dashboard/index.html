@@ -1,25 +1,28 @@
 {% extends "layouts/dashboard.html" %}
 {% block dashboard_content %}
-<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+<div style="margin-bottom:24px;">
     <h2 class="page-title" style="margin-bottom:0;">My Cards</h2>
-    <a href="{{ url_for('dashboard.card_new') }}" class="btn btn-primary btn-sm">+ New Card</a>
 </div>
 
 {% if clients %}
-<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px;">
+<div class="my-cards-grid">
     {% for client in clients %}
-    <div class="card-item card-stripe" style="padding:24px;">
-        <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px;">
-            <h3 style="font-size:16px; font-weight:600; color:var(--text-primary);">{{ client.brand_name }}</h3>
+    <div class="card-item card-stripe" style="padding:0; overflow:hidden;">
+        <div style="height:72px; background:{{ colour_map[client.card_style]['bg'] if client.card_style in colour_map else colour_map['oxblood']['bg'] }}; display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
+            <span style="color:{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}; font-family:'Newsreader', serif; font-size:14px; font-weight:500;">{{ client.brand_name[:1]|upper }}</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" opacity="0.6"><rect x="2" y="2" width="8" height="8" fill="{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}"/><rect x="14" y="2" width="8" height="8" fill="{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}"/><rect x="2" y="14" width="8" height="8" fill="{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}"/></svg>
         </div>
-        {% if client.tagline %}<p style="color:var(--text-secondary); font-size:13px; margin-bottom:8px;">{{ client.tagline }}</p>{% endif %}
-        <p style="color:var(--text-dim); font-size:12px; margin-bottom:16px; font-family:monospace;">cardbranch.co.uk/c/{{ client.slug }}</p>
-        <div style="display:flex; gap:8px;">
-            <a href="{{ url_for('dashboard.card_view', id=client.id) }}" class="btn btn-ghost btn-sm">View</a>
-            <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn btn-ghost btn-sm">Edit</a>
-            <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}" style="display:inline;" onsubmit="return confirm('Delete this card? This cannot be undone.');">
-                <button type="submit" class="btn btn-ghost btn-sm">Delete</button>
-            </form>
+        <div style="padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px;">{{ client.brand_name }}</h3>
+            {% if client.tagline %}<p style="color:var(--text-secondary); font-size:13px; margin-bottom:8px;">{{ client.tagline }}</p>{% endif %}
+            <p style="color:var(--text-dim); font-size:12px; margin-bottom:16px; font-family:monospace;">cardbranch.co.uk/c/{{ client.slug }}</p>
+            <div style="display:flex; gap:8px;">
+                <a href="{{ url_for('dashboard.card_view', id=client.id) }}" class="btn btn-ghost btn-sm">View</a>
+                <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn btn-ghost btn-sm">Edit</a>
+                <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}" style="display:inline;" onsubmit="return confirm('Delete this card? This cannot be undone.');">
+                    <button type="submit" class="btn btn-ghost btn-sm">Delete</button>
+                </form>
+            </div>
         </div>
     </div>
     {% endfor %}
@@ -31,9 +34,20 @@
 </div>
 {% endif %}
 <style>
+    .my-cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    @media (max-width: 1100px) {
+        .my-cards-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+        .my-cards-grid { grid-template-columns: 1fr; }
+    }
     .card-item:hover,
     .card-item:focus-visible {
-        border-color: #6b1f2a !important;
+        border-color: var(--accent) !important;
     }
 </style>
 {% endblock %}

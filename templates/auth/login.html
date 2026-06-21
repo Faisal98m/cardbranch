@@ -1,29 +1,52 @@
 {% extends "layouts/base.html" %}
 {% block title %}Sign In - CardBranch{% endblock %}
 {% block content %}
-<div style="min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:80px 20px 20px;">
-    <div class="card-stripe" style="padding:32px; width:100%; max-width:400px;">
-        <div style="text-align:center; margin-bottom:28px;">
-            <h1 style="font-size:22px; font-weight:400; color:var(--text-primary);">Welcome back</h1>
-            <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">Sign in to your account</p>
+<div class="auth-split">
+    <div class="auth-panel">
+        <div class="auth-panel-inner">
+            <span class="auth-wordmark">CardBranch</span>
+            <p class="auth-quote">"One scan, and they have everything — the card did the introduction for me."</p>
         </div>
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div style="margin-bottom:16px;">
-                <label>{{ form.email.label }}</label>
-                {{ form.email(placeholder="you@example.com") }}
-                {% for error in form.email.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+    </div>
+    <div class="auth-form-side">
+        <div class="auth-form-box">
+            <div style="margin-bottom:28px;">
+                <h1 style="font-size:26px; font-weight:400; color:var(--text-primary); font-family:'Newsreader',serif;">Welcome back</h1>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">Sign in to manage your cards</p>
             </div>
-            <div style="margin-bottom:24px;">
-                <label>{{ form.password.label }}</label>
-                {{ form.password(placeholder="••••••••") }}
-                {% for error in form.password.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
-            </div>
-            {{ form.submit(class="btn btn-primary", style="width:100%; height:44px;") }}
-        </form>
-        <p style="text-align:center; margin-top:20px; color:var(--text-secondary); font-size:13px;">
-            Don't have an account? <a href="{{ url_for('auth.register') }}" style="color:#6b1f2a;">Register</a>
-        </p>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div style="margin-bottom:16px;">
+                    <label>{{ form.email.label }}</label>
+                    {{ form.email(placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+                </div>
+                <div style="margin-bottom:24px;">
+                    <label>{{ form.password.label }}</label>
+                    {{ form.password(placeholder="••••••••") }}
+                    {% for error in form.password.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+                </div>
+                {{ form.submit(class="btn btn-primary", style="width:100%; height:44px;") }}
+            </form>
+            <p style="text-align:center; margin-top:20px; color:var(--text-secondary); font-size:13px;">
+                New here? <a href="{{ url_for('auth.register') }}" style="color:var(--accent); font-weight:500;">Create an account</a>
+            </p>
+        </div>
     </div>
 </div>
+<style>
+    .auth-split { min-height:100vh; display:flex; }
+    .auth-panel { flex:1; background:var(--accent); display:flex; align-items:center; padding:48px; }
+    .auth-panel-inner { max-width:380px; }
+    .auth-wordmark { font-family:'Newsreader',serif; font-size:20px; color:#ffffff; display:block; margin-bottom:48px; }
+    .auth-quote { font-family:'Newsreader',serif; font-style:italic; font-size:22px; line-height:1.5; color:rgba(255,255,255,0.92); }
+    .auth-form-side { flex:1; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); padding:40px 20px; }
+    .auth-form-box { width:100%; max-width:380px; }
+    @media (max-width: 900px) {
+        .auth-split { flex-direction:column; }
+        .auth-panel { flex:none; padding:32px 24px; min-height:160px; }
+        .auth-quote { font-size:17px; }
+        .auth-form-side { padding:32px 20px; }
+    }
+</style>
 {% endblock %}

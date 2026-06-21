@@ -1,34 +1,82 @@
 {% extends "layouts/base.html" %}
 {% block title %}Register - CardBranch{% endblock %}
 {% block content %}
-<div style="min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:80px 20px 20px;">
-    <div class="card-stripe" style="padding:32px; width:100%; max-width:400px;">
-        <div style="text-align:center; margin-bottom:28px;">
-            <h1 style="font-size:22px; font-weight:400; color:var(--text-primary);">Create account</h1>
-            <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">Get started with CardBranch</p>
+<div class="auth-split">
+    <div class="auth-form-side">
+        <div class="auth-form-box">
+            <div style="margin-bottom:28px;">
+                <h1 style="font-size:26px; font-weight:400; color:var(--text-primary); font-family:'Newsreader',serif;">Create your card</h1>
+                <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">Free to start. No card to print until you're ready.</p>
+            </div>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div style="margin-bottom:16px;">
+                    <label>{{ form.email.label }}</label>
+                    {{ form.email(placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label>{{ form.password.label }}</label>
+                    {{ form.password(placeholder="••••••••") }}
+                    {% for error in form.password.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+                </div>
+                <div style="margin-bottom:24px;">
+                    <label>{{ form.confirm_password.label }}</label>
+                    {{ form.confirm_password(placeholder="••••••••") }}
+                    {% for error in form.confirm_password.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+                </div>
+                {{ form.submit(class="btn btn-primary", style="width:100%; height:44px;") }}
+            </form>
+            <p style="text-align:center; margin-top:20px; color:var(--text-secondary); font-size:13px;">
+                Already have one? <a href="{{ url_for('auth.login') }}" style="color:var(--accent); font-weight:500;">Sign in</a>
+            </p>
         </div>
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <div style="margin-bottom:16px;">
-                <label>{{ form.email.label }}</label>
-                {{ form.email(placeholder="you@example.com") }}
-                {% for error in form.email.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
+    </div>
+    <div class="auth-panel">
+        <div class="auth-panel-inner">
+            <span class="auth-wordmark">What you get</span>
+            <div class="auth-feature-list">
+                <div class="auth-feature">
+                    <span class="auth-feature-num">01</span>
+                    <div>
+                        <p class="auth-feature-title">A links page in minutes</p>
+                        <p class="auth-feature-desc">Hosted at cardbranch.co.uk/c/your-brand</p>
+                    </div>
+                </div>
+                <div class="auth-feature">
+                    <span class="auth-feature-num">02</span>
+                    <div>
+                        <p class="auth-feature-title">A print-ready PDF</p>
+                        <p class="auth-feature-desc">85x55mm, QR embedded, download instantly</p>
+                    </div>
+                </div>
+                <div class="auth-feature">
+                    <span class="auth-feature-num">03</span>
+                    <div>
+                        <p class="auth-feature-title">Cards at your door</p>
+                        <p class="auth-feature-desc">Order printed cards when ready</p>
+                    </div>
+                </div>
             </div>
-            <div style="margin-bottom:16px;">
-                <label>{{ form.password.label }}</label>
-                {{ form.password(placeholder="••••••••") }}
-                {% for error in form.password.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
-            </div>
-            <div style="margin-bottom:24px;">
-                <label>{{ form.confirm_password.label }}</label>
-                {{ form.confirm_password(placeholder="••••••••") }}
-                {% for error in form.confirm_password.errors %}<span style="color:var(--danger); font-size:12px;">{{ error }}</span>{% endfor %}
-            </div>
-            {{ form.submit(class="btn btn-primary", style="width:100%; height:44px;") }}
-        </form>
-        <p style="text-align:center; margin-top:20px; color:var(--text-secondary); font-size:13px;">
-            Already have an account? <a href="{{ url_for('auth.login') }}" style="color:#6b1f2a;">Sign In</a>
-        </p>
+        </div>
     </div>
 </div>
+<style>
+    .auth-split { min-height:100vh; display:flex; }
+    .auth-panel { flex:1; background:var(--bg-inset); display:flex; align-items:center; padding:48px; }
+    .auth-panel-inner { max-width:380px; }
+    .auth-wordmark { font-family:'Schibsted Grotesk',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); display:block; margin-bottom:28px; }
+    .auth-feature-list { display:flex; flex-direction:column; gap:24px; }
+    .auth-feature { display:flex; gap:16px; align-items:flex-start; }
+    .auth-feature-num { font-family:'Newsreader',serif; font-size:18px; color:var(--accent); flex-shrink:0; width:28px; }
+    .auth-feature-title { font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+    .auth-feature-desc { font-size:13px; color:var(--text-secondary); }
+    .auth-form-side { flex:1; display:flex; align-items:center; justify-content:center; background:var(--bg-primary); padding:40px 20px; }
+    .auth-form-box { width:100%; max-width:380px; }
+    @media (max-width: 900px) {
+        .auth-split { flex-direction:column-reverse; }
+        .auth-panel { flex:none; padding:32px 24px; }
+        .auth-form-side { padding:32px 20px; }
+    }
+</style>
 {% endblock %}
