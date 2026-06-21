@@ -81,7 +81,8 @@
 .cb-row-checks div { display:flex; align-items:center; gap:10px; font-size:14px; color:var(--text-secondary); }
 .cb-mock-card-photos { display:flex; flex-direction:column; gap:8px; align-items:center; }
 .cb-mock-photo { width:100%; max-width:380px; height:auto; display:block; }
-.cb-mock-qr-box { background:var(--bg-secondary); border:1px solid var(--border); border-radius:16px; padding:40px; display:flex; flex-direction:column; align-items:center; gap:20px; }
+.cb-qr-photo-wrap { display:flex; flex-direction:column; align-items:center; gap:20px; }
+.cb-qr-photo { width:100%; max-width:280px; height:auto; display:block; }
 .cb-example-phone-img { width:100%; max-width:320px; height:auto; }
 
 @media (max-width: 900px) {
@@ -173,20 +174,8 @@
     </div>
 
     <div class="cb-row">
-      <div class="cb-mock-qr-box">
-        <svg viewBox="0 0 120 120" width="130" height="130">
-          <rect x="4" y="4" width="34" height="34" rx="3" fill="none" stroke="#1b1a16" stroke-width="2.5"/>
-          <rect x="12" y="12" width="18" height="18" rx="1" fill="#1b1a16" opacity="0.8"/>
-          <rect x="82" y="4" width="34" height="34" rx="3" fill="none" stroke="#1b1a16" stroke-width="2.5"/>
-          <rect x="90" y="12" width="18" height="18" rx="1" fill="#1b1a16" opacity="0.8"/>
-          <rect x="4" y="82" width="34" height="34" rx="3" fill="none" stroke="#1b1a16" stroke-width="2.5"/>
-          <rect x="12" y="90" width="18" height="18" rx="1" fill="#1b1a16" opacity="0.8"/>
-          <rect x="46" y="46" width="6" height="6" fill="#1b1a16" opacity="0.6"/>
-          <rect x="56" y="56" width="6" height="6" fill="#1b1a16" opacity="0.6"/>
-          <rect x="66" y="46" width="6" height="6" fill="#1b1a16" opacity="0.6"/>
-          <rect x="76" y="56" width="6" height="6" fill="#1b1a16" opacity="0.6"/>
-          <rect x="86" y="46" width="6" height="6" fill="#1b1a16" opacity="0.6"/>
-        </svg>
+      <div class="cb-qr-photo-wrap">
+        <img src="{{ url_for('static', filename='images/qr-card.png') }}" alt="CardBranch QR code, downloadable PNG example" class="cb-qr-photo">
         <div style="text-align:center;">
           <div style="font-size:12px; font-weight:500; color:var(--text-primary);">Da Workforce</div>
           <div style="font-size:11px; color:var(--text-dim);">cardbranch.co.uk/c/da-workforce</div>
