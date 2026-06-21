@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-03T21:00:00Z",
+  "title": "Design System: CardBranch",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Oxblood", "canonical": "oklch(30% 0.08 25)", "tonalRamp": ["oklch(10% 0.04 25)", "oklch(20% 0.06 25)", "oklch(30% 0.08 25)", "oklch(40% 0.07 25)", "oklch(50% 0.06 25)", "oklch(62% 0.04 25)", "oklch(75% 0.03 25)", "oklch(90% 0.015 25)"] },
+      "gold": { "role": "secondary", "displayName": "Gold", "canonical": "oklch(72% 0.12 85)", "tonalRamp": ["oklch(20% 0.02 85)", "oklch(35% 0.04 85)", "oklch(50% 0.07 85)", "oklch(62% 0.1 85)", "oklch(72% 0.12 85)", "oklch(80% 0.09 85)", "oklch(88% 0.05 85)", "oklch(95% 0.02 85)"] },
+      "bg-primary": { "role": "neutral", "displayName": "Warm Paper", "canonical": "oklch(94% 0.008 70)", "tonalRamp": ["oklch(94% 0.008 70)", "oklch(90% 0.01 70)", "oklch(85% 0.012 70)", "oklch(78% 0.01 70)", "oklch(65% 0.008 70)", "oklch(50% 0.006 70)", "oklch(30% 0.005 70)", "oklch(15% 0.005 70)"] },
+      "text-primary": { "role": "neutral", "displayName": "Charcoal", "canonical": "oklch(18% 0.01 50)", "tonalRamp": [] },
+      "text-secondary": { "role": "neutral", "displayName": "Warm Gray", "canonical": "oklch(58% 0.02 55)", "tonalRamp": [] },
+      "text-dim": { "role": "neutral", "displayName": "Muted Taupe", "canonical": "oklch(70% 0.025 55)", "tonalRamp": [] },
+      "border": { "role": "neutral", "displayName": "Border Warm", "canonical": "oklch(80% 0.015 55)", "tonalRamp": [] },
+      "success": { "role": "semantic", "displayName": "Success Green", "canonical": "oklch(45% 0.12 130)", "tonalRamp": [] },
+      "warning": { "role": "semantic", "displayName": "Warning Amber", "canonical": "oklch(55% 0.14 75)", "tonalRamp": [] },
+      "danger": { "role": "semantic", "displayName": "Danger Red", "canonical": "oklch(55% 0.2 30)", "tonalRamp": [] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headings on the landing page only. Never inside the dashboard." },
+      "headline": { "displayName": "Headline", "purpose": "Page titles and major section headings." },
+      "title": { "displayName": "Title", "purpose": "Card titles, section subheadings." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs, descriptions, table content." },
+      "label": { "displayName": "Label", "purpose": "Section labels, table headers (700 weight, 0.10em tracking)." }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0 4px 16px rgba(107,31,42,0.10), 0 1px 4px rgba(0,0,0,0.06)", "purpose": "Resting card shadow with oxblood tint." },
+      { "name": "button-primary", "value": "0 2px 8px rgba(107,31,42,0.35)", "purpose": "Primary button shadow." },
+      { "name": "order-row", "value": "0 2px 6px rgba(0,0,0,0.05)", "purpose": "Order row resting shadow." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default easing for state transitions (0.15s)." },
+      { "name": "duration-fast", "value": "0.15s", "purpose": "Hover, focus, border transitions." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "600px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Call-to-action and primary form submission.",
+      "html": "<button class=\"ds-btn-primary\">Create your card</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: 10px 24px; border-radius: 4px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; border: none; background: #6b1f2a; color: #faf8f4; box-shadow: 0 2px 8px rgba(107,31,42,0.35); transition: background 0.15s; } .ds-btn-primary:hover { background: #7c2535; } .ds-btn-primary:focus-visible { outline: 2px solid #6b1f2a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action, paired with primary buttons.",
+      "html": "<button class=\"ds-btn-ghost\">See example</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; padding: 10px 24px; border-radius: 4px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 14px; cursor: pointer; background: transparent; border: 1.5px solid #6b1f2a; color: #6b1f2a; transition: background 0.15s; } .ds-btn-ghost:hover { background: rgba(107,31,42,0.08); } .ds-btn-ghost:focus-visible { outline: 2px solid #6b1f2a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Card Container",
+      "kind": "card",
+      "refersTo": "card-container",
+      "description": "Content containers with oxblood top stripe and resting shadow.",
+      "html": "<div class=\"ds-card\"><h3 style=\"font-family:'Inter',sans-serif;font-size:16px;font-weight:600;color:#1a1714;margin:0 0 8px;\">Card Title</h3><p style=\"font-family:'Inter',sans-serif;font-size:14px;color:#8a7e72;line-height:1.6;margin:0;\">Content description goes here.</p></div>",
+      "css": ".ds-card { background: #faf8f4; border: 1px solid #ccc4ba; border-top: 5px solid #6b1f2a; border-radius: 10px; padding: 24px; box-shadow: 0 4px 16px rgba(107,31,42,0.10), 0 1px 4px rgba(0,0,0,0.06); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Text field for forms and search.",
+      "html": "<div><label style=\"font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:#8a7e72;margin-bottom:6px;display:block;\">Email</label><input type=\"email\" class=\"ds-input\" placeholder=\"you@example.com\"></div>",
+      "css": ".ds-input { font-family: 'Inter', sans-serif; background: #ffffff; border: 1px solid #ccc4ba; color: #1a1714; padding: 10px 14px; border-radius: 4px; font-size: 14px; width: 100%; outline: none; transition: border-color 0.15s; box-sizing: border-box; } .ds-input:focus { border-color: #6b1f2a; } .ds-input:focus-visible { outline: 2px solid #6b1f2a; outline-offset: 2px; } .ds-input::placeholder { color: #b0a496; opacity: 1; }"
+    },
+    {
+      "name": "Status Pill (Dispatched)",
+      "kind": "chip",
+      "refersTo": "status-pill-dispatched",
+      "description": "Order status indicator for dispatched/delivered states.",
+      "html": "<span class=\"ds-pill ds-pill-dispatched\">DISPATCHED</span> <span class=\"ds-pill ds-pill-pending\">PENDING</span> <span class=\"ds-pill ds-pill-delivered\">DELIVERED</span>",
+      "css": ".ds-pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid transparent; } .ds-pill-dispatched { background: #f0dde0; color: #6b1f2a; border-color: #d4b0b5; } .ds-pill-pending { background: #fdf3e3; color: #92600a; border-color: #f0d090; } .ds-pill-delivered { background: #eaf3de; color: #3b6d11; border-color: #b8d89a; }"
+    },
+    {
+      "name": "Sidebar Navigation Item",
+      "kind": "nav",
+      "refersTo": "nav-sidebar",
+      "description": "Navigation link in the dashboard sidebar.",
+      "html": "<nav style=\"background:#faf8f4;border-radius:6px;padding:12px;\"><a class=\"ds-nav-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" width=\"18\" height=\"18\" style=\"flex-shrink:0;\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/></svg>My Cards</a></nav>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 4px; font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 400; color: #8a7e72; text-decoration: none; transition: all 0.15s; } .ds-nav-item:hover { background: rgba(107,31,42,0.08); color: #6b1f2a; }"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Status badge for admin roles, tags.",
+      "html": "<span class=\"ds-badge\">Admin</span>",
+      "css": ".ds-badge { display: inline-block; padding: 3px 8px; background: #f0dde0; border: 1px solid #d4b0b5; color: #6b1f2a; font-weight: 700; font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; border-radius: 4px; font-family: 'Inter', sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Executive Wallet",
+    "overview": "CardBranch's visual system is refined, bold, and professional without trying. It lives on a warm paper foundation anchored by a deep oxblood accent that signals quality, craft, and permanence. Oxblood appears in the nav bar, on card accent stripes, in avatars, badges, and CTAs. Cards carry a signature oxblood top stripe with a warm-tinted shadow for subtle depth. Gold remains reserved for the card product preview and checkout flow.",
+    "keyCharacteristics": [
+      "Warm paper foundation (#f0ebe4), card surfaces in warm white (#faf8f4).",
+      "Oxblood (#6b1f2a) as the house colour across nav, cards, badges, avatars, and CTAs.",
+      "Cards with signature oxblood top stripe and resting warm-tinted shadow.",
+      "DM Serif Display for headings, Inter for body.",
+      "Generous spacing in brand, efficient in product.",
+      "Gold (#c9a84c) reserved for card preview and checkout."
+    ],
+    "rules": [
+      { "name": "The House Colour Rule", "body": "Oxblood (#6b1f2a) is the single brand signal. Used deliberately across nav, card stripes, avatars, badges, and CTAs. Presence is the point.", "section": "colors" },
+      { "name": "The Card Stripe Rule", "body": "Every card carries a 5px oxblood top stripe. It is non-negotiable. The stripe + shadow + 10px radius define the container.", "section": "elevation" },
+      { "name": "The Product-Scoped Detail Rule", "body": "Gold (#c9a84c) belongs to the card view and checkout only. Never used as a system accent beyond those surfaces.", "section": "colors" }
+    ],
+    "dos": [
+      "Do use oxblood as the dominant accent across nav, cards, badges, and CTAs.",
+      "Do apply the 5px oxblood top stripe to every card container.",
+      "Do use card-stripe class for all card surfaces (stripe + shadow + radius).",
+      "Do use DM Serif Display for headings and Inter for UI.",
+      "Do keep gold confined to card view and checkout.",
+      "Do respect the split-register: the landing page breathes; the dashboard is efficient."
+    ],
+    "donts": [
+      "Don't use gold outside the card view and checkout flow.",
+      "Don't remove the oxblood card stripe.",
+      "Don't use glassmorphism, gradients, glow effects, or neon.",
+      "Don't use pure white (#ffffff) as a page background.",
+      "Don't make it look cheap or DIY.",
+      "Don't use uppercase for body copy.",
+      "Don't over-round: cards at 10px, buttons at 4px."
+    ]
+  }
+}
