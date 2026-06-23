@@ -156,30 +156,64 @@
   <p>Choose a plan for <strong>{{ client.brand_name }}</strong>. One-time payment — no subscription.</p>
 </div>
 
-<div class="tiers-grid">
-  {% for tier in tiers %}
-  <div class="tier-card {% if tier.key == 'standard' %}recommended{% endif %}">
-    {% if tier.key == 'standard' %}
-    <span class="tier-badge">Most popular</span>
-    {% else %}
-    <span style="display:block; height:22px;"></span>
-    {% endif %}
-    <p class="tier-name">{{ tier.name }}</p>
-    <div class="tier-price">{{ tier.price }} <span>one-time</span></div>
-    <p class="tier-description">{{ tier.description }}</p>
-    <ul class="tier-includes">
-      {% for item in tier.includes %}
-      <li>{{ item }}</li>
-      {% endfor %}
-    </ul>
-    <form method="POST" action="{{ url_for('checkout.order', id=client.id) }}" style="margin:0;">
-      <input type="hidden" name="tier" value="{{ tier.key }}">
-      <button type="submit" class="tier-btn {% if tier.key != 'standard' %}ghost{% endif %}">
+<form method="POST" action="{{ url_for('checkout.order', id=client.id) }}">
+  <div class="tiers-grid">
+    {% for tier in tiers %}
+    <div class="tier-card {% if tier.key == 'standard' %}recommended{% endif %}">
+      {% if tier.key == 'standard' %}
+      <span class="tier-badge">Most popular</span>
+      {% else %}
+      <span style="display:block; height:22px;"></span>
+      {% endif %}
+      <p class="tier-name">{{ tier.name }}</p>
+      <div class="tier-price">{{ tier.price }} <span>one-time</span></div>
+      <p class="tier-description">{{ tier.description }}</p>
+      <ul class="tier-includes">
+        {% for item in tier.includes %}
+        <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+      <button type="submit" name="tier" value="{{ tier.key }}" class="tier-btn {% if tier.key != 'standard' %}ghost{% endif %}">
         Get {{ tier.name }}
       </button>
-    </form>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-</div>
+
+  <div id="delivery-fields" style="display:none; margin-top:24px; margin-bottom:24px;">
+    <h3 style="font-size:1rem; font-family:'Schibsted Grotesk',sans-serif; font-weight:600; color:var(--text-primary); margin-bottom:16px;">Delivery address</h3>
+    <input type="text" name="delivery_name" placeholder="Full name" style="margin-bottom:12px;">
+    <input type="text" name="delivery_line1" placeholder="Address line 1" style="margin-bottom:12px;">
+    <input type="text" name="delivery_line2" placeholder="Address line 2 (optional)" style="margin-bottom:12px;">
+    <input type="text" name="delivery_city" placeholder="City" style="margin-bottom:12px;">
+    <input type="text" name="delivery_postcode" placeholder="Postcode">
+  </div>
+</form>
+
+<script>
+(function() {
+  var form = document.querySelector('#delivery-fields').parentElement;
+  var btns = form.querySelectorAll('button[name="tier"]');
+  var fields = document.getElementById('delivery-fields');
+  var inputs = fields.querySelectorAll('input[name], textarea[name]');
+
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var tier = this.value;
+      var needsAddress = (tier === 'standard' || tier === 'premium');
+      fields.style.display = needsAddress ? 'block' : 'none';
+      inputs.forEach(function(inp) {
+        if (inp.name !== 'delivery_line2') {
+          if (needsAddress) {
+            inp.setAttribute('required', '');
+          } else {
+            inp.removeAttribute('required');
+          }
+        }
+      });
+    });
+  });
+})();
+</script>
 
 {% endblock %}

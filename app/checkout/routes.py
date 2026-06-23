@@ -6,9 +6,9 @@ from app.models import Client, Order, db
 checkout_bp = Blueprint('checkout', __name__)
 
 TIERS = {
-    'basic':    {'label': 'Basic',    'price': 4900,  'quantity': 50,   'display': '£49'},
-    'standard': {'label': 'Standard', 'price': 8500,  'quantity': 1000, 'display': '£85'},
-    'premium':  {'label': 'Premium',  'price': 12000, 'quantity': 2000, 'display': '£120'},
+    'digital':  {'label': 'Digital',  'price': 1900,  'quantity': 0,   'display': '£19'},
+    'standard': {'label': 'Standard', 'price': 5900,  'quantity': 250, 'display': '£59'},
+    'premium':  {'label': 'Premium',  'price': 8500,  'quantity': 500, 'display': '£85'},
 }
 
 
@@ -23,15 +23,17 @@ def order(id):
             flash('Invalid tier selected.', 'error')
             return redirect(url_for('checkout.order', id=id))
 
-        delivery_name = request.form.get('delivery_name', '').strip()
-        delivery_line1 = request.form.get('delivery_line1', '').strip()
-        delivery_line2 = request.form.get('delivery_line2', '').strip()
-        delivery_city = request.form.get('delivery_city', '').strip()
-        delivery_postcode = request.form.get('delivery_postcode', '').strip()
+        delivery_name = delivery_line1 = delivery_line2 = delivery_city = delivery_postcode = ''
+        if tier != 'digital':
+            delivery_name = request.form.get('delivery_name', '')
+            delivery_line1 = request.form.get('delivery_line1', '')
+            delivery_line2 = request.form.get('delivery_line2', '')
+            delivery_city = request.form.get('delivery_city', '')
+            delivery_postcode = request.form.get('delivery_postcode', '')
 
-        if not all([delivery_name, delivery_line1, delivery_city, delivery_postcode]):
-            flash('Please fill in all required delivery fields.', 'error')
-            return redirect(url_for('checkout.order', id=id))
+            if not all([delivery_name, delivery_line1, delivery_city, delivery_postcode]):
+                flash('Please fill in all required delivery fields.', 'error')
+                return redirect(url_for('checkout.order', id=id))
 
         tier_data = TIERS[tier]
 
