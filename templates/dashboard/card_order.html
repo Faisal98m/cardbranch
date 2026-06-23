@@ -172,9 +172,12 @@
       <li>{{ item }}</li>
       {% endfor %}
     </ul>
-    <a href="{{ url_for('dashboard.card_checkout', id=client.id, tier=tier.key) }}" class="tier-btn {% if tier.key != 'standard' %}ghost{% endif %}">
-      Get {{ tier.name }}
-    </a>
+    <form method="POST" action="{{ url_for('checkout.order', id=client.id) }}" style="margin:0;">
+      <input type="hidden" name="tier" value="{{ tier.key }}">
+      <button type="submit" class="tier-btn {% if tier.key != 'standard' %}ghost{% endif %}">
+        Get {{ tier.name }}
+      </button>
+    </form>
   </div>
   {% endfor %}
 </div>
