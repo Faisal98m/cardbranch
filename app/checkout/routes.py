@@ -72,8 +72,9 @@ def order(id):
                 success_url=f"{site_url}/checkout/success?session_id={{CHECKOUT_SESSION_ID}}",
                 cancel_url=f"{site_url}/card/{id}",
                 metadata={
-                    'order_id': order.id,
-                    'client_id': client.id,
+                    'order_id': str(order.id),
+                    'client_id': str(client.id),
+                    'user_id': str(current_user.id),
                     'tier': tier,
                 },
                 customer_email=current_user.email,
