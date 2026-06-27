@@ -206,6 +206,7 @@
         </a>
         <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}"
               onsubmit="return confirm('Delete this card? This cannot be undone.');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <button type="submit" class="btn-ghost btn-danger" style="font-family:inherit; cursor:pointer; width:100%;">
             <i class="ti ti-trash" aria-hidden="true"></i> Delete card
           </button>

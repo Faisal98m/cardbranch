@@ -20,6 +20,7 @@
                 <a href="{{ url_for('dashboard.card_view', id=client.id) }}" class="btn btn-ghost btn-sm">View</a>
                 <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn btn-ghost btn-sm">Edit</a>
                 <form method="POST" action="{{ url_for('dashboard.card_delete', id=client.id) }}" style="display:inline;" onsubmit="return confirm('Delete this card? This cannot be undone.');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-ghost btn-sm">Delete</button>
                 </form>
             </div>

@@ -7,9 +7,30 @@ from app import csrf
 checkout_bp = Blueprint('checkout', __name__)
 
 TIERS = {
-    'digital':  {'label': 'Digital',  'price': 1900,  'quantity': 0,   'display': '£19'},
-    'standard': {'label': 'Standard', 'price': 5900,  'quantity': 250, 'display': '£59'},
-    'premium':  {'label': 'Premium',  'price': 8500,  'quantity': 500, 'display': '£85'},
+    'digital': {
+        'label': 'Digital',
+        'price': 1900,
+        'quantity': 0,
+        'display': '£19',
+        'description': 'QR code + print-ready PDF. No physical cards.',
+        'includes': ['Hosted links page', 'QR code download', 'Print-ready PDF (85×55mm)'],
+    },
+    'standard': {
+        'label': 'Standard',
+        'price': 5900,
+        'quantity': 250,
+        'display': '£59',
+        'description': '250 printed cards delivered to your door.',
+        'includes': ['Everything in Digital', '250 printed cards', 'Matt laminate finish', 'Delivered in 5–7 days'],
+    },
+    'premium': {
+        'label': 'Premium',
+        'price': 8500,
+        'quantity': 500,
+        'display': '£85',
+        'description': '500 printed cards delivered to your door.',
+        'includes': ['Everything in Digital', '500 printed cards', 'Matt laminate finish', 'Delivered in 5–7 days'],
+    },
 }
 
 

@@ -144,39 +144,6 @@ def card_delete(id):
     return redirect(url_for('dashboard.index'))
 
 
-@dashboard_bp.route('/card/<int:id>/order')
-@login_required
-def card_order(id):
-    client = Client.query.filter_by(id=id, user_id=current_user.id).first_or_404()
-    tiers = [
-        {
-            'key': 'digital',
-            'name': 'Digital',
-            'price': '£19',
-            'description': 'QR code + print-ready PDF. No physical cards.',
-            'includes': ['Hosted links page', 'QR code download', 'Print-ready PDF (85×55mm)'],
-            'quantity': None,
-        },
-        {
-            'key': 'standard',
-            'name': 'Standard',
-            'price': '£59',
-            'description': '250 printed cards delivered to your door.',
-            'includes': ['Everything in Digital', '250 printed cards', 'Matt laminate finish', 'Delivered in 5–7 days'],
-            'quantity': 250,
-        },
-        {
-            'key': 'premium',
-            'name': 'Premium',
-            'price': '£85',
-            'description': '500 printed cards delivered to your door.',
-            'includes': ['Everything in Digital', '500 printed cards', 'Matt laminate finish', 'Delivered in 5–7 days'],
-            'quantity': 500,
-        },
-    ]
-    return render_template('dashboard/card_order.html', client=client, tiers=tiers)
-
-
 @dashboard_bp.route('/orders')
 @login_required
 def orders():
@@ -195,7 +162,7 @@ def download_pdf(id):
     ).filter(Order.status != 'pending').first()
     if not has_paid:
         flash('Purchase a plan to download your PDF.', 'info')
-        return redirect(url_for('dashboard.card_order', id=client.id))
+        return redirect(url_for('checkout.order', id=client.id))
     public_url = os.environ['R2_PUBLIC_URL'].rstrip('/')
     return redirect(f"{public_url}/generated/{client.slug}/card.pdf")
 
@@ -211,6 +178,6 @@ def download_qr(id):
     ).filter(Order.status != 'pending').first()
     if not has_paid:
         flash('Purchase a plan to download your QR code.', 'info')
-        return redirect(url_for('dashboard.card_order', id=client.id))
+        return redirect(url_for('checkout.order', id=client.id))
     public_url = os.environ['R2_PUBLIC_URL'].rstrip('/')
     return redirect(f"{public_url}/generated/{client.slug}/qr.png")
