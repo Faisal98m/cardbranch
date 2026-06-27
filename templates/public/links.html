@@ -4,6 +4,11 @@
 {% block canonical_url %}https://www.cardbranch.co.uk/c/{{ client.slug }}{% endblock %}
 {% block og_title %}{{ client.brand_name }} - CardBranch{% endblock %}
 {% block og_description %}{{ client.brand_name }}'s digital business card. View their links and connect.{% endblock %}
+{% block extra_head %}
+{% if client.slug not in ["da-workforce", "cardbranch"] %}
+<meta name="robots" content="noindex, nofollow">
+{% endif %}
+{% endblock %}
 {% block content %}
 
 {% set colour_map = {

@@ -25,9 +25,9 @@ def robots():
 
 @public_bp.route('/sitemap.xml')
 def sitemap():
-    clients = Client.query.with_entities(Client.slug).all()
+    approved_slugs = ["da-workforce", "cardbranch"]
     urls = ['https://www.cardbranch.co.uk/']
-    for (slug,) in clients:
+    for slug in approved_slugs:
         urls.append(f'https://www.cardbranch.co.uk/c/{slug}')
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for url in urls:
