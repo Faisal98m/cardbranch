@@ -1,5 +1,28 @@
 {% extends "layouts/base.html" %}
-{% block title %}CardBranch - Premium Business Cards{% endblock %}
+{% block title %}CardBranch — QR Business Cards for UK Small Businesses{% endblock %}
+{% block meta_description %}Create a digital business card, hosted links page, QR code and print-ready business card PDF for your business. Built for UK small businesses, tradespeople and local brands.{% endblock %}
+{% block canonical_url %}https://www.cardbranch.co.uk/{% endblock %}
+{% block og_title %}CardBranch — QR Business Cards for UK Small Businesses{% endblock %}
+{% block og_description %}Create a digital business card, hosted links page, QR code and print-ready business card PDF for your business. Built for UK small businesses, tradespeople and local brands.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CardBranch",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "Create a digital business card, hosted links page, QR code and print-ready business card PDF for your business.",
+  "url": "https://www.cardbranch.co.uk/",
+  "offers": {
+    "@type": "Offer",
+    "price": "19",
+    "priceCurrency": "GBP",
+    "priceType": "One-time"
+  }
+}
+</script>
+{% endblock %}
 {% block extra_head %}
 <style>
 .cb-nav { border-bottom:1px solid var(--border); background:var(--bg-secondary); }
