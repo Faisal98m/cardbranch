@@ -48,9 +48,12 @@ def save_logo(file):
 
 def generate_qr(slug, site_url):
     url = f'{site_url.rstrip("/")}/c/{slug}'
-    qr = qrcode.make(url)
+    qr = qrcode.QRCode(box_size=10, border=4)
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="#1F5C46", back_color="#FFFFFF")
     tmp_path = f'/tmp/{slug}_qr.png'
-    qr.save(tmp_path)
+    img.save(tmp_path)
     r2_key = f'generated/{slug}/qr.png'
     upload_file(tmp_path, r2_key)
     return tmp_path
