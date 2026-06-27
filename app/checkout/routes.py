@@ -142,21 +142,33 @@ def webhook():
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, webhook_secret)
-    except (ValueError, stripe.error.SignatureVerificationError):
+    except (ValueError, stripe.error.SignatureVerificationError) as e:
+        current_app.logger.error(f"Stripe webhook signature verification failed: {e}")
         return '', 400
+
+    current_app.logger.info(f"Stripe webhook received: {event['type']} (id={event['id']})")
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        order = Order.query.filter_by(stripe_session_id=session['id']).first()
-        if order:
-            order.status = 'paid'
-            order.stripe_payment_id = session.get('payment_intent', '')
-            db.session.commit()
-            from app.services.email import send_order_confirmation, send_admin_notification
-            from app.models import User
-            user = User.query.get(order.user_id)
-            client = order.client
-            send_order_confirmation(order, client, user)
-            send_admin_notification(order, client, user)
+        try:
+            order = Order.query.filter_by(stripe_session_id=session['id']).first()
+            if order:
+                order.status = 'paid'
+                order.stripe_payment_id = session.get('payment_intent', '')
+                db.session.commit()
+                current_app.logger.info(f"Order {order.id} status updated to '{order.status}' via webhook")
+                from app.services.email import send_order_confirmation, send_admin_notification
+                from app.models import User
+                user = User.query.get(order.user_id)
+                client = order.client
+                send_order_confirmation(order, client, user)
+                send_admin_notification(order, client, user)
+            else:
+                current_app.logger.warning(f"Order not found for stripe_session_id={session['id']}")
+        except Exception as e:
+            current_app.logger.error(f"Error processing checkout.session.completed: {e}")
+            return '', 500
+    else:
+        current_app.logger.info(f"Unhandled event type: {event['type']}")
 
     return '', 200
