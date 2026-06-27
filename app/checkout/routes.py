@@ -2,6 +2,7 @@ import stripe
 from flask import Blueprint, render_template, redirect, url_for, request, flash, current_app
 from flask_login import login_required, current_user
 from app.models import Client, Order, db
+from app import csrf
 
 checkout_bp = Blueprint('checkout', __name__)
 
@@ -111,6 +112,7 @@ def cancel():
 
 
 @checkout_bp.route('/webhooks/stripe', methods=['POST'])
+@csrf.exempt
 def webhook():
     payload = request.get_data(as_text=True)
     sig_header = request.headers.get('Stripe-Signature')

@@ -10,6 +10,7 @@
 </div>
 
 <form method="POST" action="{{ url_for('checkout.order', id=client.id) }}" style="max-width:640px;">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <div style="margin-bottom:24px;">
     <div class="section-label" style="margin-bottom:12px;">SELECT TIER</div>
     <div style="display:flex; flex-direction:column; gap:10px;">

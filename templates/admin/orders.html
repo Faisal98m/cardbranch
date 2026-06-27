@@ -35,6 +35,7 @@
                         <div style="display:flex; gap:6px; align-items:flex-start; flex-wrap:wrap;">
                             <button class="btn btn-ghost btn-sm" onclick="document.getElementById('addr-{{ order.id }}').style.display=document.getElementById('addr-{{ order.id }}').style.display=='none'?'table-row':'none'">Address</button>
                             <form method="POST" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <input type="hidden" name="order_id" value="{{ order.id }}">
                                 <select name="status" style="width:auto; padding:6px 8px; font-size:12px;">
                                     <option value="paid" {% if order.status == 'paid' %}selected{% endif %}>Paid</option>
