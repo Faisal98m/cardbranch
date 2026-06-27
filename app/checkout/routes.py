@@ -108,9 +108,10 @@ def order(id):
             return redirect(session.url, code=303)
 
         except stripe.error.StripeError as e:
+            current_app.logger.error(f"Stripe error during checkout: {e}")
             db.session.delete(order)
             db.session.commit()
-            flash(f'Payment error: {str(e)}', 'error')
+            flash('Something went wrong processing your payment. Please try again or contact support.', 'error')
             return redirect(url_for('checkout.order', id=id))
 
     return render_template('checkout/order.html', client=client, tiers=TIERS)

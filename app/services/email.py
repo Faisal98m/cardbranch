@@ -49,8 +49,9 @@ def send_admin_notification(order, client, user):
 
     resend.api_key = api_key
 
-    site_url = current_app.config.get('SITE_URL', 'https://cardbranch.co.uk')
-    pdf_url = f"{site_url}/static/generated/{client.slug}/card.pdf"
+    import os
+    r2_url = os.environ.get('R2_PUBLIC_URL', '').rstrip('/')
+    pdf_url = f"{r2_url}/generated/{client.slug}/card.pdf"
     address_line2 = f"<p>{order.delivery_line2}</p>" if order.delivery_line2 else ""
 
     params = {
