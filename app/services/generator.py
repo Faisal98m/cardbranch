@@ -185,6 +185,11 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
             c.setFont(tag_font, 5.5)
             c.drawCentredString(card_w / 2, divider_y - 3.5 * mm_unit, tagline.upper())
 
+            # URL for cardbranch card
+            if slug == "cardbranch":
+                c.setFont(tag_font, 4)
+                c.drawCentredString(card_w / 2, divider_y - 5.5 * mm_unit, f"{site_url.rstrip('/')}/c/{slug}")
+
         else:
             # A3 layout — large logo box centred, brand name small below
             logo_box_size = 18 * mm_unit
@@ -220,6 +225,11 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
             c.setFont(tag_font, 6.5)
             c.drawCentredString(card_w / 2, logo_box_y - 4.5 * mm_unit, brand_name.upper())
 
+            # URL for cardbranch card
+            if slug == "cardbranch":
+                c.setFont(tag_font, 4)
+                c.drawCentredString(card_w / 2, logo_box_y - 6.5 * mm_unit, f"{site_url.rstrip('/')}/c/{slug}")
+
     def draw_back():
         c.setFillColorRGB(*linen)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
@@ -229,6 +239,12 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
             qr_x = round((card_w - qr_size) / 2)
             qr_y = round((card_h - qr_size) / 2)
             c.drawImage(qr_img_path, qr_x, qr_y, width=qr_size, height=qr_size)
+
+            # URL for cardbranch card
+            if slug == "cardbranch":
+                c.setFillColorRGB(0.102, 0.090, 0.082)
+                c.setFont(tag_font, 4)
+                c.drawCentredString(card_w / 2, qr_y - 3 * mm_unit, f"{site_url.rstrip('/')}/c/{slug}")
 
     draw_front()
     c.showPage()
