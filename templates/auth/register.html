@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% block global_flashes %}{% endblock %}
 {% block title %}Register - CardBranch{% endblock %}
 {% block content %}
 <div class="auth-split">
@@ -8,6 +9,13 @@
                 <h1 style="font-size:26px; font-weight:400; color:var(--text-primary); font-family:'Newsreader',serif;">Create your card</h1>
                 <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">Free to start. No card to print until you're ready.</p>
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
             <form method="POST">
                 {{ form.hidden_tag() }}
                 <div style="margin-bottom:16px;">

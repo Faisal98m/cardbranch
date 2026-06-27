@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% block global_flashes %}{% endblock %}
 {% block title %}Sign In - CardBranch{% endblock %}
 {% block content %}
 <div class="auth-split">
@@ -14,6 +15,13 @@
                 <h1 style="font-size:26px; font-weight:400; color:var(--text-primary); font-family:'Newsreader',serif;">Welcome back</h1>
                 <p style="color:var(--text-secondary); font-size:14px; margin-top:4px;">Sign in to manage your cards</p>
             </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}" style="margin-bottom:16px;">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
             <form method="POST">
                 {{ form.hidden_tag() }}
                 <div style="margin-bottom:16px;">
