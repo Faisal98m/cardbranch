@@ -31,8 +31,17 @@
         <label>Links</label>
         <div id="links-container">
           <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
-            <input type="text" name="platform_0" placeholder="Platform (e.g. Instagram)" style="flex:1;" required>
-            <input type="url" name="url_0" placeholder="https://..." style="flex:2;" required>
+            <select class="link-type-select" style="flex:0 0 130px;" onchange="updateLinkRowInput(this)">
+              <option value="website">Website</option>
+              <option value="phone">Phone call</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="email">Email</option>
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="custom">Custom link</option>
+            </select>
+            <input type="text" class="link-value-input" name="url_0" placeholder="https://..." style="flex:2;" required>
           </div>
         </div>
         <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
@@ -267,14 +276,49 @@ let linkCount = 1;
 let currentBg = '#6b1f2a';
 let isLight = false;
 
+const LINK_PLACEHOLDERS = {
+  website: 'https://...',
+  phone: '07400 123456',
+  whatsapp: '07400 123456',
+  email: 'you@example.com',
+  instagram: '@yourhandle',
+  tiktok: '@yourhandle',
+  linkedin: 'https://linkedin.com/in/...',
+  custom: 'https://...',
+};
+const LINK_INPUT_TYPES = {
+  phone: 'tel',
+  whatsapp: 'tel',
+  email: 'email',
+};
+
+function updateLinkRowInput(selectEl) {
+  const row = selectEl.closest('.link-row');
+  const input = row.querySelector('.link-value-input');
+  const type = selectEl.value;
+  input.type = LINK_INPUT_TYPES[type] || 'text';
+  input.placeholder = LINK_PLACEHOLDERS[type] || 'https://...';
+}
+
+document.querySelectorAll('.link-type-select').forEach(updateLinkRowInput);
+
 function addLink() {
   const container = document.getElementById('links-container');
   const row = document.createElement('div');
   row.className = 'link-row';
   row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
   row.innerHTML = `
-    <input type="text" name="platform_${linkCount}" placeholder="Platform" style="flex:1;" required>
-    <input type="url" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
+    <select class="link-type-select" style="flex:0 0 130px;" onchange="updateLinkRowInput(this)">
+      <option value="website">Website</option>
+      <option value="phone">Phone call</option>
+      <option value="whatsapp">WhatsApp</option>
+      <option value="email">Email</option>
+      <option value="instagram">Instagram</option>
+      <option value="tiktok">TikTok</option>
+      <option value="linkedin">LinkedIn</option>
+      <option value="custom">Custom link</option>
+    </select>
+    <input type="text" class="link-value-input" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
   `;
   container.appendChild(row);
   linkCount++;
@@ -283,9 +327,9 @@ function addLink() {
 document.getElementById('card-form').addEventListener('submit', function() {
   const links = [];
   document.querySelectorAll('.link-row').forEach(row => {
-    const platform = row.querySelector('input[type="text"]').value;
-    const url = row.querySelector('input[type="url"]').value;
-    if (platform && url) links.push({ platform, url });
+    const link_type = row.querySelector('.link-type-select').value;
+    const url = row.querySelector('.link-value-input').value;
+    if (link_type && url) links.push({link_type, url});
   });
   document.getElementById('links-json').value = JSON.stringify(links);
 });

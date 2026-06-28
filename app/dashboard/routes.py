@@ -5,8 +5,20 @@ from flask_login import login_required, current_user
 from app.models import Client, Link, Order, db
 from app.dashboard.forms import CardForm, LinkForm
 from app.services.generator import unique_slug, save_logo, generate_assets
+from app.services.links import normalize_uk_phone
 
 dashboard_bp = Blueprint('dashboard', __name__)
+
+LINK_TYPE_LABELS = {
+    'website': 'Website',
+    'phone': 'Call',
+    'whatsapp': 'WhatsApp',
+    'email': 'Email',
+    'instagram': 'Instagram',
+    'tiktok': 'TikTok',
+    'linkedin': 'LinkedIn',
+    'custom': 'Link',
+}
 
 
 @dashboard_bp.route('/dashboard')
@@ -54,10 +66,17 @@ def card_new():
 
         links_data = json.loads(request.form.get('links', '[]'))
         for i, link_data in enumerate(links_data):
+            link_type = link_data.get('link_type', 'custom')
+            value = link_data.get('url', '').strip()
+            if link_type in ('phone', 'whatsapp') and value and not normalize_uk_phone(value):
+                db.session.rollback()
+                flash(f'"{value}" is not a valid UK phone number. Use a format like 07400 123456 or +447400123456.', 'error')
+                return render_template('dashboard/card_new.html', form=form)
             link = Link(
                 client_id=client.id,
-                platform=link_data.get('platform', 'custom'),
-                url=link_data.get('url', ''),
+                platform=LINK_TYPE_LABELS.get(link_type, 'Link'),
+                link_type=link_type,
+                url=value,
                 display_order=i,
             )
             db.session.add(link)
@@ -100,21 +119,28 @@ def card_edit(id):
 
         links_data = json.loads(request.form.get('links', '[]'))
         for i, link_data in enumerate(links_data):
+            link_type = link_data.get('link_type', 'custom')
+            value = link_data.get('url', '').strip()
+            if link_type in ('phone', 'whatsapp') and value and not normalize_uk_phone(value):
+                db.session.rollback()
+                flash(f'"{value}" is not a valid UK phone number. Use a format like 07400 123456 or +447400123456.', 'error')
+                break
             link = Link(
                 client_id=client.id,
-                platform=link_data.get('platform', 'custom'),
-                url=link_data.get('url', ''),
+                platform=LINK_TYPE_LABELS.get(link_type, 'Link'),
+                link_type=link_type,
+                url=value,
                 display_order=i,
             )
             db.session.add(link)
+        else:
+            db.session.commit()
 
-        db.session.commit()
+            site_url = current_app.config['SITE_URL']
+            generate_assets(client.slug, brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_style=client.card_style)
 
-        site_url = current_app.config['SITE_URL']
-        generate_assets(client.slug, brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_style=client.card_style)
-
-        flash('Card updated successfully!', 'success')
-        return redirect(url_for('dashboard.card_view', id=client.id))
+            flash('Card updated successfully!', 'success')
+            return redirect(url_for('dashboard.card_view', id=client.id))
 
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
     colour_map = {

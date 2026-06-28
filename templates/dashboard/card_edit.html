@@ -194,8 +194,18 @@
                     <div id="links-container">
                         {% for link in links %}
                         <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
-                            <input type="text" name="platform_{{ loop.index0 }}" value="{{ link.platform }}" placeholder="Platform" style="flex:1;" required>
-                            <input type="url" name="url_{{ loop.index0 }}" value="{{ link.url }}" placeholder="https://..." style="flex:2;" required>
+                            <select class="link-type-select" style="flex:0 0 130px;" onchange="updateLinkRowInput(this)">
+                                <option value="website" {% if link.link_type == 'website' %}selected{% endif %}>Website</option>
+                                <option value="phone" {% if link.link_type == 'phone' %}selected{% endif %}>Phone call</option>
+                                <option value="whatsapp" {% if link.link_type == 'whatsapp' %}selected{% endif %}>WhatsApp</option>
+                                <option value="email" {% if link.link_type == 'email' %}selected{% endif %}>Email</option>
+                                <option value="instagram" {% if link.link_type == 'instagram' %}selected{% endif %}>Instagram</option>
+                                <option value="tiktok" {% if link.link_type == 'tiktok' %}selected{% endif %}>TikTok</option>
+                                <option value="linkedin" {% if link.link_type == 'linkedin' %}selected{% endif %}>LinkedIn</option>
+                                <option value="custom" {% if link.link_type == 'custom' %}selected{% endif %}>Custom link</option>
+                            </select>
+                            <input type="text" class="link-value-input" name="url_{{ loop.index0 }}" value="{{ link.url }}" placeholder="https://..." style="flex:2;" required>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="this.closest('.link-row').remove()" aria-label="Remove link">&times;</button>
                         </div>
                         {% endfor %}
                     </div>
@@ -240,6 +250,32 @@
 let currentBg = '{{ colour_map[client.card_style]["bg_hex"] }}';
 let isLight = {{ 'true' if colour_map[client.card_style]['light'] else 'false' }};
 let linkCount = {{ links|length }};
+
+const LINK_PLACEHOLDERS = {
+    website: 'https://...',
+    phone: '07400 123456',
+    whatsapp: '07400 123456',
+    email: 'you@example.com',
+    instagram: '@yourhandle',
+    tiktok: '@yourhandle',
+    linkedin: 'https://linkedin.com/in/...',
+    custom: 'https://...',
+};
+const LINK_INPUT_TYPES = {
+    phone: 'tel',
+    whatsapp: 'tel',
+    email: 'email',
+};
+
+function updateLinkRowInput(selectEl) {
+    const row = selectEl.closest('.link-row');
+    const input = row.querySelector('.link-value-input');
+    const type = selectEl.value;
+    input.type = LINK_INPUT_TYPES[type] || 'text';
+    input.placeholder = LINK_PLACEHOLDERS[type] || 'https://...';
+}
+
+document.querySelectorAll('.link-type-select').forEach(updateLinkRowInput);
 
 function selectColour(style, hex, light) {
     currentBg = hex;
@@ -296,8 +332,18 @@ function addLink() {
     row.className = 'link-row';
     row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
     row.innerHTML = `
-        <input type="text" name="platform_${linkCount}" placeholder="Platform" style="flex:1;" required>
-        <input type="url" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
+        <select class="link-type-select" style="flex:0 0 130px;" onchange="updateLinkRowInput(this)">
+            <option value="website">Website</option>
+            <option value="phone">Phone call</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="email">Email</option>
+            <option value="instagram">Instagram</option>
+            <option value="tiktok">TikTok</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="custom">Custom link</option>
+        </select>
+        <input type="text" class="link-value-input" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="this.closest('.link-row').remove()" aria-label="Remove link">&times;</button>
     `;
     container.appendChild(row);
     linkCount++;
@@ -306,9 +352,9 @@ function addLink() {
 document.querySelector('form').addEventListener('submit', function() {
     const links = [];
     document.querySelectorAll('.link-row').forEach(row => {
-        const platform = row.querySelector('input[type="text"]').value;
-        const url = row.querySelector('input[type="url"]').value;
-        if (platform && url) links.push({platform, url});
+        const link_type = row.querySelector('.link-type-select').value;
+        const url = row.querySelector('.link-value-input').value;
+        if (link_type && url) links.push({link_type, url});
     });
     document.getElementById('links-json').value = JSON.stringify(links);
 });

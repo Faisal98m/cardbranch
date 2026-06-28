@@ -48,6 +48,7 @@ class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
     platform = db.Column(db.String(50), nullable=False)
+    link_type = db.Column(db.String(20), nullable=False, default='custom', server_default='custom')
     url = db.Column(db.String(500), nullable=False)
     display_order = db.Column(db.Integer, default=0)
 

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, abort, make_response
 from app.models import Client, db
+from app.services.links import build_href, should_open_new_tab
 
 public_bp = Blueprint('public', __name__)
 
@@ -13,7 +14,8 @@ def index():
 def card_links(slug):
     client = Client.query.filter_by(slug=slug).first_or_404()
     links = client.links.order_by('display_order').all()
-    return render_template('public/links.html', client=client, links=links)
+    return render_template('public/links.html', client=client, links=links,
+                           build_href=build_href, should_open_new_tab=should_open_new_tab)
 
 
 @public_bp.route('/robots.txt')
