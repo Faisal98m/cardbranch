@@ -1,5 +1,6 @@
 import resend
 from flask import current_app
+from markupsafe import escape
 
 
 def send_order_confirmation(order, client, user):
@@ -122,3 +123,29 @@ def send_status_update(order, client, user):
         resend.Emails.send(params)
     except Exception:
         pass
+
+
+def send_contact_email(name, email, message):
+    api_key = current_app.config.get('RESEND_API_KEY')
+    if not api_key:
+        return
+
+    resend.api_key = api_key
+
+    safe_name = escape(name)
+    safe_email = escape(email)
+    safe_message = escape(message).replace('\n', '<br>')
+
+    params = {
+        'from': 'CardBranch <orders@cardbranch.co.uk>',
+        'to': ['admin@cardbranch.co.uk'],
+        'reply_to': email,
+        'subject': f'[CardBranch Contact] {name}',
+        'html': f'''
+            <p><strong>From:</strong> {safe_name} ({safe_email})</p>
+            <p><strong>Message:</strong></p>
+            <p>{safe_message}</p>
+        ''',
+    }
+
+    resend.Emails.send(params)

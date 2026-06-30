@@ -1,0 +1,89 @@
+{% extends "layouts/base.html" %}
+{% block title %}Contact Us — CardBranch{% endblock %}
+{% block content %}
+<div class="contact-page">
+  <div class="contact-card">
+    <h1 class="contact-heading">Get in touch</h1>
+    <p class="contact-sub">Questions about your cards, prints, or anything else — we'll get back to you within 24 hours.</p>
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="field" style="position: absolute; left: -9999px;" aria-hidden="true">
+        {{ form.website.label }}
+        {{ form.website }}
+      </div>
+      <div class="field">
+        <label>{{ form.name.label }}</label>
+        {{ form.name(placeholder="Your name") }}
+        {% for error in form.name.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      <div class="field">
+        <label>{{ form.email.label }}</label>
+        {{ form.email(placeholder="you@example.com") }}
+        {% for error in form.email.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      <div class="field">
+        <label>{{ form.message.label }}</label>
+        {{ form.message(placeholder="How can we help?", rows="6") }}
+        {% for error in form.message.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary contact-submit">Send message</button>
+    </form>
+  </div>
+</div>
+<style>
+.contact-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+.contact-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 600px;
+}
+.contact-heading {
+  font-family: 'Newsreader', serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.contact-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+.field {
+  margin-bottom: 20px;
+}
+.field-error {
+  display: block;
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.contact-submit {
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+}
+@media (max-width: 768px) {
+  .contact-page {
+    padding: 24px 16px;
+  }
+  .contact-card {
+    padding: 32px 20px;
+  }
+  .contact-heading {
+    font-size: 26px;
+  }
+}
+</style>
+{% endblock %}
