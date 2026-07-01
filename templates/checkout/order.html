@@ -138,7 +138,7 @@
     {% endfor %}
   </div>
 
-  <div style="margin-bottom:24px;">
+  <div id="delivery-address-section" style="margin-bottom:24px;">
     <div class="section-label" style="margin-bottom:12px;">DELIVERY ADDRESS</div>
     <div style="display:flex; flex-direction:column; gap:10px;">
       <input type="text" name="delivery_name" placeholder="Full name *" required
@@ -161,4 +161,43 @@
   </button>
   <p style="text-align:center; font-size:11px; color:var(--text-dim); margin-top:10px;">Secured by Stripe. You will be redirected to complete payment.</p>
 </form>
+<script>
+(function() {
+  var tierRadios = document.querySelectorAll('input[name="tier"]');
+  var addrSection = document.getElementById('delivery-address-section');
+  var addrFields = [
+    document.querySelector('input[name="delivery_name"]'),
+    document.querySelector('input[name="delivery_line1"]'),
+    document.querySelector('input[name="delivery_city"]'),
+    document.querySelector('input[name="delivery_postcode"]')
+  ];
+
+  function toggleAddress() {
+    var selected;
+    for (var i = 0; i < tierRadios.length; i++) {
+      if (tierRadios[i].checked) {
+        selected = tierRadios[i].value;
+        break;
+      }
+    }
+    if (selected === 'digital') {
+      addrSection.style.display = 'none';
+      for (var j = 0; j < addrFields.length; j++) {
+        if (addrFields[j]) addrFields[j].removeAttribute('required');
+      }
+    } else {
+      addrSection.style.display = '';
+      for (var j = 0; j < addrFields.length; j++) {
+        if (addrFields[j]) addrFields[j].setAttribute('required', '');
+      }
+    }
+  }
+
+  for (var i = 0; i < tierRadios.length; i++) {
+    tierRadios[i].addEventListener('change', toggleAddress);
+  }
+
+  toggleAddress();
+})();
+</script>
 {% endblock %}
