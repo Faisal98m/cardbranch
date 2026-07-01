@@ -4,7 +4,6 @@ from app import create_app, db
 app = create_app(os.environ.get('FLASK_CONFIG'))
 
 with app.app_context():
-    db.create_all()
     os.makedirs(os.path.join(app.static_folder, 'generated'), exist_ok=True)
     os.makedirs(os.path.join(app.static_folder, 'uploads'), exist_ok=True)
 
