@@ -10,6 +10,14 @@
 {% endif %}
 {% endblock %}
 {% block content %}
+<style>
+  @media (min-width: 900px) {
+    .has-illustrated-bg {
+      background-size: auto 100% !important;
+      background-position: center !important;
+    }
+  }
+</style>
 
 {% set colour_map = {
     'oxblood': '#6b1f2a',
@@ -33,9 +41,12 @@
 {% set btn_hover_bg = 'rgba(0,0,0,0.06)' if is_light else 'rgba(255,255,255,0.08)' %}
 {% set divider_colour = 'rgba(0,0,0,0.15)' if is_light else 'rgba(255,255,255,0.2)' %}
 {% set brand_accent = '#6b1f2a' if is_light else '#c9a96e' %}
+{% set bg_image_swatches = ['oxblood', 'navy', 'forest', 'slate', 'charcoal', 'linen', 'sage', 'blush'] %}
+{% set has_bg_image = client.card_style in bg_image_swatches %}
 
-<div style="min-height:100vh; background:{{ card_bg }}; display:flex; flex-direction:column; align-items:center; padding:48px 20px;">
-    <div style="text-align:center; max-width:480px; width:100%;">
+<div class="{{ 'has-illustrated-bg' if has_bg_image else '' }}" style="min-height:100vh; background:{% if has_bg_image %}url('{{ url_for('static', filename='images/backgrounds/' + client.card_style + '.webp') }}') center/cover no-repeat, {{ card_bg }}{% else %}radial-gradient(circle at top center, rgba(255,255,255,{{ '0.85' if is_light else '0.10' }}), transparent {{ '42%' if is_light else '38%' }}), linear-gradient(180deg, {{ card_bg }} 0%, color-mix(in srgb, {{ card_bg }} 100%, {{ 'white' if is_light else 'black' }} {{ '35%' if is_light else '25%' }}) 100%){% endif %}; display:flex; flex-direction:column; align-items:center; padding:48px 20px; position:relative;">
+    {% if not has_bg_image %}<div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; opacity:0.035; background-image:url('{{ url_for('static', filename='images/noise.svg') }}'); background-repeat:repeat; background-size:160px 160px; z-index:0;"></div>{% endif %}
+    <div style="text-align:center; max-width:480px; width:100%; position:relative; z-index:1;">
         {% if client.logo_filename %}
         <img src="{{ r2_url }}/{{ client.logo_filename }}"
              alt="{{ client.brand_name }}"
