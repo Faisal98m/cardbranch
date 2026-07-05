@@ -32,28 +32,44 @@
 {% set light_styles = ['linen', 'sage', 'blush'] %}
 {% set card_bg = colour_map.get(client.card_style, '#6b1f2a') %}
 {% set is_light = client.card_style in light_styles %}
-{% set text_primary = '#1a1714' if is_light else '#faf8f4' %}
-{% set text_secondary = '#4a3f3a' if is_light else '#c8b8b0' %}
-{% set text_dim = '#7a6a62' if is_light else '#8a7a72' %}
-{% set icon_bg = 'rgba(0,0,0,0.08)' if is_light else 'rgba(255,255,255,0.12)' %}
-{% set icon_colour = '#4a3f3a' if is_light else '#e8d8d0' %}
-{% set btn_border = 'rgba(0,0,0,0.15)' if is_light else 'rgba(255,255,255,0.15)' %}
-{% set btn_hover_bg = 'rgba(0,0,0,0.06)' if is_light else 'rgba(255,255,255,0.08)' %}
-{% set divider_colour = 'rgba(0,0,0,0.15)' if is_light else 'rgba(255,255,255,0.2)' %}
-{% set brand_accent = '#6b1f2a' if is_light else '#c9a96e' %}
+{% set panel_bg = '#fbf8f3' %}
+{% set row_bg = '#ffffff' %}
+{% set text_primary = '#1a1714' %}
+{% set text_secondary = '#6b5d54' %}
+{% set text_dim = '#9a8b82' %}
+{% set icon_bg = 'rgba(31,92,70,0.10)' %}
+{% set icon_colour = '#1F5C46' %}
+{% set btn_border = 'rgba(0,0,0,0.06)' %}
+{% set btn_hover_bg = '#faf7f2' %}
+{% set divider_colour = 'rgba(0,0,0,0.10)' %}
+{% set brand_accent = '#1F5C46' %}
+{% set avatar_bg = '#1F5C46' %}
+{% set row_shadow = '0 1px 2px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03)' %}
 {% set bg_image_swatches = ['oxblood', 'navy', 'forest', 'slate', 'charcoal', 'linen', 'sage', 'blush'] %}
 {% set has_bg_image = client.card_style in bg_image_swatches %}
 
 <div class="{{ 'has-illustrated-bg' if has_bg_image else '' }}" style="min-height:100vh; background:{% if has_bg_image %}url('{{ url_for('static', filename='images/backgrounds/' + client.card_style + '.webp') }}') center/cover no-repeat, {{ card_bg }}{% else %}radial-gradient(circle at top center, rgba(255,255,255,{{ '0.85' if is_light else '0.10' }}), transparent {{ '42%' if is_light else '38%' }}), linear-gradient(180deg, {{ card_bg }} 0%, color-mix(in srgb, {{ card_bg }} 100%, {{ 'white' if is_light else 'black' }} {{ '35%' if is_light else '25%' }}) 100%){% endif %}; display:flex; flex-direction:column; align-items:center; padding:48px 20px; position:relative;">
     {% if not has_bg_image %}<div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; opacity:0.035; background-image:url('{{ url_for('static', filename='images/noise.svg') }}'); background-repeat:repeat; background-size:160px 160px; z-index:0;"></div>{% endif %}
-    <div style="text-align:center; max-width:480px; width:100%; position:relative; z-index:1;">
+    {% if client.slug == 'cardbranch' %}
+    <div style="text-align:center; max-width:420px; width:100%; position:relative; z-index:1; margin-bottom:24px;">
+        <span style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:999px; border:1px solid rgba(31,92,70,0.25); background:rgba(31,92,70,0.06); color:#1F5C46; font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:20px;">&#10003; Scanned from a real CardBranch card</span>
+        <h2 style="font-family:'Newsreader',serif; font-size:28px; font-weight:500; line-height:1.15; color:#1a1714; margin-bottom:12px;">You just scanned a real CardBranch card.</h2>
+        <p style="color:#6b5d54; font-size:14px; line-height:1.5; margin:0 8px 24px;">This is exactly what your customers see when they scan yours &mdash; get one for your business.</p>
+        <a href="/" style="display:inline-block; background:#6b1f2a; color:#faf8f4; font-size:14px; font-weight:600; padding:14px 28px; border-radius:10px; text-decoration:none;">Get a card like this &rarr;</a>
+    </div>
+    {% endif %}
+    <div style="text-align:center; max-width:420px; width:100%; position:relative; z-index:1; background:{{ panel_bg }}; border-radius:24px; padding:36px 24px; box-shadow:0 8px 32px rgba(0,0,0,0.08);">
         {% if client.logo_filename %}
         <img src="{{ r2_url }}/{{ client.logo_filename }}"
              alt="{{ client.brand_name }}"
-             style="width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:2px solid {{ divider_colour }};">
+             style="width:72px; height:72px; border-radius:50%; object-fit:cover; margin-bottom:16px; border:2px solid {{ divider_colour }};">
+        {% else %}
+        {% set _words = client.brand_name.split() %}
+        {% set _initials = (_words[0][0] ~ (_words[1][0] if _words|length > 1 else '')) | upper %}
+        <div style="width:72px; height:72px; border-radius:50%; background:{{ avatar_bg }}; color:#faf8f4; display:flex; align-items:center; justify-content:center; font-family:'Newsreader',serif; font-size:26px; margin:0 auto 16px; letter-spacing:0.02em;">{{ _initials }}</div>
         {% endif %}
 
-        <h1 style="font-size:22px; font-weight:400; color:{{ text_primary }}; margin-bottom:4px;">
+        <h1 style="font-family:'Newsreader',serif; font-size:24px; font-weight:500; color:{{ text_primary }}; margin-bottom:4px;">
             {{ client.brand_name }}
         </h1>
 
@@ -68,7 +84,7 @@
             <a href="{{ build_href(link.link_type, link.url) }}"
                {% if should_open_new_tab(link.link_type) %}target="_blank" rel="noopener noreferrer"{% endif %}
                class="links-btn"
-               style="display:flex; align-items:center; gap:12px; padding:14px 20px; border-radius:8px; border:1px solid {{ btn_border }}; color:{{ text_primary }}; font-size:13px; font-weight:500; text-decoration:none; transition:all 0.15s; background:transparent;">
+               style="display:flex; align-items:center; gap:12px; padding:14px 18px; border-radius:12px; border:1px solid {{ btn_border }}; color:{{ text_primary }}; font-size:14px; font-weight:500; text-decoration:none; transition:all 0.15s; background:{{ row_bg }}; box-shadow:{{ row_shadow }};">
                 <span style="width:32px; height:32px; border-radius:50%; background:{{ icon_bg }}; display:flex; align-items:center; justify-content:center; color:{{ icon_colour }}; flex-shrink:0;">
                     {% if link.link_type == 'instagram' %}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -102,6 +118,8 @@
     .links-btn:hover,
     .links-btn:focus-visible {
         background: {{ btn_hover_bg }} !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
+        transform: translateY(-1px);
     }
 </style>
 {% endblock %}
