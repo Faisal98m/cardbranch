@@ -34,6 +34,8 @@ class Client(db.Model):
     slug = db.Column(db.String(255), unique=True, nullable=False, index=True)
     logo_filename = db.Column(db.String(255), default='')
     card_style = db.Column(db.String(50), default='default')
+    is_published = db.Column(db.Boolean, nullable=False, default=False)
+    published_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 

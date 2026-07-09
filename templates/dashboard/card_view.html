@@ -162,8 +162,13 @@
       <div class="cv-panel-body">
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
           <div style="font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em;">Live links page</div>
-          <div class="live-badge"><div class="live-dot"></div>Live</div>
+          {% if client.is_published %}
+          <div class="live-badge"><div class="live-dot"></div>Published</div>
+          {% else %}
+          <div style="font-size:10px; color:var(--text-dim); background:var(--bg-inset); border-radius:20px; padding:2px 8px;">Unpublished</div>
+          {% endif %}
         </div>
+        {% if client.is_published %}
         <div class="url-row">
           <a href="{{ url_for('public.card_links', slug=client.slug) }}"
              style="font-size:11px; color:var(--text-secondary); text-decoration:none; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"
@@ -173,6 +178,7 @@
             <i class="ti ti-copy" aria-hidden="true" style="font-size:13px;"></i>
           </button>
         </div>
+        {% endif %}
 
         <div class="meta-grid">
           <div class="meta-cell">
@@ -191,6 +197,7 @@
       </div>
 
       <div class="cv-panel-footer">
+        {% if client.is_published %}
         <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-primary">
           <i class="ti ti-shopping-cart" aria-hidden="true"></i> Order cards
         </a>
@@ -201,6 +208,12 @@
         <a href="{{ url_for('dashboard.download_qr', id=client.id) }}" class="btn-ghost">
           <i class="ti ti-qrcode" aria-hidden="true"></i> Download QR
         </a>
+        {% else %}
+        <a href="{{ url_for('checkout.order', id=client.id) }}" class="btn-primary">
+          <i class="ti ti-rocket" aria-hidden="true"></i> Publish &rarr;
+        </a>
+        <p style="text-align:center; font-size:10px; color:var(--text-dim); margin:0;">Purchase to make your links page live</p>
+        {% endif %}
         <a href="{{ url_for('dashboard.card_edit', id=client.id) }}" class="btn-ghost">
           <i class="ti ti-edit" aria-hidden="true"></i> Edit card
         </a>

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, abort, make_response, flash, redirect, url_for, current_app
+from flask_login import current_user
 from app import limiter
 from app.models import Client, db
 from app.services.links import build_href, should_open_new_tab
@@ -40,9 +41,16 @@ def contact():
 @public_bp.route('/c/<slug>')
 def card_links(slug):
     client = Client.query.filter_by(slug=slug).first_or_404()
-    links = client.links.order_by('display_order').all()
-    return render_template('public/links.html', client=client, links=links,
-                           build_href=build_href, should_open_new_tab=should_open_new_tab)
+    is_owner = current_user.is_authenticated and current_user.id == client.user_id
+    if not client.is_published:
+        if is_owner:
+            return render_template('public/links.html', client=client, links=client.links.order_by('display_order').all(),
+                                   build_href=build_href, should_open_new_tab=should_open_new_tab,
+                                   preview_mode=True)
+        abort(404)
+    return render_template('public/links.html', client=client, links=client.links.order_by('display_order').all(),
+                           build_href=build_href, should_open_new_tab=should_open_new_tab,
+                           preview_mode=False)
 
 
 @public_bp.route('/robots.txt')
@@ -54,10 +62,10 @@ def robots():
 
 @public_bp.route('/sitemap.xml')
 def sitemap():
-    approved_slugs = ["da-workforce", "cardbranch"]
+    published = Client.query.filter_by(is_published=True).all()
     urls = ['https://www.cardbranch.co.uk/']
-    for slug in approved_slugs:
-        urls.append(f'https://www.cardbranch.co.uk/c/{slug}')
+    for c in published:
+        urls.append(f'https://www.cardbranch.co.uk/c/{c.slug}')
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for url in urls:
         xml += f'  <url><loc>{url}</loc></url>\n'

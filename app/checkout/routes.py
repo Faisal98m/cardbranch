@@ -153,14 +153,22 @@ def webhook():
         try:
             order = Order.query.filter_by(stripe_session_id=session['id']).first()
             if order:
+                client = order.client
+                from app.services.generator import generate_assets
+                generate_assets(client.slug, client.brand_name, client.tagline,
+                                current_app.config['SITE_URL'],
+                                logo_filename=client.logo_filename,
+                                card_style=client.card_style)
                 order.status = 'paid'
                 order.stripe_payment_id = session.get('payment_intent', '')
+                client.is_published = True
+                from datetime import datetime
+                client.published_at = datetime.utcnow()
                 db.session.commit()
-                current_app.logger.info(f"Order {order.id} status updated to '{order.status}' via webhook")
+                current_app.logger.info(f"Order {order.id} status updated to '{order.status}' via webhook; card {client.id} published")
                 from app.services.email import send_order_confirmation, send_admin_notification
                 from app.models import User
                 user = User.query.get(order.user_id)
-                client = order.client
                 send_order_confirmation(order, client, user)
                 send_admin_notification(order, client, user)
             else:
