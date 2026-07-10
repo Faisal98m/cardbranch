@@ -49,7 +49,11 @@ def card_new():
 
         logo_filename = ''
         if form.logo.data:
-            logo_filename = save_logo(form.logo.data)
+            try:
+                logo_filename = save_logo(form.logo.data)
+            except ValueError as e:
+                flash(str(e), 'error')
+                return render_template('dashboard/card_new.html', form=form)
 
         card_style = request.form.get('card_style', 'oxblood')
 
@@ -110,7 +114,22 @@ def card_edit(id):
         client.card_style = request.form.get('card_style', client.card_style)
 
         if form.logo.data:
-            client.logo_filename = save_logo(form.logo.data)
+            try:
+                client.logo_filename = save_logo(form.logo.data)
+            except ValueError as e:
+                flash(str(e), 'error')
+                links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
+                colour_map = {
+                    'oxblood': {'bg_hex': '#6b1f2a', 'light': False},
+                    'navy':    {'bg_hex': '#1a2744', 'light': False},
+                    'forest':  {'bg_hex': '#1a3d2b', 'light': False},
+                    'slate':   {'bg_hex': '#2d3748', 'light': False},
+                    'charcoal':{'bg_hex': '#1a1714', 'light': False},
+                    'linen':   {'bg_hex': '#f0ebe4', 'light': True},
+                    'sage':    {'bg_hex': '#e8ede8', 'light': True},
+                    'blush':   {'bg_hex': '#f5ece8', 'light': True},
+                }
+                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, colour_map=colour_map)
 
         Link.query.filter_by(client_id=client.id).delete()
 
@@ -135,7 +154,8 @@ def card_edit(id):
 
             if client.is_published:
                 site_url = current_app.config['SITE_URL']
-                generate_assets(client.slug, client.brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_style=client.card_style)
+                client.pdf_r2_key = generate_assets(client.slug, client.brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_style=client.card_style)
+                db.session.commit()
 
             flash('Card updated successfully!', 'success')
             return redirect(url_for('dashboard.card_view', id=client.id))
@@ -188,7 +208,8 @@ def download_pdf(id):
         flash('Purchase a plan to download your PDF.', 'info')
         return redirect(url_for('checkout.order', id=client.id))
     public_url = os.environ['R2_PUBLIC_URL'].rstrip('/')
-    return redirect(f"{public_url}/generated/{client.slug}/card.pdf")
+    pdf_key = client.pdf_r2_key or f'generated/{client.slug}/card.pdf'
+    return redirect(f"{public_url}/{pdf_key}")
 
 
 @dashboard_bp.route('/card/<int:id>/download/qr')

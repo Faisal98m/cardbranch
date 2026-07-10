@@ -52,7 +52,8 @@ def send_admin_notification(order, client, user):
 
     import os
     r2_url = os.environ.get('R2_PUBLIC_URL', '').rstrip('/')
-    pdf_url = f"{r2_url}/generated/{client.slug}/card.pdf"
+    pdf_key = client.pdf_r2_key or f'generated/{client.slug}/card.pdf'
+    pdf_url = f"{r2_url}/{pdf_key}"
     address_line2 = f"<p>{order.delivery_line2}</p>" if order.delivery_line2 else ""
 
     params = {

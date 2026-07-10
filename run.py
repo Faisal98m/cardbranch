@@ -1,4 +1,10 @@
 import os
+import logging
+import sys
+pool_logger = logging.getLogger('sqlalchemy.pool')
+pool_logger.setLevel(logging.DEBUG)
+if not pool_logger.handlers:
+    pool_logger.addHandler(logging.StreamHandler(sys.stderr))
 from app import create_app, db
 
 app = create_app(os.environ.get('FLASK_CONFIG'))

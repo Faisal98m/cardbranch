@@ -1,7 +1,9 @@
 import os
 import uuid
 import re
+import secrets
 import qrcode
+from PIL import Image
 from reportlab.lib.pagesizes import mm
 from reportlab.lib.units import mm as mm_unit
 from reportlab.pdfgen import canvas
@@ -36,13 +38,36 @@ def unique_slug(brand_name):
 
 
 def save_logo(file):
-    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else 'png'
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp'}
+    MAX_SIZE = 2 * 1024 * 1024
+
+    orig_ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if orig_ext not in ALLOWED_EXTENSIONS:
+        raise ValueError('Logo must be a PNG, JPG or WebP image.')
+    ext = 'jpg' if orig_ext == 'jpeg' else orig_ext
+
+    file.stream.seek(0, os.SEEK_END)
+    size = file.stream.tell()
+    file.stream.seek(0)
+    if size > MAX_SIZE:
+        raise ValueError('Logo must be under 2MB.')
+
+    try:
+        file.stream.seek(0)
+        Image.open(file.stream).verify()
+    except Exception:
+        raise ValueError('Logo file is not a valid image.')
+    file.stream.seek(0)
+
     filename = f'{uuid.uuid4().hex}.{ext}'
     tmp_path = f'/tmp/{filename}'
     file.save(tmp_path)
     r2_key = f'uploads/{filename}'
-    upload_file(tmp_path, r2_key)
-    os.remove(tmp_path)
+    try:
+        upload_file(tmp_path, r2_key)
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
     return r2_key
 
 
@@ -81,7 +106,7 @@ def download_logo(logo_filename):
         return None
 
 
-def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood'):
+def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood', pdf_r2_key=None):
     import os
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
@@ -254,17 +279,20 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
     draw_back()
     c.save()
 
-    upload_file(pdf_path, f'generated/{slug}/card.pdf')
+    upload_file(pdf_path, pdf_r2_key)
     return pdf_path
 
 
 def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_style='oxblood'):
+    token = secrets.token_urlsafe(16)
+    pdf_r2_key = f'generated/{slug}/{token}/card.pdf'
     qr_tmp = generate_qr(slug, site_url)
     logo_tmp = download_logo(logo_filename)
-    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, card_style=card_style)
+    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, card_style=card_style, pdf_r2_key=pdf_r2_key)
     if os.path.exists(qr_tmp):
         os.remove(qr_tmp)
     if pdf_tmp and os.path.exists(pdf_tmp):
         os.remove(pdf_tmp)
     if logo_tmp and os.path.exists(logo_tmp):
         os.remove(logo_tmp)
+    return pdf_r2_key

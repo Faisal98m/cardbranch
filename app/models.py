@@ -38,6 +38,7 @@ class Client(db.Model):
     published_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    pdf_r2_key = db.Column(db.String(500), nullable=True)
 
     links = db.relationship('Link', backref='client', lazy='dynamic', cascade='all, delete-orphan',
                             order_by='Link.display_order')

@@ -21,6 +21,8 @@ class DebugConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///cardbranch.db'
+    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ENGINE_OPTIONS = {'echo_pool': True, 'pool_pre_ping': True}
 
 
 class ProductionConfig(Config):

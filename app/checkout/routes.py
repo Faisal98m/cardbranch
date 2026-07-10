@@ -155,10 +155,10 @@ def webhook():
             if order:
                 client = order.client
                 from app.services.generator import generate_assets
-                generate_assets(client.slug, client.brand_name, client.tagline,
-                                current_app.config['SITE_URL'],
-                                logo_filename=client.logo_filename,
-                                card_style=client.card_style)
+                client.pdf_r2_key = generate_assets(client.slug, client.brand_name, client.tagline,
+                                                    current_app.config['SITE_URL'],
+                                                    logo_filename=client.logo_filename,
+                                                    card_style=client.card_style)
                 order.status = 'paid'
                 order.stripe_payment_id = session.get('payment_intent', '')
                 client.is_published = True
