@@ -78,16 +78,7 @@
     font-size: 8px;
     color: var(--text-dim);
 }
-.theme-accent-dot {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.6);
-    box-shadow: 0 0 0 0.5px rgba(0,0,0,0.25);
-}
+
 .card-preview-inner {
     width: 92%;
     height: 88%;
@@ -200,7 +191,6 @@
                         {% for option in theme_options if option.group == 'premium' %}
                         <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
                             <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}">
-                                <span class="theme-accent-dot" style="background:{{ option.accent }};"></span>
                             </div>
                             <span class="card-new-swatch-name">{{ option.name }}</span>
                             <span class="card-new-swatch-layout">{{ option.layout_name }}</span>
