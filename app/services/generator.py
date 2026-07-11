@@ -8,17 +8,8 @@ from reportlab.lib.pagesizes import mm
 from reportlab.lib.units import mm as mm_unit
 from reportlab.pdfgen import canvas
 from app.services.r2 import upload_file
+from app.services.themes import resolve_theme
 
-CARD_COLOURS = {
-    'oxblood':  {'bg': (0.420, 0.122, 0.165), 'text': (0.980, 0.973, 0.957), 'light': False},
-    'navy':     {'bg': (0.102, 0.153, 0.267), 'text': (0.980, 0.973, 0.957), 'light': False},
-    'forest':   {'bg': (0.102, 0.239, 0.169), 'text': (0.980, 0.973, 0.957), 'light': False},
-    'slate':    {'bg': (0.176, 0.216, 0.282), 'text': (0.980, 0.973, 0.957), 'light': False},
-    'charcoal': {'bg': (0.102, 0.090, 0.082), 'text': (0.980, 0.973, 0.957), 'light': False},
-    'linen':    {'bg': (0.941, 0.922, 0.894), 'text': (0.102, 0.090, 0.082), 'light': True},
-    'sage':     {'bg': (0.910, 0.929, 0.910), 'text': (0.102, 0.090, 0.082), 'light': True},
-    'blush':    {'bg': (0.961, 0.925, 0.910), 'text': (0.102, 0.090, 0.082), 'light': True},
-}
 
 
 def slugify(text):
@@ -141,10 +132,12 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
 
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
-    colour = CARD_COLOURS.get(card_style, CARD_COLOURS['oxblood'])
-    front_bg = colour['bg']
-    text_colour = colour['text']
-    is_light = colour['light']
+    theme = resolve_theme(card_style)
+    front_bg = theme['bg']
+    text_colour = theme['text']
+    accent_colour = theme['accent']
+    is_light = theme['light']
+    layout = theme['layout']
     linen = (0.941, 0.922, 0.894)
 
     has_tagline = bool(tagline and tagline.strip())
@@ -197,15 +190,15 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
 
             # Brand name
             name_y = logo_box_y - 6 * mm_unit
-            c.setFillColorRGB(*text_colour)
+            c.setFillColorRGB(*accent_colour)
             c.setFont(name_font, 13)
             c.drawCentredString(card_w / 2, name_y, brand_name)
 
             # Divider
             divider_w = 10 * mm_unit
             divider_y = name_y - 3.5 * mm_unit
-            c.setStrokeColorRGB(*text_colour)
-            c.setLineWidth(0.25)
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.7)
             c.line(card_w / 2 - divider_w / 2, divider_y, card_w / 2 + divider_w / 2, divider_y)
 
             # Tagline
@@ -257,6 +250,25 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
             if slug == "cardbranch":
                 c.setFont(tag_font, 4)
                 c.drawCentredString(card_w / 2, logo_box_y - 6.5 * mm_unit, "www.cardbranch.co.uk")
+
+        inset = 2.5 * mm_unit
+        if layout == 'framed':
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.4)
+            c.roundRect(inset, inset, card_w - 2*inset, card_h - 2*inset, 1.2*mm_unit, fill=0, stroke=1)
+        elif layout == 'corner_brackets':
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.5)
+            leg = 3 * mm_unit
+            c.line(inset, inset, inset + leg, inset)
+            c.line(inset, inset, inset, inset + leg)
+            c.line(card_w - inset, inset, card_w - inset - leg, inset)
+            c.line(card_w - inset, inset, card_w - inset, inset + leg)
+            c.line(inset, card_h - inset, inset + leg, card_h - inset)
+            c.line(inset, card_h - inset, inset, card_h - inset - leg)
+            c.line(card_w - inset, card_h - inset, card_w - inset - leg, card_h - inset)
+            c.line(card_w - inset, card_h - inset, card_w - inset, card_h - inset - leg)
+        # layout == 'minimal': no decoration
 
     def draw_back():
         c.setFillColorRGB(*linen)
