@@ -25,10 +25,10 @@ def resolve_theme(card_style):
 
 
 def theme_css(card_style):
-    """CSS-ready theme for web templates.
-    NOTE: Only 'bg' is rendered on the web (the page background wall).
-    'text', 'accent', 'layout' are PDF-only in Phase 1 — included for future
-    use but the links page does not render them."""
+    """Return CSS-ready theme values for web templates.
+    The public links page currently uses only bg for its background wall.
+    Dashboard card previews (card_view, editor) also use text, accent, light,
+    and layout to approximate the printed card."""
     t = resolve_theme(card_style)
     def rgb(tup):
         return 'rgb(%d, %d, %d)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255))
