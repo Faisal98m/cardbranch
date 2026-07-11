@@ -1,16 +1,7 @@
 {% extends "layouts/dashboard.html" %}
 {% block dashboard_content %}
 
-{% set colour_map = {
-    'oxblood': {'bg_hex': '#6b1f2a', 'light': False},
-    'navy':    {'bg_hex': '#1a2744', 'light': False},
-    'forest':  {'bg_hex': '#1a3d2b', 'light': False},
-    'slate':   {'bg_hex': '#2d3748', 'light': False},
-    'charcoal':{'bg_hex': '#1a1714', 'light': False},
-    'linen':   {'bg_hex': '#f0ebe4', 'light': True},
-    'sage':    {'bg_hex': '#e8ede8', 'light': True},
-    'blush':   {'bg_hex': '#f5ece8', 'light': True},
-} %}
+
 
 <style>
 .card-new-grid {
@@ -65,7 +56,9 @@
     border-radius: 50%;
     border: 2px solid transparent;
     transition: border-color 0.15s, transform 0.15s;
+    position: relative;
 }
+.theme-accent-dot { position:absolute; top:2px; right:2px; width:6px; height:6px; border-radius:50%; border:1px solid rgba(255,255,255,0.6); box-shadow:0 0 0 0.5px rgba(0,0,0,0.25); }
 .card-new-swatch.selected {
     border-color: var(--accent);
     transform: scale(1.15);
@@ -165,27 +158,34 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label style="display:block; margin-bottom:8px;">Card Colour</label>
+                    <label style="display:block; margin-bottom:8px;">Card theme</label>
                     <div class="card-new-swatches">
                         <div style="width:100%; font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Dark</div>
-                        {% for style, cfg in colour_map.items() %}
-                        {% if not cfg.light %}
-                        <div class="card-new-swatch-wrap" data-style="{{ style }}" onclick="selectColour('{{ style }}', '{{ cfg.bg_hex }}', false)">
-                            <div class="card-new-swatch {% if client.card_style == style %}selected{% endif %}" style="background:{{ cfg.bg_hex }};"></div>
-                            <span class="card-new-swatch-label">{{ style }}</span>
+                        {% for option in theme_options if option.group == 'dark' %}
+                        <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
+                            <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+                            <span class="card-new-swatch-label">{{ option.name }}</span>
                         </div>
-                        {% endif %}
                         {% endfor %}
                         <div style="width:100%; font-size:11px; color:var(--text-dim); margin-top:8px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Light</div>
-                        {% for style, cfg in colour_map.items() %}
-                        {% if cfg.light %}
-                        <div class="card-new-swatch-wrap" data-style="{{ style }}" onclick="selectColour('{{ style }}', '{{ cfg.bg_hex }}', true)">
-                            <div class="card-new-swatch {% if client.card_style == style %}selected{% endif %}" style="background:{{ cfg.bg_hex }};"></div>
-                            <span class="card-new-swatch-label">{{ style }}</span>
+                        {% for option in theme_options if option.group == 'light' %}
+                        <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
+                            <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+                            <span class="card-new-swatch-label">{{ option.name }}</span>
                         </div>
-                        {% endif %}
+                        {% endfor %}
+                        <div style="width:100%; font-size:11px; color:var(--text-dim); margin-top:8px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Premium</div>
+                        {% for option in theme_options if option.group == 'premium' %}
+                        <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
+                            <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}">
+                                <span class="theme-accent-dot" style="background:{{ option.accent }};"></span>
+                            </div>
+                            <span class="card-new-swatch-label">{{ option.name }}</span>
+                            <span class="card-new-swatch-layout" style="font-size:8px; color:var(--text-dim);">{{ option.layout_name }}</span>
+                        </div>
                         {% endfor %}
                     </div>
+                    <p style="font-size:11px; color:var(--text-dim); margin-top:8px;">Framed and accent styling appears on your printed card and links page.</p>
                     <input type="hidden" name="card_style" id="card-style-input" value="{{ client.card_style }}">
                 </div>
 
@@ -303,8 +303,8 @@
 })();
 </script>
 <script>
-let currentBg = '{{ colour_map[client.card_style]["bg_hex"] }}';
-let isLight = {{ 'true' if colour_map[client.card_style]['light'] else 'false' }};
+let currentBg = '{{ current_theme_option.bg }}';
+let isLight = {{ 'true' if current_theme_option.light else 'false' }};
 let linkCount = {{ links|length }};
 
 const LINK_PLACEHOLDERS = {

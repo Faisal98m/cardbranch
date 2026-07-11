@@ -49,50 +49,46 @@
 
       <!-- Colour picker -->
       <div style="margin-bottom:24px;">
-        <label style="display:block; margin-bottom:12px;">Card colour</label>
+        <label style="display:block; margin-bottom:12px;">Card theme</label>
         <input type="hidden" name="card_style" id="card-style-input" value="oxblood">
 
         <p class="card-new-swatch-label">Dark</p>
         <div class="card-new-swatches">
-          <div class="card-new-swatch-wrap" data-style="oxblood" data-bg="#6b1f2a" data-text="#faf8f4">
-            <div class="card-new-swatch selected" style="background:#6b1f2a;"></div>
-            <span class="card-new-swatch-name">Oxblood</span>
+          {% for option in theme_options if option.group == 'dark' %}
+          <div class="card-new-swatch-wrap" data-style="{{ option.key }}" data-bg="{{ option.bg }}" data-text="{{ option.text }}">
+            <div class="card-new-swatch{% if option.key == 'oxblood' %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+            <span class="card-new-swatch-name">{{ option.name }}</span>
           </div>
-          <div class="card-new-swatch-wrap" data-style="navy" data-bg="#1a2744" data-text="#faf8f4">
-            <div class="card-new-swatch" style="background:#1a2744;"></div>
-            <span class="card-new-swatch-name">Navy</span>
-          </div>
-          <div class="card-new-swatch-wrap" data-style="forest" data-bg="#1a3d2b" data-text="#faf8f4">
-            <div class="card-new-swatch" style="background:#1a3d2b;"></div>
-            <span class="card-new-swatch-name">Forest</span>
-          </div>
-          <div class="card-new-swatch-wrap" data-style="slate" data-bg="#2d3748" data-text="#faf8f4">
-            <div class="card-new-swatch" style="background:#2d3748;"></div>
-            <span class="card-new-swatch-name">Slate</span>
-          </div>
-          <div class="card-new-swatch-wrap" data-style="charcoal" data-bg="#1a1714" data-text="#faf8f4">
-            <div class="card-new-swatch" style="background:#1a1714; border:1px solid #3a3734;"></div>
-            <span class="card-new-swatch-name">Charcoal</span>
-          </div>
+          {% endfor %}
         </div>
 
         <div style="border-top:1px solid var(--border); margin:14px 0;"></div>
 
         <p class="card-new-swatch-label">Light</p>
         <div class="card-new-swatches">
-          <div class="card-new-swatch-wrap" data-style="linen" data-bg="#f0ebe4" data-text="#1a1714">
-            <div class="card-new-swatch" style="background:#f0ebe4; border:1.5px solid #c8bfb4;"></div>
-            <span class="card-new-swatch-name">Linen</span>
+          {% for option in theme_options if option.group == 'light' %}
+          <div class="card-new-swatch-wrap" data-style="{{ option.key }}" data-bg="{{ option.bg }}" data-text="{{ option.text }}">
+            <div class="card-new-swatch{% if option.key == 'oxblood' %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+            <span class="card-new-swatch-name">{{ option.name }}</span>
           </div>
-          <div class="card-new-swatch-wrap" data-style="sage" data-bg="#e8ede8" data-text="#1a1714">
-            <div class="card-new-swatch" style="background:#e8ede8; border:1.5px solid #b8c8b8;"></div>
-            <span class="card-new-swatch-name">Sage</span>
-          </div>
-          <div class="card-new-swatch-wrap" data-style="blush" data-bg="#f5ece8" data-text="#1a1714">
-            <div class="card-new-swatch" style="background:#f5ece8; border:1.5px solid #d8c0b8;"></div>
-            <span class="card-new-swatch-name">Blush</span>
-          </div>
+          {% endfor %}
         </div>
+
+        <div style="border-top:1px solid var(--border); margin:14px 0;"></div>
+
+        <p class="card-new-swatch-label">Premium</p>
+        <div class="card-new-swatches">
+          {% for option in theme_options if option.group == 'premium' %}
+          <div class="card-new-swatch-wrap" data-style="{{ option.key }}" data-bg="{{ option.bg }}" data-text="{{ option.text }}">
+            <div class="card-new-swatch{% if option.key == 'oxblood' %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}">
+              <span class="theme-accent-dot" style="background:{{ option.accent }};"></span>
+            </div>
+            <span class="card-new-swatch-name">{{ option.name }}</span>
+            <span class="card-new-swatch-layout" style="font-size:8px; color:var(--text-dim);">{{ option.layout_name }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <p style="font-size:11px; color:var(--text-dim); margin-top:8px;">Framed and accent styling appears on your printed card and links page.</p>
       </div>
 
       <input type="hidden" name="links" id="links-json" value="[]">
@@ -246,7 +242,9 @@
   border-radius: 50%;
   border: 2px solid transparent;
   transition: transform 0.1s;
+  position: relative;
 }
+.theme-accent-dot { position:absolute; top:4px; right:4px; width:8px; height:8px; border-radius:50%; border:1px solid rgba(255,255,255,0.6); box-shadow:0 0 0 0.5px rgba(0,0,0,0.25); }
 .card-new-swatch:hover { transform: scale(1.1); }
 .card-new-swatch.selected {
   border-color: #6b1f2a;

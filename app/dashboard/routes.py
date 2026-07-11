@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from app.models import Client, Link, Order, db
 from app.dashboard.forms import CardForm, LinkForm
 from app.services.generator import unique_slug, save_logo, generate_assets
+from app.services.themes import theme_picker_options, normalise_theme_key, theme_picker_option
 from app.services.links import normalize_uk_phone
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -42,6 +43,7 @@ def index():
 @login_required
 def card_new():
     form = CardForm()
+    theme_options = theme_picker_options()
     if form.validate_on_submit():
         brand_name = form.brand_name.data.strip()
         tagline = form.tagline.data.strip() if form.tagline.data else ''
@@ -53,9 +55,9 @@ def card_new():
                 logo_filename = save_logo(form.logo.data)
             except ValueError as e:
                 flash(str(e), 'error')
-                return render_template('dashboard/card_new.html', form=form)
+                return render_template('dashboard/card_new.html', form=form, theme_options=theme_options)
 
-        card_style = request.form.get('card_style', 'oxblood')
+        card_style = normalise_theme_key(request.form.get('card_style'))
 
         client = Client(
             user_id=current_user.id,
@@ -75,7 +77,7 @@ def card_new():
             if link_type in ('phone', 'whatsapp') and value and not normalize_uk_phone(value):
                 db.session.rollback()
                 flash(f'"{value}" is not a valid UK phone number. Use a format like 07400 123456 or +447400123456.', 'error')
-                return render_template('dashboard/card_new.html', form=form)
+                return render_template('dashboard/card_new.html', form=form, theme_options=theme_options)
             link = Link(
                 client_id=client.id,
                 platform=LINK_TYPE_LABELS.get(link_type, 'Link'),
@@ -90,7 +92,7 @@ def card_new():
         flash('Card created successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
 
-    return render_template('dashboard/card_new.html', form=form)
+    return render_template('dashboard/card_new.html', form=form, theme_options=theme_options)
 
 
 @dashboard_bp.route('/card/<int:id>')
@@ -106,12 +108,15 @@ def card_view(id):
 def card_edit(id):
     client = Client.query.filter_by(id=id, user_id=current_user.id).first_or_404()
     form = CardForm(obj=client)
+    theme_options = theme_picker_options()
 
     if form.validate_on_submit():
         brand_name = form.brand_name.data.strip()
         client.brand_name = brand_name
         client.tagline = form.tagline.data.strip() if form.tagline.data else ''
-        client.card_style = request.form.get('card_style', client.card_style)
+        submitted_style = request.form.get('card_style')
+        if submitted_style is not None:
+            client.card_style = normalise_theme_key(submitted_style)
 
         if form.logo.data:
             try:
@@ -119,17 +124,8 @@ def card_edit(id):
             except ValueError as e:
                 flash(str(e), 'error')
                 links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
-                colour_map = {
-                    'oxblood': {'bg_hex': '#6b1f2a', 'light': False},
-                    'navy':    {'bg_hex': '#1a2744', 'light': False},
-                    'forest':  {'bg_hex': '#1a3d2b', 'light': False},
-                    'slate':   {'bg_hex': '#2d3748', 'light': False},
-                    'charcoal':{'bg_hex': '#1a1714', 'light': False},
-                    'linen':   {'bg_hex': '#f0ebe4', 'light': True},
-                    'sage':    {'bg_hex': '#e8ede8', 'light': True},
-                    'blush':   {'bg_hex': '#f5ece8', 'light': True},
-                }
-                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, colour_map=colour_map)
+                current_theme_option = theme_picker_option(client.card_style)
+                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option)
 
         Link.query.filter_by(client_id=client.id).delete()
 
@@ -161,17 +157,8 @@ def card_edit(id):
             return redirect(url_for('dashboard.card_view', id=client.id))
 
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
-    colour_map = {
-        'oxblood': {'bg_hex': '#6b1f2a', 'light': False},
-        'navy':    {'bg_hex': '#1a2744', 'light': False},
-        'forest':  {'bg_hex': '#1a3d2b', 'light': False},
-        'slate':   {'bg_hex': '#2d3748', 'light': False},
-        'charcoal':{'bg_hex': '#1a1714', 'light': False},
-        'linen':   {'bg_hex': '#f0ebe4', 'light': True},
-        'sage':    {'bg_hex': '#e8ede8', 'light': True},
-        'blush':   {'bg_hex': '#f5ece8', 'light': True},
-    }
-    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, colour_map=colour_map)
+    current_theme_option = theme_picker_option(client.card_style)
+    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option)
 
 
 @dashboard_bp.route('/card/<int:id>/delete', methods=['POST'])
