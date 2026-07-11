@@ -19,18 +19,8 @@
   }
 </style>
 
-{% set colour_map = {
-    'oxblood': '#6b1f2a',
-    'navy':    '#1a2744',
-    'forest':  '#1a3d2b',
-    'slate':   '#2d3748',
-    'charcoal':'#1a1714',
-    'linen':   '#f0ebe4',
-    'sage':    '#e8ede8',
-    'blush':   '#f5ece8'
-} %}
 {% set light_styles = ['linen', 'sage', 'blush'] %}
-{% set card_bg = colour_map.get(client.card_style, '#6b1f2a') %}
+{% set premium_themes = ['midnight_framed','oxblood_minimal','linen_brackets','evergreen_classic','noir_framed'] %}
 {% set is_light = client.card_style in light_styles %}
 {% set panel_bg = '#fbf8f3' %}
 {% set row_bg = '#ffffff' %}
@@ -48,8 +38,8 @@
 {% set bg_image_swatches = ['oxblood', 'navy', 'forest', 'slate', 'charcoal', 'linen', 'sage', 'blush'] %}
 {% set has_bg_image = client.card_style in bg_image_swatches %}
 
-<div class="{{ 'has-illustrated-bg' if has_bg_image else '' }}" style="min-height:100vh; background:{% if has_bg_image %}url('{{ url_for('static', filename='images/backgrounds/' + client.card_style + '.webp') }}') center/cover no-repeat, {{ card_bg }}{% else %}radial-gradient(circle at top center, rgba(255,255,255,{{ '0.85' if is_light else '0.10' }}), transparent {{ '42%' if is_light else '38%' }}), linear-gradient(180deg, {{ card_bg }} 0%, color-mix(in srgb, {{ card_bg }} 100%, {{ 'white' if is_light else 'black' }} {{ '35%' if is_light else '25%' }}) 100%){% endif %}; display:flex; flex-direction:column; align-items:center; padding:48px 20px; position:relative;">
-    {% if not has_bg_image %}<div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; opacity:0.035; background-image:url('{{ url_for('static', filename='images/noise.svg') }}'); background-repeat:repeat; background-size:160px 160px; z-index:0;"></div>{% endif %}
+<div class="{{ 'has-illustrated-bg' if has_bg_image else '' }}" style="min-height:100vh; {% if has_bg_image %}background:url('{{ url_for('static', filename='images/backgrounds/' + client.card_style + '.webp') }}') center/cover no-repeat, {{ theme.bg }};{% elif client.card_style in premium_themes %}background-color:{{ theme.bg }}; background-image:none;{% else %}background:radial-gradient(circle at top center, rgba(255,255,255,{{ '0.85' if is_light else '0.10' }}), transparent {{ '42%' if is_light else '38%' }}), linear-gradient(180deg, {{ theme.bg }} 0%, color-mix(in srgb, {{ theme.bg }} 100%, {{ 'white' if is_light else 'black' }} {{ '35%' if is_light else '25%' }}) 100%);{% endif %} display:flex; flex-direction:column; align-items:center; padding:48px 20px; position:relative;">
+    {% if not has_bg_image and client.card_style not in premium_themes %}<div aria-hidden="true" style="position:fixed; inset:0; pointer-events:none; opacity:0.035; background-image:url('{{ url_for('static', filename='images/noise.svg') }}'); background-repeat:repeat; background-size:160px 160px; z-index:0;"></div>{% endif %}
     {% if client.slug == 'cardbranch' %}
     <div style="text-align:center; max-width:420px; width:100%; position:relative; z-index:1; margin-bottom:24px;">
         <span style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:999px; border:1px solid rgba(31,92,70,0.25); background:rgba(31,92,70,0.06); color:#1F5C46; font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:20px;">&#10003; Scanned from a real CardBranch card</span>

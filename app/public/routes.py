@@ -3,6 +3,7 @@ from flask_login import current_user
 from app import limiter
 from app.models import Client, db
 from app.services.links import build_href, should_open_new_tab
+from app.services.themes import theme_css
 from app.public.forms import ContactForm
 
 public_bp = Blueprint('public', __name__)
@@ -42,15 +43,16 @@ def contact():
 def card_links(slug):
     client = Client.query.filter_by(slug=slug).first_or_404()
     is_owner = current_user.is_authenticated and current_user.id == client.user_id
+    theme = theme_css(client.card_style)
     if not client.is_published:
         if is_owner:
             return render_template('public/links.html', client=client, links=client.links.order_by('display_order').all(),
                                    build_href=build_href, should_open_new_tab=should_open_new_tab,
-                                   preview_mode=True)
+                                   preview_mode=True, theme=theme)
         abort(404)
     return render_template('public/links.html', client=client, links=client.links.order_by('display_order').all(),
                            build_href=build_href, should_open_new_tab=should_open_new_tab,
-                           preview_mode=False)
+                           preview_mode=False, theme=theme)
 
 
 @public_bp.route('/robots.txt')

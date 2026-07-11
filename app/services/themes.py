@@ -22,3 +22,17 @@ def resolve_theme(card_style):
     which is the exact fallback the previous CARD_COLOURS.get(card_style,
     CARD_COLOURS['oxblood']) used — preserving existing output for those cards."""
     return CARD_THEMES.get(card_style, CARD_THEMES['oxblood'])
+
+
+def theme_css(card_style):
+    """CSS-ready theme for web templates.
+    NOTE: Only 'bg' is rendered on the web (the page background wall).
+    'text', 'accent', 'layout' are PDF-only in Phase 1 — included for future
+    use but the links page does not render them."""
+    t = resolve_theme(card_style)
+    def rgb(tup):
+        return 'rgb(%d, %d, %d)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255))
+    return {
+        'bg': rgb(t['bg']), 'text': rgb(t['text']), 'accent': rgb(t['accent']),
+        'light': t['light'], 'layout': t['layout'],
+    }
