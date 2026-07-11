@@ -35,6 +35,14 @@
     position: relative;
     transition: background 0.3s ease;
 }
+.preview-frame, .preview-brackets { position:absolute; inset:0; pointer-events:none; display:none; }
+.card-new-preview-card.layout-framed .preview-frame { display:block; border:1.5px solid var(--preview-accent); border-radius:4px; margin:7px; }
+.card-new-preview-card.layout-corner-brackets .preview-brackets { display:block; }
+.preview-brackets .pb { position:absolute; width:10px; height:10px; border:1.5px solid var(--preview-accent); }
+.preview-brackets .tl { top:7px; left:7px; border-right:none; border-bottom:none; }
+.preview-brackets .tr { top:7px; right:7px; border-left:none; border-bottom:none; }
+.preview-brackets .bl { bottom:7px; left:7px; border-right:none; border-top:none; }
+.preview-brackets .br { bottom:7px; right:7px; border-left:none; border-top:none; }
 .card-new-swatches {
     display: flex;
     flex-wrap: wrap;
@@ -236,6 +244,11 @@
                 <div class="card-preview-inner" id="preview-inner">
                     <!-- JS renders content here -->
                 </div>
+                <div class="preview-frame" aria-hidden="true"></div>
+                <div class="preview-brackets" aria-hidden="true">
+                    <span class="pb tl"></span><span class="pb tr"></span>
+                    <span class="pb bl"></span><span class="pb br"></span>
+                </div>
             </div>
 
             <!-- Back -->
@@ -251,29 +264,44 @@
 </div>
 
 <script>
+const themeOptions = {{ theme_options | tojson }};
+const themesByKey = Object.fromEntries(themeOptions.map(t => [t.key, t]));
+</script>
+<script>
 let currentBg = '{{ current_theme_option.bg }}';
 let isLight = {{ 'true' if current_theme_option.light else 'false' }};
 let linkCount = {{ links|length }};
 
+function applyThemePreview(styleKey) {
+    const theme = themesByKey[styleKey] || themesByKey['oxblood'];
+    const card = document.getElementById('preview-front');
+    currentBg = theme.bg;
+    isLight = theme.light;
+    card.style.setProperty('--preview-accent', theme.accent);
+    card.style.background = theme.bg;
+    card.classList.toggle('layout-framed', theme.layout === 'framed');
+    card.classList.toggle('layout-corner-brackets', theme.layout === 'corner_brackets');
+    updatePreview();
+}
+
 function selectColour(style, hex, light) {
-    currentBg = hex;
-    isLight = light;
     document.getElementById('card-style-input').value = style;
-    document.getElementById('preview-front').style.background = hex;
     document.querySelectorAll('.card-new-swatch').forEach(s => s.classList.remove('selected'));
     const wrap = document.querySelector(`.card-new-swatch-wrap[data-style="${style}"]`);
     if (wrap) wrap.querySelector('.card-new-swatch').classList.add('selected');
-    updatePreview();
+    applyThemePreview(style);
 }
 
 function updatePreview() {
     const brand = document.getElementById('input-brand').value.trim() || '{{ client.brand_name }}';
     const tagline = document.getElementById('input-tagline').value.trim();
+    const currentKey = document.getElementById('card-style-input').value;
+    const theme = themesByKey[currentKey] || themesByKey['oxblood'];
     const textColour = isLight ? '#1a1714' : '#faf8f4';
     const inner = document.getElementById('preview-inner');
 
     if (tagline) {
-        // A1 layout
+        // A1 layout — accent on brand name + divider
         inner.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
@@ -282,12 +310,12 @@ function updatePreview() {
                         ${brand.charAt(0).toUpperCase()}
                     </span>
                 </div>
-                <div class="card-preview-name" style="font-size:clamp(11px,2vw,15px); color:${textColour}; margin-bottom:4%;">${brand}</div>
-                <div class="card-preview-divider" style="background:${textColour}66; margin-bottom:4%;"></div>
+                <div class="card-preview-name" style="font-size:clamp(11px,2vw,15px); color:${theme.accent}; margin-bottom:4%;">${brand}</div>
+                <div class="card-preview-divider" style="background:${theme.accent}; margin-bottom:4%;"></div>
                 <div class="card-preview-tagline" style="font-size:clamp(7px,1.2vw,9px); color:${textColour}aa;">${tagline.toUpperCase()}</div>
             </div>`;
     } else {
-        // A3 layout
+        // A3 layout — no accent, matches PDF behaviour
         inner.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
@@ -328,6 +356,6 @@ document.querySelector('form').addEventListener('submit', function() {
 });
 
 // Init preview on load
-updatePreview();
+applyThemePreview('{{ current_theme_option.key }}');
 </script>
 {% endblock %}

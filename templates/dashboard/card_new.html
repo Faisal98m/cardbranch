@@ -111,6 +111,11 @@
           <div class="card-new-brand" id="preview-brand" style="color:#faf8f4;">Your Brand</div>
           <div class="card-new-divider" id="preview-divider" style="width:22px; background:rgba(250,248,244,0.35); display:none;"></div>
           <div class="card-new-tag" id="preview-tag" style="color:rgba(250,248,244,0.6); display:none;"></div>
+          <div class="preview-frame" aria-hidden="true"></div>
+          <div class="preview-brackets" aria-hidden="true">
+            <span class="pb tl"></span><span class="pb tr"></span>
+            <span class="pb bl"></span><span class="pb br"></span>
+          </div>
         </div>
       </div>
       <div style="flex:1; display:flex; flex-direction:column;">
@@ -195,7 +200,16 @@
   padding: 16px;
   transition: background 0.2s;
   box-sizing: border-box;
+  position: relative;
 }
+.preview-frame, .preview-brackets { position:absolute; inset:0; pointer-events:none; display:none; }
+.card-new-face.layout-framed .preview-frame { display:block; border:1.5px solid var(--preview-accent); border-radius:4px; margin:7px; }
+.card-new-face.layout-corner-brackets .preview-brackets { display:block; }
+.preview-brackets .pb { position:absolute; width:10px; height:10px; border:1.5px solid var(--preview-accent); }
+.preview-brackets .tl { top:7px; left:7px; border-right:none; border-bottom:none; }
+.preview-brackets .tr { top:7px; right:7px; border-left:none; border-bottom:none; }
+.preview-brackets .bl { bottom:7px; left:7px; border-right:none; border-top:none; }
+.preview-brackets .br { bottom:7px; right:7px; border-left:none; border-top:none; }
 .card-new-logo-box {
   border-radius: 5px;
   display: flex;
@@ -326,9 +340,11 @@
 })();
 </script>
 <script>
+const themeOptions = {{ theme_options | tojson }};
+const themesByKey = Object.fromEntries(themeOptions.map(t => [t.key, t]));
+</script>
+<script>
 let linkCount = 1;
-let currentBg = '#6b1f2a';
-let isLight = false;
 
 const LINK_PLACEHOLDERS = {
   website: 'https://...',
@@ -388,6 +404,18 @@ document.getElementById('card-form').addEventListener('submit', function() {
   document.getElementById('links-json').value = JSON.stringify(links);
 });
 
+function applyThemePreview(styleKey) {
+    const theme = themesByKey[styleKey] || themesByKey['oxblood'];
+    const card = document.getElementById('preview-front');
+    currentBg = theme.bg;
+    isLight = theme.light;
+    card.style.setProperty('--preview-accent', theme.accent);
+    card.style.background = theme.bg;
+    card.classList.toggle('layout-framed', theme.layout === 'framed');
+    card.classList.toggle('layout-corner-brackets', theme.layout === 'corner_brackets');
+    updatePreview();
+}
+
 function updatePreview() {
   const brand = document.getElementById('brand-input').value.trim() || 'Your Brand';
   const tag = document.getElementById('tagline-input').value.trim();
@@ -397,6 +425,8 @@ function updatePreview() {
   const dividerEl = document.getElementById('preview-divider');
   const tagEl = document.getElementById('preview-tag');
   const frontEl = document.getElementById('preview-front');
+  const currentKey = document.getElementById('card-style-input').value;
+  const theme = themesByKey[currentKey] || themesByKey['oxblood'];
 
   logoEl.textContent = initial;
   brandEl.textContent = brand;
@@ -421,19 +451,23 @@ function updatePreview() {
   if (isLight) {
     logoEl.style.color = '#1a1714';
     logoEl.style.borderColor = 'rgba(26,23,20,0.35)';
-    brandEl.style.color = '#1a1714';
     tagEl.style.color = 'rgba(26,23,20,0.55)';
-    dividerEl.style.background = 'rgba(26,23,20,0.25)';
     frontEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)';
     frontEl.style.border = '1.5px solid #d8d0c4';
   } else {
     logoEl.style.color = '#faf8f4';
     logoEl.style.borderColor = 'rgba(250,248,244,0.4)';
-    brandEl.style.color = '#faf8f4';
     tagEl.style.color = 'rgba(250,248,244,0.6)';
-    dividerEl.style.background = 'rgba(250,248,244,0.35)';
     frontEl.style.boxShadow = '0 6px 20px ' + currentBg + '66';
     frontEl.style.border = 'none';
+  }
+
+  if (tag) {
+    brandEl.style.color = theme.accent;
+    dividerEl.style.background = theme.accent;
+  } else {
+    brandEl.style.color = isLight ? '#1a1714' : '#faf8f4';
+    dividerEl.style.background = isLight ? 'rgba(26,23,20,0.25)' : 'rgba(250,248,244,0.35)';
   }
 }
 
@@ -441,21 +475,15 @@ document.querySelectorAll('.card-new-swatch-wrap').forEach(wrap => {
   wrap.addEventListener('click', () => {
     document.querySelectorAll('.card-new-swatch').forEach(s => s.classList.remove('selected'));
     wrap.querySelector('.card-new-swatch').classList.add('selected');
-    currentBg = wrap.dataset.bg;
-    isLight = wrap.dataset.text === '#1a1714';
-    document.getElementById('preview-front').style.background = currentBg;
     document.getElementById('card-style-input').value = wrap.dataset.style;
-    updatePreview();
+    applyThemePreview(wrap.dataset.style);
   });
 });
 
 document.getElementById('brand-input').addEventListener('input', updatePreview);
 document.getElementById('tagline-input').addEventListener('input', updatePreview);
 
-currentBg = '#6b1f2a';
-isLight = false;
-document.getElementById('preview-front').style.background = currentBg;
-updatePreview();
+applyThemePreview('oxblood');
 </script>
 
 <div id="card-creating-overlay" style="display:none; position:fixed; inset:0; background:var(--bg-primary); z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:1rem;">
