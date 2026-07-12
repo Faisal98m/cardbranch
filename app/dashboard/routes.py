@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from app.models import Client, Link, Order, db
 from app.dashboard.forms import CardForm, LinkForm
 from app.services.generator import unique_slug, save_logo, generate_assets
-from app.services.themes import theme_css, theme_picker_options, normalise_theme_key, theme_picker_option, resolve_design, design_css
+from app.services.themes import theme_css, theme_picker_options, normalise_theme_key, theme_picker_option, resolve_design, design_css, card_colour_options, card_border_options, card_font_options
 from app.services.links import normalize_uk_phone
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -137,6 +137,9 @@ def card_edit(id):
             f"Unsupported editor preview border renderer: {design['border_renderer']!r}"
         )
     current_preview = design_css(design)
+    current_preview['colour_key'] = design['colour_key']
+    current_preview['border_key'] = design['border_key']
+    current_preview['font_key'] = design['font_key']
 
     if form.validate_on_submit():
         brand_name = form.brand_name.data.strip()
@@ -186,7 +189,7 @@ def card_edit(id):
 
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
     current_theme_option = theme_picker_option(client.card_style)
-    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option, current_preview=current_preview)
+    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option, current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options())
 
 
 @dashboard_bp.route('/card/<int:id>/delete', methods=['POST'])

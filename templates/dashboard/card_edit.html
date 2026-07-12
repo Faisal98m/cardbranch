@@ -136,6 +136,12 @@
     align-items: center;
     justify-content: center;
 }
+.new-design-picker .card-new-swatch-name.selected {
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
 </style>
 
 <h2 class="page-title">Edit {{ client.brand_name }}</h2>
@@ -199,6 +205,39 @@
                     </div>
                     <p style="font-size:11px; color:var(--text-dim); margin-top:8px;">Framed and accent styling appears on your printed card and links page.</p>
                     <input type="hidden" name="card_style" id="card-style-input" value="{{ client.card_style }}">
+                </div>
+
+                <div style="margin-bottom: 20px;" class="new-design-picker">
+                    <label style="display:block; margin-bottom:8px; margin-top:24px;">New card design (preview only — not yet saved)</label>
+
+                    <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Colour</div>
+                    <div class="card-new-swatches">
+                        {% for option in card_colour_options %}
+                        <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ option.key }}" onclick="pickNewColour('{{ option.key }}')">
+                            <div class="card-new-swatch {% if current_preview.colour_key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+                            <span class="card-new-swatch-name">{{ option.display_name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Border</div>
+                    <div class="card-new-swatches">
+                        {% for option in card_border_options %}
+                        <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ option.key }}" onclick="pickNewBorder('{{ option.key }}')">
+                            <span class="card-new-swatch-name {% if current_preview.border_key == option.key %}selected{% endif %}">{{ option.display_name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Split Edge and Top &amp; Bottom Rule previews are not available yet — selecting them updates state only.</p>
+
+                    <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
+                    <div class="card-new-swatches">
+                        {% for option in card_font_options %}
+                        <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ option.key }}" onclick="pickNewFont('{{ option.key }}')">
+                            <span class="card-new-swatch-name {% if current_preview.font_key == option.key %}selected{% endif %}" style="font-family: {{ option.browser_family }};">{{ option.display_name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -358,5 +397,66 @@ const currentPreview = {{ current_preview | tojson }};
     card.classList.toggle('layout-corner-brackets', currentPreview.border_renderer === 'corner_marks');
     updatePreview();
 })();
+
+// New three-axis picker state
+let selectedColour = currentPreview.colour_key;
+let selectedBorder = currentPreview.border_key;
+let selectedFont = currentPreview.font_key;
+
+const newColourOptions = {{ card_colour_options | tojson }};
+const newBorderOptions = {{ card_border_options | tojson }};
+const newFontOptions = {{ card_font_options | tojson }};
+
+function updateNewPickerSelection(axis, selectedKey) {
+    const visualSelector = axis === 'colour'
+        ? '.card-new-swatch'
+        : '.card-new-swatch-name';
+
+    document.querySelectorAll(`[data-design-axis="${axis}"]`).forEach(option => {
+        const visualElement = option.querySelector(visualSelector);
+
+        if (!visualElement) {
+            return;
+        }
+
+        visualElement.classList.toggle(
+            'selected',
+            option.dataset.designKey === selectedKey
+        );
+    });
+}
+
+function renderNewDesignPreview() {
+    const colour = newColourOptions.find(c => c.key === selectedColour);
+    const font = newFontOptions.find(f => f.key === selectedFont);
+    const card = document.getElementById('preview-front');
+
+    currentBg = colour.bg;
+    isLight = colour.light;
+    card.style.setProperty('--preview-accent', colour.accent);
+    card.style.setProperty('--card-font-family', font.browser_family);
+    card.style.background = colour.bg;
+
+    card.classList.toggle('layout-framed', selectedBorder === 'keyline');
+    card.classList.toggle('layout-corner-brackets', selectedBorder === 'corner_marks');
+
+    updatePreview();
+}
+
+function pickNewColour(key) {
+    selectedColour = key;
+    updateNewPickerSelection('colour', key);
+    renderNewDesignPreview();
+}
+function pickNewBorder(key) {
+    selectedBorder = key;
+    updateNewPickerSelection('border', key);
+    renderNewDesignPreview();
+}
+function pickNewFont(key) {
+    selectedFont = key;
+    updateNewPickerSelection('font', key);
+    renderNewDesignPreview();
+}
 </script>
 {% endblock %}

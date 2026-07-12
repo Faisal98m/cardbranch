@@ -243,3 +243,40 @@ def design_css(resolved):
         'border_renderer': resolved['border_renderer'],
         'browser_family': resolved['browser_family'],
     }
+
+
+SELECTABLE_COLOUR_KEYS = ['oxblood', 'navy', 'forest', 'linen', 'midnight_framed', 'evergreen_classic']
+
+_COLOUR_DISPLAY_OVERRIDES = {
+    'midnight_framed': 'Midnight',
+    'evergreen_classic': 'Evergreen',
+}
+
+def card_colour_options():
+    """Presentation-ready options for the 6 selectable new-style colours."""
+    def rgb(tup):
+        return 'rgb(%d, %d, %d)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255))
+    opts = []
+    for key in SELECTABLE_COLOUR_KEYS:
+        c = CARD_COLOURS[key]
+        opts.append({
+            'key': key,
+            'display_name': _COLOUR_DISPLAY_OVERRIDES.get(key, c['display_name']),
+            'bg': rgb(c['bg']), 'text': rgb(c['text']), 'accent': rgb(c['accent']),
+            'light': c['light'],
+        })
+    return opts
+
+def card_border_options():
+    """Presentation-ready options for all 5 borders, stable dict order."""
+    return [
+        {'key': k, 'display_name': v['display_name'], 'border_renderer': v['border_renderer']}
+        for k, v in CARD_BORDERS.items()
+    ]
+
+def card_font_options():
+    """Presentation-ready options for all 3 fonts, stable dict order."""
+    return [
+        {'key': k, 'display_name': v['display_name'], 'browser_family': v['browser_family']}
+        for k, v in CARD_FONTS.items()
+    ]
