@@ -33,7 +33,7 @@
       <div class="cv-panel-body" style="display:flex; flex-direction:column; gap:10px;">
         <div>
           <div class="card-lbl">Front</div>
-        <div class="card-front" style="background: {{ theme.bg }}; width:100%; aspect-ratio:85/55; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative;">
+        <div class="card-front" style="background: {{ theme.bg }}; width:100%; aspect-ratio:85/55; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; --card-font-family: {{ theme.browser_family }};">
           <div class="card-inner">
             {% if client.tagline %}
             <div class="logo-box" style="border-color: {{ theme.text }}44;">
@@ -306,7 +306,7 @@
 .logo-initial {
   font-size: 11px;
   font-weight: 700;
-  font-family: 'Playfair Display SC', Georgia, serif;
+  font-family: var(--card-font-family, 'Playfair Display', Georgia, serif);
 }
 .logo-initial-lg {
   font-size: 16px;
@@ -314,14 +314,14 @@
 .preview-name {
   font-size: 9px;
   font-weight: 700;
-  font-family: 'Playfair Display SC', Georgia, serif;
+  font-family: var(--card-font-family, 'Playfair Display', Georgia, serif);
   text-align: center;
   margin-bottom: 5%;
 }
 .preview-name-sm {
   font-size: 7px;
   letter-spacing: 0.12em;
-  font-family: 'Playfair Display SC', Georgia, serif;
+  font-family: var(--card-font-family, 'Playfair Display', Georgia, serif);
   text-align: center;
 }
 .preview-divider {
@@ -334,7 +334,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  font-family: 'Playfair Display SC', Georgia, serif;
+  font-family: var(--card-font-family, 'Playfair Display', Georgia, serif);
 }
 .btn-primary {
   display: flex;

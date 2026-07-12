@@ -99,7 +99,7 @@
     transition: border-color 0.3s;
 }
 .card-preview-name {
-    font-family: 'Playfair Display SC', serif;
+    font-family: var(--card-font-family, 'Playfair Display', serif);
     font-weight: 700;
     text-align: center;
     transition: color 0.3s;
@@ -111,7 +111,7 @@
     transition: background 0.3s;
 }
 .card-preview-tagline {
-    font-family: 'Playfair Display SC', serif;
+    font-family: var(--card-font-family, 'Playfair Display', serif);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     text-align: center;
@@ -230,7 +230,7 @@
 
             <!-- Front -->
             <div class="card-new-preview-card" id="preview-front"
-                 style="background: {{ current_theme_option.bg }};">
+                 style="background: {{ current_theme_option.bg }}; --card-font-family: {{ current_preview.browser_family }};">
                 <div class="card-preview-inner" id="preview-inner">
                     <!-- JS renders content here -->
                 </div>
@@ -296,7 +296,7 @@ function updatePreview() {
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
                      style="width:22%; aspect-ratio:1; border:1px solid ${textColour}44; background:${currentBg}; margin-bottom:6%;">
-                    <span style="font-family:'Playfair Display SC',serif; font-weight:700; font-size:clamp(10px,2.5vw,16px); color:${textColour};">
+                    <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(10px,2.5vw,16px); color:${textColour};">
                         ${brand.charAt(0).toUpperCase()}
                     </span>
                 </div>
@@ -310,11 +310,11 @@ function updatePreview() {
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
                      style="width:32%; aspect-ratio:1; border:1px solid ${textColour}44; background:${currentBg}; margin-bottom:5%;">
-                    <span style="font-family:'Playfair Display SC',serif; font-weight:700; font-size:clamp(12px,3vw,20px); color:${textColour};">
+                    <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(12px,3vw,20px); color:${textColour};">
                         ${brand.charAt(0).toUpperCase()}
                     </span>
                 </div>
-                <div style="font-family:'Playfair Display SC',serif; font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;">${brand.toUpperCase()}</div>
+                <div style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;">${brand.toUpperCase()}</div>
             </div>`;
     }
 }
@@ -352,6 +352,7 @@ const currentPreview = {{ current_preview | tojson }};
     currentBg = currentPreview.bg;
     isLight = currentPreview.light;
     card.style.setProperty('--preview-accent', currentPreview.accent);
+    card.style.setProperty('--card-font-family', currentPreview.browser_family);
     card.style.background = currentPreview.bg;
     card.classList.toggle('layout-framed', currentPreview.border_renderer === 'keyline');
     card.classList.toggle('layout-corner-brackets', currentPreview.border_renderer === 'corner_marks');

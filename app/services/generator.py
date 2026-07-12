@@ -132,29 +132,6 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
 
     register_design_fonts()
 
-    candidate_dirs = [
-        os.path.join(os.path.dirname(__file__), '..', '..', 'static', 'fonts'),
-        os.path.join(os.path.dirname(__file__), '..', 'static', 'fonts'),
-        os.path.join(os.getcwd(), 'static', 'fonts'),
-    ]
-    fonts_dir = None
-    for d in candidate_dirs:
-        d = os.path.abspath(d)
-        if os.path.exists(os.path.join(d, 'PlayfairDisplaySC-Bold.ttf')):
-            fonts_dir = d
-            break
-
-    name_font = 'Helvetica-Bold'
-    tag_font = 'Helvetica'
-    if fonts_dir:
-        try:
-            pdfmetrics.registerFont(TTFont('PlayfairBold', os.path.join(fonts_dir, 'PlayfairDisplaySC-Bold.ttf')))
-            pdfmetrics.registerFont(TTFont('PlayfairRegular', os.path.join(fonts_dir, 'PlayfairDisplaySC-Regular.ttf')))
-            name_font = 'PlayfairBold'
-            tag_font = 'PlayfairRegular'
-        except Exception:
-            pass
-
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
     design = resolve_design(
@@ -163,6 +140,13 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
         card_font=card_font,
         legacy_card_style=card_style,
     )
+    name_font = design['pdf_bold']
+    tag_font = design['pdf_regular']
+    from reportlab.pdfbase import pdfmetrics as _pdfm
+    if name_font not in _pdfm.getRegisteredFontNames():
+        raise RuntimeError(f"PDF bold font {name_font!r} not registered")
+    if tag_font not in _pdfm.getRegisteredFontNames():
+        raise RuntimeError(f"PDF regular font {tag_font!r} not registered")
     front_bg = design['bg']
     text_colour = design['text']
     accent_colour = design['accent']
