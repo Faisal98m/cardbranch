@@ -97,6 +97,29 @@ def download_logo(logo_filename):
         return None
 
 
+DEFAULT_FONTS_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'static', 'fonts')
+
+REQUIRED_DESIGN_FONTS = {
+    'PlayfairDisplay-Regular': os.path.join(DEFAULT_FONTS_DIR, 'playfair-display', 'PlayfairDisplay-Regular.ttf'),
+    'PlayfairDisplay-Bold': os.path.join(DEFAULT_FONTS_DIR, 'playfair-display', 'PlayfairDisplay-Bold.ttf'),
+    'Cormorant-Regular': os.path.join(DEFAULT_FONTS_DIR, 'cormorant', 'Cormorant-Regular.ttf'),
+    'Cormorant-Bold': os.path.join(DEFAULT_FONTS_DIR, 'cormorant', 'Cormorant-Bold.ttf'),
+    'Poppins-Regular': os.path.join(DEFAULT_FONTS_DIR, 'poppins', 'Poppins-Regular.ttf'),
+    'Poppins-Bold': os.path.join(DEFAULT_FONTS_DIR, 'poppins', 'Poppins-Bold.ttf'),
+}
+
+
+def register_design_fonts():
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    registered = pdfmetrics.getRegisteredFontNames()
+    for name, path in REQUIRED_DESIGN_FONTS.items():
+        if not os.path.isfile(path):
+            raise FileNotFoundError(f"Missing font file for {name}: {path}")
+        if name not in registered:
+            pdfmetrics.registerFont(TTFont(name, path))
+
+
 def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood', pdf_r2_key=None, card_colour=None, card_border=None, card_font=None):
     import os
     from reportlab.pdfbase import pdfmetrics
@@ -106,6 +129,8 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
     card_h = 55 * mm_unit
     pdf_path = f'/tmp/{slug}_card.pdf'
     qr_img_path = f'/tmp/{slug}_qr.png'
+
+    register_design_fonts()
 
     candidate_dirs = [
         os.path.join(os.path.dirname(__file__), '..', '..', 'static', 'fonts'),

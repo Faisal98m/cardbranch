@@ -133,6 +133,18 @@ CARD_FONTS = {
         'pdf_regular': 'PlayfairDisplay-Regular',
         'pdf_bold': 'PlayfairDisplay-Bold',
     },
+    'cormorant': {
+        'display_name': 'Cormorant',
+        'browser_family': "'Cormorant', Georgia, serif",
+        'pdf_regular': 'Cormorant-Regular',
+        'pdf_bold': 'Cormorant-Bold',
+    },
+    'poppins': {
+        'display_name': 'Poppins',
+        'browser_family': "'Poppins', Arial, sans-serif",
+        'pdf_regular': 'Poppins-Regular',
+        'pdf_bold': 'Poppins-Bold',
+    },
 }
 
 # ---------------------------------------------------------------------------
