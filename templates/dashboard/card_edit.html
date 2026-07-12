@@ -345,7 +345,17 @@ document.querySelector('form').addEventListener('submit', function() {
     document.getElementById('links-json').value = JSON.stringify(links);
 });
 
-// Init preview on load
-applyThemePreview('{{ current_theme_option.key }}');
+// Init preview on load from resolved design
+const currentPreview = {{ current_preview | tojson }};
+(function() {
+    const card = document.getElementById('preview-front');
+    currentBg = currentPreview.bg;
+    isLight = currentPreview.light;
+    card.style.setProperty('--preview-accent', currentPreview.accent);
+    card.style.background = currentPreview.bg;
+    card.classList.toggle('layout-framed', currentPreview.border_renderer === 'keyline');
+    card.classList.toggle('layout-corner-brackets', currentPreview.border_renderer === 'corner_marks');
+    updatePreview();
+})();
 </script>
 {% endblock %}

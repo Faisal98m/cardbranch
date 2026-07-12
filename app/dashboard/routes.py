@@ -126,6 +126,18 @@ def card_edit(id):
     form = CardForm(obj=client)
     theme_options = theme_picker_options()
 
+    design = resolve_design(
+        client.card_colour,
+        client.card_border,
+        client.card_font,
+        legacy_card_style=client.card_style,
+    )
+    if design['border_renderer'] not in ('none', 'keyline', 'corner_marks'):
+        raise ValueError(
+            f"Unsupported editor preview border renderer: {design['border_renderer']!r}"
+        )
+    current_preview = design_css(design)
+
     if form.validate_on_submit():
         brand_name = form.brand_name.data.strip()
         client.brand_name = brand_name
@@ -141,7 +153,7 @@ def card_edit(id):
                 flash(str(e), 'error')
                 links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
                 current_theme_option = theme_picker_option(client.card_style)
-                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option)
+                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option, current_preview=current_preview)
 
         Link.query.filter_by(client_id=client.id).delete()
 
@@ -174,7 +186,7 @@ def card_edit(id):
 
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
     current_theme_option = theme_picker_option(client.card_style)
-    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option)
+    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option, current_preview=current_preview)
 
 
 @dashboard_bp.route('/card/<int:id>/delete', methods=['POST'])
