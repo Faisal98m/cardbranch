@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from app.models import Client, Link, Order, db
 from app.dashboard.forms import CardForm, LinkForm
 from app.services.generator import unique_slug, save_logo, generate_assets
-from app.services.themes import theme_css, theme_picker_options, normalise_theme_key, theme_picker_option
+from app.services.themes import theme_css, theme_picker_options, normalise_theme_key, theme_picker_option, resolve_design, design_css
 from app.services.links import normalize_uk_phone
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -100,7 +100,22 @@ def card_new():
 def card_view(id):
     client = Client.query.filter_by(id=id, user_id=current_user.id).first_or_404()
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
-    theme = theme_css(client.card_style)
+    design = resolve_design(
+        client.card_colour,
+        client.card_border,
+        client.card_font,
+        legacy_card_style=client.card_style,
+    )
+    if design['border_renderer'] not in ('none', 'keyline', 'corner_marks'):
+        raise ValueError(
+            f"Unsupported card_view border renderer: {design['border_renderer']!r}"
+        )
+    theme = design_css(design)
+    theme['layout'] = {
+        'none': 'minimal',
+        'keyline': 'framed',
+        'corner_marks': 'corner_brackets',
+    }[design['border_renderer']]
     return render_template('dashboard/card_view.html', client=client, links=links, theme=theme)
 
 
