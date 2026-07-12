@@ -93,3 +93,141 @@ def theme_picker_option(card_style):
         if option['key'] == key:
             return option
     return theme_picker_options()[0]  # unreachable; normalise guarantees a valid key
+
+
+# ---------------------------------------------------------------------------
+# New-style design registries (card_colour / card_border / card_font)
+# ---------------------------------------------------------------------------
+# These are data-only. No renderer, route, template, or form changes yet.
+# The existing card_style column and CARD_THEMES remain the active system.
+# ---------------------------------------------------------------------------
+
+CARD_COLOURS = {
+    'oxblood':           {'bg': (0.420, 0.122, 0.165), 'text': (0.980, 0.973, 0.957), 'accent': (0.980, 0.973, 0.957), 'light': False, 'display_name': 'Oxblood'},
+    'navy':              {'bg': (0.102, 0.153, 0.267), 'text': (0.980, 0.973, 0.957), 'accent': (0.980, 0.973, 0.957), 'light': False, 'display_name': 'Navy'},
+    'forest':            {'bg': (0.102, 0.239, 0.169), 'text': (0.980, 0.973, 0.957), 'accent': (0.980, 0.973, 0.957), 'light': False, 'display_name': 'Forest'},
+    'slate':             {'bg': (0.176, 0.216, 0.282), 'text': (0.980, 0.973, 0.957), 'accent': (0.980, 0.973, 0.957), 'light': False, 'display_name': 'Slate'},
+    'charcoal':          {'bg': (0.102, 0.090, 0.082), 'text': (0.980, 0.973, 0.957), 'accent': (0.980, 0.973, 0.957), 'light': False, 'display_name': 'Charcoal'},
+    'linen':             {'bg': (0.941, 0.922, 0.894), 'text': (0.102, 0.090, 0.082), 'accent': (0.102, 0.090, 0.082), 'light': True,  'display_name': 'Linen'},
+    'sage':              {'bg': (0.910, 0.929, 0.910), 'text': (0.102, 0.090, 0.082), 'accent': (0.102, 0.090, 0.082), 'light': True,  'display_name': 'Sage'},
+    'blush':             {'bg': (0.961, 0.925, 0.910), 'text': (0.102, 0.090, 0.082), 'accent': (0.102, 0.090, 0.082), 'light': True,  'display_name': 'Blush'},
+    'midnight_framed':   {'bg': (0.071, 0.125, 0.227), 'text': (0.941, 0.929, 0.910), 'accent': (0.788, 0.635, 0.294), 'light': False, 'display_name': 'Midnight Framed'},
+    'oxblood_minimal':   {'bg': (0.420, 0.122, 0.165), 'text': (0.961, 0.929, 0.886), 'accent': (0.878, 0.788, 0.651), 'light': False, 'display_name': 'Oxblood Minimal'},
+    'linen_brackets':    {'bg': (0.957, 0.945, 0.918), 'text': (0.165, 0.149, 0.125), 'accent': (0.122, 0.361, 0.275), 'light': True,  'display_name': 'Linen Brackets'},
+    'evergreen_classic': {'bg': (0.078, 0.196, 0.122), 'text': (0.933, 0.941, 0.918), 'accent': (0.780, 0.659, 0.400), 'light': False, 'display_name': 'Evergreen Classic'},
+    'noir_framed':       {'bg': (0.086, 0.086, 0.086), 'text': (0.941, 0.929, 0.910), 'accent': (0.788, 0.635, 0.294), 'light': False, 'display_name': 'Noir Framed'},
+}
+
+CARD_BORDERS = {
+    'none':             {'display_name': 'None',              'border_renderer': 'none'},
+    'keyline':          {'display_name': 'Keyline',           'border_renderer': 'keyline'},
+    'corner_marks':     {'display_name': 'Corner Marks',      'border_renderer': 'corner_marks'},
+    'split_edge':       {'display_name': 'Split Edge',        'border_renderer': 'split_edge'},
+    'top_bottom_rule':  {'display_name': 'Top & Bottom Rule', 'border_renderer': 'top_bottom_rule'},
+}
+
+CARD_FONTS = {
+    'playfair': {
+        'display_name': 'Playfair',
+        'browser_family': "'Playfair Display', Georgia, serif",
+        'pdf_regular': 'PlayfairDisplay-Regular',
+        'pdf_bold': 'PlayfairDisplay-Bold',
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Legacy-style map — each legacy card_style key → (colour, border, font)
+# ---------------------------------------------------------------------------
+# Border reinterpretation of the old CARD_THEMES layout field:
+#   'minimal'        → none
+#   'framed'         → keyline
+#   'corner_brackets' → corner_marks
+# ---------------------------------------------------------------------------
+
+LEGACY_STYLE_MAP = {
+    'oxblood':           ('oxblood',          'none',          'playfair'),
+    'navy':              ('navy',             'none',          'playfair'),
+    'forest':            ('forest',           'none',          'playfair'),
+    'slate':             ('slate',            'none',          'playfair'),
+    'charcoal':          ('charcoal',         'none',          'playfair'),
+    'linen':             ('linen',            'none',          'playfair'),
+    'sage':              ('sage',             'none',          'playfair'),
+    'blush':             ('blush',            'none',          'playfair'),
+    'midnight_framed':   ('midnight_framed',  'keyline',       'playfair'),
+    'oxblood_minimal':   ('oxblood_minimal',  'none',          'playfair'),
+    'linen_brackets':    ('linen_brackets',   'corner_marks',  'playfair'),
+    'evergreen_classic': ('evergreen_classic','keyline',       'playfair'),
+    'noir_framed':       ('noir_framed',      'keyline',       'playfair'),
+}
+
+_LEGACY_FALLBACK = ('oxblood', 'none', 'playfair')
+
+
+def resolve_design(card_colour=None, card_border=None, card_font=None, legacy_card_style=None):
+    """Resolve card design from either the three new fields (all-or-nothing)
+    or the legacy card_style key via LEGACY_STYLE_MAP.
+
+    New-style path: all three must be non-None and valid in their registries.
+    Legacy fallback path: uses LEGACY_STYLE_MAP with _LEGACY_FALLBACK for
+    None, '', 'default', or any unrecognised key.
+    Never blends new and legacy fields.
+    """
+    colour_valid = card_colour is not None and card_colour in CARD_COLOURS
+    border_valid = card_border is not None and card_border in CARD_BORDERS
+    font_valid = card_font is not None and card_font in CARD_FONTS
+
+    if colour_valid and border_valid and font_valid:
+        colour = CARD_COLOURS[card_colour]
+        border = CARD_BORDERS[card_border]
+        font = CARD_FONTS[card_font]
+        return {
+            'colour_key': card_colour,
+            'border_key': card_border,
+            'font_key': card_font,
+            'bg': colour['bg'],
+            'text': colour['text'],
+            'accent': colour['accent'],
+            'light': colour['light'],
+            'border_renderer': border['border_renderer'],
+            'browser_family': font['browser_family'],
+            'pdf_regular': font['pdf_regular'],
+            'pdf_bold': font['pdf_bold'],
+        }
+
+    # Legacy fallback
+    if legacy_card_style is None or legacy_card_style == '' or legacy_card_style not in LEGACY_STYLE_MAP:
+        resolved = _LEGACY_FALLBACK
+    else:
+        resolved = LEGACY_STYLE_MAP[legacy_card_style]
+
+    colour_key, border_key, font_key = resolved
+    colour = CARD_COLOURS[colour_key]
+    border = CARD_BORDERS[border_key]
+    font = CARD_FONTS[font_key]
+    return {
+        'colour_key': colour_key,
+        'border_key': border_key,
+        'font_key': font_key,
+        'bg': colour['bg'],
+        'text': colour['text'],
+        'accent': colour['accent'],
+        'light': colour['light'],
+        'border_renderer': border['border_renderer'],
+        'browser_family': font['browser_family'],
+        'pdf_regular': font['pdf_regular'],
+        'pdf_bold': font['pdf_bold'],
+    }
+
+
+def design_css(resolved):
+    """Convert a resolved design dict into CSS-ready string values."""
+    def rgb(tup):
+        return 'rgb(%d, %d, %d)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255))
+    return {
+        'bg': rgb(resolved['bg']),
+        'text': rgb(resolved['text']),
+        'accent': rgb(resolved['accent']),
+        'light': resolved['light'],
+        'border_renderer': resolved['border_renderer'],
+        'browser_family': resolved['browser_family'],
+    }
