@@ -158,7 +158,10 @@ def webhook():
                 client.pdf_r2_key = generate_assets(client.slug, client.brand_name, client.tagline,
                                                     current_app.config['SITE_URL'],
                                                     logo_filename=client.logo_filename,
-                                                    card_style=client.card_style)
+                                                    card_style=client.card_style,
+                                                    card_colour=client.card_colour,
+                                                    card_border=client.card_border,
+                                                    card_font=client.card_font)
                 order.status = 'paid'
                 order.stripe_payment_id = session.get('payment_intent', '')
                 client.is_published = True

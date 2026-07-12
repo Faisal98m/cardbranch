@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import mm
 from reportlab.lib.units import mm as mm_unit
 from reportlab.pdfgen import canvas
 from app.services.r2 import upload_file
-from app.services.themes import resolve_theme
+from app.services.themes import resolve_design
 
 
 
@@ -97,7 +97,7 @@ def download_logo(logo_filename):
         return None
 
 
-def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood', pdf_r2_key=None):
+def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood', pdf_r2_key=None, card_colour=None, card_border=None, card_font=None):
     import os
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
@@ -132,12 +132,16 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
 
     c = canvas.Canvas(pdf_path, pagesize=(card_w, card_h))
 
-    theme = resolve_theme(card_style)
-    front_bg = theme['bg']
-    text_colour = theme['text']
-    accent_colour = theme['accent']
-    is_light = theme['light']
-    layout = theme['layout']
+    design = resolve_design(
+        card_colour=card_colour,
+        card_border=card_border,
+        card_font=card_font,
+        legacy_card_style=card_style,
+    )
+    front_bg = design['bg']
+    text_colour = design['text']
+    accent_colour = design['accent']
+    is_light = design['light']
     linen = (0.941, 0.922, 0.894)
 
     has_tagline = bool(tagline and tagline.strip())
@@ -252,11 +256,12 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
                 c.drawCentredString(card_w / 2, logo_box_y - 6.5 * mm_unit, "www.cardbranch.co.uk")
 
         inset = 2.5 * mm_unit
-        if layout == 'framed':
+        border_renderer = design['border_renderer']
+        if border_renderer == 'keyline':
             c.setStrokeColorRGB(*accent_colour)
             c.setLineWidth(0.4)
             c.roundRect(inset, inset, card_w - 2*inset, card_h - 2*inset, 1.2*mm_unit, fill=0, stroke=1)
-        elif layout == 'corner_brackets':
+        elif border_renderer == 'corner_marks':
             c.setStrokeColorRGB(*accent_colour)
             c.setLineWidth(0.5)
             leg = 3 * mm_unit
@@ -268,7 +273,10 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
             c.line(inset, card_h - inset, inset, card_h - inset - leg)
             c.line(card_w - inset, card_h - inset, card_w - inset - leg, card_h - inset)
             c.line(card_w - inset, card_h - inset, card_w - inset, card_h - inset - leg)
-        # layout == 'minimal': no decoration
+        elif border_renderer == 'none':
+            pass
+        else:
+            raise ValueError(f'Unsupported border_renderer: {border_renderer!r}')
 
     def draw_back():
         c.setFillColorRGB(*linen)
@@ -295,12 +303,12 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
     return pdf_path
 
 
-def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_style='oxblood'):
+def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_style='oxblood', card_colour=None, card_border=None, card_font=None):
     token = secrets.token_urlsafe(16)
     pdf_r2_key = f'generated/{slug}/{token}/card.pdf'
     qr_tmp = generate_qr(slug, site_url)
     logo_tmp = download_logo(logo_filename)
-    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, card_style=card_style, pdf_r2_key=pdf_r2_key)
+    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, card_style=card_style, pdf_r2_key=pdf_r2_key, card_colour=card_colour, card_border=card_border, card_font=card_font)
     if os.path.exists(qr_tmp):
         os.remove(qr_tmp)
     if pdf_tmp and os.path.exists(pdf_tmp):
