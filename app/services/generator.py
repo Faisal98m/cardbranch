@@ -151,10 +151,45 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
     text_colour = design['text']
     accent_colour = design['accent']
     is_light = design['light']
-    linen = (0.941, 0.922, 0.894)
-
     has_tagline = bool(tagline and tagline.strip())
     initial = brand_name[0].upper() if brand_name else 'B'
+
+    def draw_border_treatment(border_renderer):
+        inset = 2.5 * mm_unit
+        if border_renderer == 'keyline':
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.4)
+            c.roundRect(inset, inset, card_w - 2*inset, card_h - 2*inset, 1.2*mm_unit, fill=0, stroke=1)
+        elif border_renderer == 'corner_marks':
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.5)
+            leg = 3 * mm_unit
+            c.line(inset, inset, inset + leg, inset)
+            c.line(inset, inset, inset, inset + leg)
+            c.line(card_w - inset, inset, card_w - inset - leg, inset)
+            c.line(card_w - inset, inset, card_w - inset, inset + leg)
+            c.line(inset, card_h - inset, inset + leg, card_h - inset)
+            c.line(inset, card_h - inset, inset, card_h - inset - leg)
+            c.line(card_w - inset, card_h - inset, card_w - inset - leg, card_h - inset)
+            c.line(card_w - inset, card_h - inset, card_w - inset, card_h - inset - leg)
+        elif border_renderer == 'split_edge':
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.4)
+            gap_half = 4 * mm_unit
+            mid_y = card_h / 2
+            c.line(inset, card_h - inset, inset, mid_y + gap_half)
+            c.line(inset, mid_y - gap_half, inset, inset)
+            c.line(card_w - inset, card_h - inset, card_w - inset, mid_y + gap_half)
+            c.line(card_w - inset, mid_y - gap_half, card_w - inset, inset)
+        elif border_renderer == 'top_bottom_rule':
+            c.setStrokeColorRGB(*accent_colour)
+            c.setLineWidth(0.4)
+            c.line(inset, inset, card_w - inset, inset)
+            c.line(inset, card_h - inset, card_w - inset, card_h - inset)
+        elif border_renderer == 'none':
+            pass
+        else:
+            raise ValueError(f'Unsupported border_renderer: {border_renderer!r}')
 
     def draw_front():
         c.setFillColorRGB(*front_bg)
@@ -264,44 +299,40 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
                 c.setFont(tag_font, 4)
                 c.drawCentredString(card_w / 2, logo_box_y - 6.5 * mm_unit, "www.cardbranch.co.uk")
 
-        inset = 2.5 * mm_unit
-        border_renderer = design['border_renderer']
-        if border_renderer == 'keyline':
-            c.setStrokeColorRGB(*accent_colour)
-            c.setLineWidth(0.4)
-            c.roundRect(inset, inset, card_w - 2*inset, card_h - 2*inset, 1.2*mm_unit, fill=0, stroke=1)
-        elif border_renderer == 'corner_marks':
-            c.setStrokeColorRGB(*accent_colour)
-            c.setLineWidth(0.5)
-            leg = 3 * mm_unit
-            c.line(inset, inset, inset + leg, inset)
-            c.line(inset, inset, inset, inset + leg)
-            c.line(card_w - inset, inset, card_w - inset - leg, inset)
-            c.line(card_w - inset, inset, card_w - inset, inset + leg)
-            c.line(inset, card_h - inset, inset + leg, card_h - inset)
-            c.line(inset, card_h - inset, inset, card_h - inset - leg)
-            c.line(card_w - inset, card_h - inset, card_w - inset - leg, card_h - inset)
-            c.line(card_w - inset, card_h - inset, card_w - inset, card_h - inset - leg)
-        elif border_renderer == 'none':
-            pass
-        else:
-            raise ValueError(f'Unsupported border_renderer: {border_renderer!r}')
+        draw_border_treatment(design['border_renderer'])
 
     def draw_back():
-        c.setFillColorRGB(*linen)
+        c.setFillColorRGB(*front_bg)
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
+        qr_size = 26 * mm_unit
+        label_gap = 2.5 * mm_unit
+        url_gap = 1.5 * mm_unit
+        scan_label = "SCAN TO CONNECT"
+        url_text = f"cardbranch.co.uk/c/{slug}"
+
+        scan_label_h = 2 * mm_unit
+        url_h = 1.5 * mm_unit
+
+        group_h = qr_size + label_gap + scan_label_h + url_gap + url_h
+        group_y_top = (card_h / 2) + (group_h / 2)
+
+        qr_y = group_y_top - qr_size
+        qr_x = (card_w - qr_size) / 2
+
         if os.path.exists(qr_img_path):
-            qr_size = 32 * mm_unit
-            qr_x = round((card_w - qr_size) / 2)
-            qr_y = round((card_h - qr_size) / 2)
             c.drawImage(qr_img_path, qr_x, qr_y, width=qr_size, height=qr_size)
 
-            # URL for cardbranch card
-            if slug == "cardbranch":
-                c.setFillColorRGB(0.102, 0.090, 0.082)
-                c.setFont(tag_font, 4)
-                c.drawCentredString(card_w / 2, qr_y - 3 * mm_unit, "www.cardbranch.co.uk")
+        label_y = qr_y - label_gap - scan_label_h
+        c.setFillColorRGB(*text_colour)
+        c.setFont(name_font, 5)
+        c.drawCentredString(card_w / 2, label_y, scan_label)
+
+        url_y = label_y - url_gap - url_h
+        c.setFont(tag_font, 4)
+        c.drawCentredString(card_w / 2, url_y, url_text)
+
+        draw_border_treatment(design['border_renderer'])
 
     draw_front()
     c.showPage()
