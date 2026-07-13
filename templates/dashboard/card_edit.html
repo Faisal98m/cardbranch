@@ -35,14 +35,91 @@
     position: relative;
     transition: background 0.3s ease;
 }
-.preview-frame, .preview-brackets { position:absolute; inset:0; pointer-events:none; display:none; }
-.card-new-preview-card.layout-framed .preview-frame { display:block; border:1.5px solid var(--preview-accent); border-radius:4px; margin:7px; }
-.card-new-preview-card.layout-corner-brackets .preview-brackets { display:block; }
-.preview-brackets .pb { position:absolute; width:10px; height:10px; border:1.5px solid var(--preview-accent); }
-.preview-brackets .tl { top:7px; left:7px; border-right:none; border-bottom:none; }
-.preview-brackets .tr { top:7px; right:7px; border-left:none; border-bottom:none; }
-.preview-brackets .bl { bottom:7px; left:7px; border-right:none; border-top:none; }
-.preview-brackets .br { bottom:7px; right:7px; border-left:none; border-top:none; }
+.edit-card-decoration {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.edit-deco-keyline,
+.edit-deco-corner,
+.edit-deco-split,
+.edit-deco-rule {
+    display: none;
+}
+/* keyline */
+.edit-layout-keyline .edit-deco-keyline {
+    display: block;
+    position: absolute;
+    inset: 6px;
+    border: 1.5px solid var(--preview-accent);
+    border-radius: 4px;
+}
+/* corner_marks */
+.edit-layout-corner_marks .edit-deco-corner {
+    display: block;
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    border-color: var(--preview-accent);
+    border-style: solid;
+    border-width: 0;
+}
+.edit-layout-corner_marks .edit-deco-corner-tl { top:6px; left:6px; border-top-width:1.5px; border-left-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-tr { top:6px; right:6px; border-top-width:1.5px; border-right-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-bl { bottom:6px; left:6px; border-bottom-width:1.5px; border-left-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-br { bottom:6px; right:6px; border-bottom-width:1.5px; border-right-width:1.5px; }
+/* split_edge */
+.edit-layout-split_edge .edit-deco-split {
+    display: block;
+    position: absolute;
+    width: 1.5px;
+    background: var(--preview-accent);
+}
+.edit-layout-split_edge .edit-deco-split-lu { left:6px; top:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-ll { left:6px; bottom:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-ru { right:6px; top:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-rl { right:6px; bottom:6px; height:calc(50% - 7.2725% - 6px); }
+/* top_bottom_rule */
+.edit-layout-top_bottom_rule .edit-deco-rule {
+    display: block;
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    height: 1.5px;
+    background: var(--preview-accent);
+}
+.edit-layout-top_bottom_rule .edit-deco-rule-top { top:6px; }
+.edit-layout-top_bottom_rule .edit-deco-rule-bottom { bottom:6px; }
+/* back face */
+.edit-card-back {
+    background: var(--preview-bg);
+    font-family: var(--preview-font);
+    color: var(--preview-text);
+}
+.edit-card-back-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.edit-card-scan-label {
+    font-family: var(--preview-font);
+    font-weight: 700;
+    font-size: 5px;
+    letter-spacing: 0.12em;
+    color: var(--preview-text);
+    text-align: center;
+}
+.edit-card-url {
+    font-family: var(--preview-font);
+    font-weight: 400;
+    font-size: 4px;
+    color: var(--preview-text);
+    text-align: center;
+}
 .card-new-swatches {
     display: flex;
     flex-wrap: wrap;
@@ -117,25 +194,7 @@
     text-align: center;
     transition: color 0.3s;
 }
-.card-back-preview {
-    width: 100%;
-    aspect-ratio: 85 / 55;
-    border-radius: 8px;
-    background: #f0ebe4 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-.card-back-qr-placeholder {
-    width: 38%;
-    aspect-ratio: 1;
-    background: #e0d8d0;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 .new-design-picker .card-new-swatch-name.selected {
     background: var(--accent);
     color: #fff;
@@ -228,7 +287,7 @@
                         </div>
                         {% endfor %}
                     </div>
-                    <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Split Edge and Top &amp; Bottom Rule previews are not available yet — selecting them updates state only.</p>
+                    <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Preview update — not saved until you click Save Card.</p>
 
                     <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
                     <div class="card-new-swatches">
@@ -268,22 +327,48 @@
             <p style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:4px;">Preview</p>
 
             <!-- Front -->
-            <div class="card-new-preview-card" id="preview-front"
-                 style="background: {{ current_theme_option.bg }}; --card-font-family: {{ current_preview.browser_family }};">
+            <div class="card-new-preview-card edit-layout-{{ current_preview.border_renderer }}" id="preview-front"
+                 style="background: {{ current_theme_option.bg }}; --card-font-family: {{ current_preview.browser_family }}; --preview-accent: {{ current_preview.accent }}; --preview-bg: {{ current_theme_option.bg }}; --preview-text: {{ current_preview.text }}; --preview-font: {{ current_preview.browser_family }};">
                 <div class="card-preview-inner" id="preview-inner">
                     <!-- JS renders content here -->
                 </div>
-                <div class="preview-frame" aria-hidden="true"></div>
-                <div class="preview-brackets" aria-hidden="true">
-                    <span class="pb tl"></span><span class="pb tr"></span>
-                    <span class="pb bl"></span><span class="pb br"></span>
+                <div class="edit-card-decoration" aria-hidden="true">
+                    <div class="edit-deco-keyline"></div>
+                    <span class="edit-deco-corner edit-deco-corner-tl"></span>
+                    <span class="edit-deco-corner edit-deco-corner-tr"></span>
+                    <span class="edit-deco-corner edit-deco-corner-bl"></span>
+                    <span class="edit-deco-corner edit-deco-corner-br"></span>
+                    <div class="edit-deco-split edit-deco-split-lu"></div>
+                    <div class="edit-deco-split edit-deco-split-ll"></div>
+                    <div class="edit-deco-split edit-deco-split-ru"></div>
+                    <div class="edit-deco-split edit-deco-split-rl"></div>
+                    <div class="edit-deco-rule edit-deco-rule-top"></div>
+                    <div class="edit-deco-rule edit-deco-rule-bottom"></div>
                 </div>
             </div>
 
             <!-- Back -->
-            <div class="card-back-preview">
-                <div class="card-back-qr-placeholder">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0a090" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+            <div class="card-new-preview-card edit-card-back edit-layout-{{ current_preview.border_renderer }}" id="preview-back"
+                 style="background: {{ current_theme_option.bg }}; --preview-accent: {{ current_preview.accent }}; --preview-bg: {{ current_theme_option.bg }}; --preview-text: {{ current_preview.text }}; --preview-font: {{ current_preview.browser_family }};">
+                <div class="edit-card-back-content">
+                    <div style="width:31%; aspect-ratio:1; border-radius:3px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0a090" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+                    </div>
+                    <div class="edit-card-scan-label">SCAN TO CONNECT</div>
+                    <div class="edit-card-url">cardbranch.co.uk/c/{{ client.slug }}</div>
+                </div>
+                <div class="edit-card-decoration" aria-hidden="true">
+                    <div class="edit-deco-keyline"></div>
+                    <span class="edit-deco-corner edit-deco-corner-tl"></span>
+                    <span class="edit-deco-corner edit-deco-corner-tr"></span>
+                    <span class="edit-deco-corner edit-deco-corner-bl"></span>
+                    <span class="edit-deco-corner edit-deco-corner-br"></span>
+                    <div class="edit-deco-split edit-deco-split-lu"></div>
+                    <div class="edit-deco-split edit-deco-split-ll"></div>
+                    <div class="edit-deco-split edit-deco-split-ru"></div>
+                    <div class="edit-deco-split edit-deco-split-rl"></div>
+                    <div class="edit-deco-rule edit-deco-rule-top"></div>
+                    <div class="edit-deco-rule edit-deco-rule-bottom"></div>
                 </div>
             </div>
 
@@ -304,12 +389,15 @@ let linkCount = {{ links|length }};
 function applyThemePreview(styleKey) {
     const theme = themesByKey[styleKey] || themesByKey['oxblood'];
     const card = document.getElementById('preview-front');
+    const back = document.getElementById('preview-back');
     currentBg = theme.bg;
     isLight = theme.light;
     card.style.setProperty('--preview-accent', theme.accent);
     card.style.background = theme.bg;
-    card.classList.toggle('layout-framed', theme.layout === 'framed');
-    card.classList.toggle('layout-corner-brackets', theme.layout === 'corner_brackets');
+    if (back) {
+        back.style.background = theme.bg;
+        back.style.setProperty('--preview-accent', theme.accent);
+    }
     updatePreview();
 }
 
@@ -388,13 +476,17 @@ document.querySelector('form').addEventListener('submit', function() {
 const currentPreview = {{ current_preview | tojson }};
 (function() {
     const card = document.getElementById('preview-front');
+    const back = document.getElementById('preview-back');
     currentBg = currentPreview.bg;
     isLight = currentPreview.light;
+    const br = currentPreview.border_renderer;
     card.style.setProperty('--preview-accent', currentPreview.accent);
     card.style.setProperty('--card-font-family', currentPreview.browser_family);
     card.style.background = currentPreview.bg;
-    card.classList.toggle('layout-framed', currentPreview.border_renderer === 'keyline');
-    card.classList.toggle('layout-corner-brackets', currentPreview.border_renderer === 'corner_marks');
+    if (back) {
+        back.style.background = currentPreview.bg;
+        back.style.setProperty('--preview-accent', currentPreview.accent);
+    }
     updatePreview();
 })();
 
@@ -426,10 +518,13 @@ function updateNewPickerSelection(axis, selectedKey) {
     });
 }
 
+const KNOWN_LAYOUTS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule'];
+
 function renderNewDesignPreview() {
     const colour = newColourOptions.find(c => c.key === selectedColour);
     const font = newFontOptions.find(f => f.key === selectedFont);
     const card = document.getElementById('preview-front');
+    const back = document.getElementById('preview-back');
 
     currentBg = colour.bg;
     isLight = colour.light;
@@ -437,8 +532,19 @@ function renderNewDesignPreview() {
     card.style.setProperty('--card-font-family', font.browser_family);
     card.style.background = colour.bg;
 
-    card.classList.toggle('layout-framed', selectedBorder === 'keyline');
-    card.classList.toggle('layout-corner-brackets', selectedBorder === 'corner_marks');
+    if (back) {
+        back.style.background = colour.bg;
+        back.style.setProperty('--preview-accent', colour.accent);
+    }
+
+    const faces = [card, back].filter(Boolean);
+    faces.forEach(face => {
+        face.style.setProperty('--preview-font', font.browser_family);
+    });
+    faces.forEach(face => {
+        KNOWN_LAYOUTS.forEach(l => face.classList.remove('edit-layout-' + l));
+        face.classList.add('edit-layout-' + selectedBorder);
+    });
 
     updatePreview();
 }

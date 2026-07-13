@@ -130,10 +130,6 @@ def card_edit(id):
         client.card_font,
         legacy_card_style=client.card_style,
     )
-    if design['border_renderer'] not in ('none', 'keyline', 'corner_marks'):
-        raise ValueError(
-            f"Unsupported editor preview border renderer: {design['border_renderer']!r}"
-        )
     current_preview = design_css(design)
     current_preview['colour_key'] = design['colour_key']
     current_preview['border_key'] = design['border_key']
