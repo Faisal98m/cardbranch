@@ -106,15 +106,13 @@ def card_view(id):
         client.card_font,
         legacy_card_style=client.card_style,
     )
-    if design['border_renderer'] not in ('none', 'keyline', 'corner_marks'):
-        raise ValueError(
-            f"Unsupported card_view border renderer: {design['border_renderer']!r}"
-        )
     theme = design_css(design)
     theme['layout'] = {
         'none': 'minimal',
         'keyline': 'framed',
         'corner_marks': 'corner_brackets',
+        'split_edge': 'split_edge',
+        'top_bottom_rule': 'top_bottom_rule',
     }[design['border_renderer']]
     return render_template('dashboard/card_view.html', client=client, links=links, theme=theme)
 
