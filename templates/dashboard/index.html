@@ -8,9 +8,9 @@
 <div class="my-cards-grid">
     {% for client in clients %}
     <div class="card-item card-stripe" style="padding:0; overflow:hidden;">
-        <div style="height:72px; background:{{ colour_map[client.card_style]['bg'] if client.card_style in colour_map else colour_map['oxblood']['bg'] }}; display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
-            <span style="color:{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}; font-family:'Newsreader', serif; font-size:14px; font-weight:500;">{{ client.brand_name[:1]|upper }}</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" opacity="0.6"><rect x="2" y="2" width="8" height="8" fill="{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}"/><rect x="14" y="2" width="8" height="8" fill="{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}"/><rect x="2" y="14" width="8" height="8" fill="{{ colour_map[client.card_style]['text'] if client.card_style in colour_map else colour_map['oxblood']['text'] }}"/></svg>
+        <div style="height:72px; background:{{ design_map[client.id].bg }}; display:flex; align-items:center; justify-content:space-between; padding:0 16px;">
+            <span style="color:{{ design_map[client.id].text }}; font-family:'Newsreader', serif; font-size:14px; font-weight:500;">{{ client.brand_name[:1]|upper }}</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" opacity="0.6"><rect x="2" y="2" width="8" height="8" fill="{{ design_map[client.id].text }}"/><rect x="14" y="2" width="8" height="8" fill="{{ design_map[client.id].text }}"/><rect x="2" y="14" width="8" height="8" fill="{{ design_map[client.id].text }}"/></svg>
         </div>
         <div style="padding:20px;">
             <h3 style="font-size:16px; font-weight:600; color:var(--text-primary); margin-bottom:4px;">{{ client.brand_name }}</h3>

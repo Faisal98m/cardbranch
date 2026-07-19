@@ -26,17 +26,11 @@ LINK_TYPE_LABELS = {
 @login_required
 def index():
     clients = Client.query.filter_by(user_id=current_user.id).order_by(Client.created_at.desc()).all()
-    colour_map = {
-        'oxblood': {'bg': '#6b1f2a', 'text': '#faf8f4'},
-        'navy': {'bg': '#1a2744', 'text': '#faf8f4'},
-        'forest': {'bg': '#1a3d2b', 'text': '#faf8f4'},
-        'slate': {'bg': '#2d3748', 'text': '#faf8f4'},
-        'charcoal': {'bg': '#1a1714', 'text': '#faf8f4'},
-        'linen': {'bg': '#f0ebe4', 'text': '#1a1714'},
-        'sage': {'bg': '#e8ede8', 'text': '#1a1714'},
-        'blush': {'bg': '#f5ece8', 'text': '#1a1714'},
-    }
-    return render_template('dashboard/index.html', clients=clients, colour_map=colour_map)
+    design_map = {}
+    for c in clients:
+        d = resolve_design(c.card_colour, c.card_border, c.card_font, legacy_card_style=c.card_style)
+        design_map[c.id] = design_css(d)
+    return render_template('dashboard/index.html', clients=clients, design_map=design_map)
 
 
 @dashboard_bp.route('/card/new', methods=['GET', 'POST'])
