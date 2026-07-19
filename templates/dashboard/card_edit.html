@@ -151,11 +151,6 @@
     color: var(--text-dim);
     text-transform: capitalize;
 }
-.card-new-swatch-layout {
-    font-size: 8px;
-    color: var(--text-dim);
-}
-
 .card-preview-inner {
     width: 92%;
     height: 88%;
@@ -211,6 +206,9 @@
         <div class="card-stripe" style="padding: 28px;">
             <form method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
+                <input type="hidden" name="card_colour" id="card_colour_input" value="{{ seed_colour }}">
+                <input type="hidden" name="card_border" id="card_border_input" value="{{ seed_border }}">
+                <input type="hidden" name="card_font" id="card_font_input" value="{{ seed_font }}">
 
                 <div style="margin-bottom: 20px;">
                     <label>{{ form.brand_name.label }}</label>
@@ -233,47 +231,14 @@
                     {% endif %}
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block; margin-bottom:8px;">Card theme</label>
-                    <div class="card-new-swatches">
-                        <div style="width:100%; font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Dark</div>
-                        {% for option in theme_options if option.group == 'dark' %}
-                        <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
-                            <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
-                            <span class="card-new-swatch-name">{{ option.name }}</span>
-                        </div>
-                        {% endfor %}
-
-                        <div style="width:100%; font-size:11px; color:var(--text-dim); margin-top:8px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Light</div>
-                        {% for option in theme_options if option.group == 'light' %}
-                        <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
-                            <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
-                            <span class="card-new-swatch-name">{{ option.name }}</span>
-                        </div>
-                        {% endfor %}
-
-                        <div style="width:100%; font-size:11px; color:var(--text-dim); margin-top:8px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Premium</div>
-                        {% for option in theme_options if option.group == 'premium' %}
-                        <div class="card-new-swatch-wrap" data-style="{{ option.key }}" onclick="selectColour('{{ option.key }}', '{{ option.bg }}', {{ 'true' if option.light else 'false' }})">
-                            <div class="card-new-swatch {% if current_theme_option.key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}">
-                            </div>
-                            <span class="card-new-swatch-name">{{ option.name }}</span>
-                            <span class="card-new-swatch-layout">{{ option.layout_name }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <p style="font-size:11px; color:var(--text-dim); margin-top:8px;">Framed and accent styling appears on your printed card and links page.</p>
-                    <input type="hidden" name="card_style" id="card-style-input" value="{{ client.card_style }}">
-                </div>
-
                 <div style="margin-bottom: 20px;" class="new-design-picker">
-                    <label style="display:block; margin-bottom:8px; margin-top:24px;">New card design (preview only — not yet saved)</label>
+                    <label style="display:block; margin-bottom:8px; margin-top:24px;">Card design</label>
 
                     <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Colour</div>
                     <div class="card-new-swatches">
                         {% for option in card_colour_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ option.key }}" onclick="pickNewColour('{{ option.key }}')">
-                            <div class="card-new-swatch {% if current_preview.colour_key == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+                            <div class="card-new-swatch {% if seed_colour == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
                             <span class="card-new-swatch-name">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
@@ -283,17 +248,17 @@
                     <div class="card-new-swatches">
                         {% for option in card_border_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ option.key }}" onclick="pickNewBorder('{{ option.key }}')">
-                            <span class="card-new-swatch-name {% if current_preview.border_key == option.key %}selected{% endif %}">{{ option.display_name }}</span>
+                            <span class="card-new-swatch-name {% if seed_border == option.key %}selected{% endif %}">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
                     </div>
-                    <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Preview update — not saved until you click Save Card.</p>
+                    <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Changes apply when you click Save Card.</p>
 
                     <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
                     <div class="card-new-swatches">
                         {% for option in card_font_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ option.key }}" onclick="pickNewFont('{{ option.key }}')">
-                            <span class="card-new-swatch-name {% if current_preview.font_key == option.key %}selected{% endif %}" style="font-family: {{ option.browser_family }};">{{ option.display_name }}</span>
+                            <span class="card-new-swatch-name {% if seed_font == option.key %}selected{% endif %}" style="font-family: {{ option.browser_family }};">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -378,47 +343,18 @@
 </div>
 
 <script>
-const themeOptions = {{ theme_options | tojson }};
-const themesByKey = Object.fromEntries(themeOptions.map(t => [t.key, t]));
-</script>
-<script>
-let currentBg = '{{ current_theme_option.bg }}';
-let isLight = {{ 'true' if current_theme_option.light else 'false' }};
+let currentBg;
+let isLight;
 let linkCount = {{ links|length }};
-
-function applyThemePreview(styleKey) {
-    const theme = themesByKey[styleKey] || themesByKey['oxblood'];
-    const card = document.getElementById('preview-front');
-    const back = document.getElementById('preview-back');
-    currentBg = theme.bg;
-    isLight = theme.light;
-    card.style.setProperty('--preview-accent', theme.accent);
-    card.style.background = theme.bg;
-    if (back) {
-        back.style.background = theme.bg;
-        back.style.setProperty('--preview-accent', theme.accent);
-    }
-    updatePreview();
-}
-
-function selectColour(style, hex, light) {
-    document.getElementById('card-style-input').value = style;
-    document.querySelectorAll('.card-new-swatch').forEach(s => s.classList.remove('selected'));
-    const wrap = document.querySelector(`.card-new-swatch-wrap[data-style="${style}"]`);
-    if (wrap) wrap.querySelector('.card-new-swatch').classList.add('selected');
-    applyThemePreview(style);
-}
 
 function updatePreview() {
     const brand = document.getElementById('input-brand').value.trim() || '{{ client.brand_name }}';
     const tagline = document.getElementById('input-tagline').value.trim();
-    const currentKey = document.getElementById('card-style-input').value;
-    const theme = themesByKey[currentKey] || themesByKey['oxblood'];
+    const colour = newColourOptions.find(c => c.key === selectedColour) || newColourOptions[0];
     const textColour = isLight ? '#1a1714' : '#faf8f4';
     const inner = document.getElementById('preview-inner');
 
     if (tagline) {
-        // A1 layout — accent on brand name + divider
         inner.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
@@ -427,12 +363,11 @@ function updatePreview() {
                         ${brand.charAt(0).toUpperCase()}
                     </span>
                 </div>
-                <div class="card-preview-name" style="font-size:clamp(11px,2vw,15px); color:${theme.accent}; margin-bottom:4%;">${brand}</div>
-                <div class="card-preview-divider" style="background:${theme.accent}; margin-bottom:4%;"></div>
+                <div class="card-preview-name" style="font-size:clamp(11px,2vw,15px); color:${colour.accent}; margin-bottom:4%;">${brand}</div>
+                <div class="card-preview-divider" style="background:${colour.accent}; margin-bottom:4%;"></div>
                 <div class="card-preview-tagline" style="font-size:clamp(7px,1.2vw,9px); color:${textColour}aa;">${tagline.toUpperCase()}</div>
             </div>`;
     } else {
-        // A3 layout — no accent, matches PDF behaviour
         inner.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
@@ -472,32 +407,23 @@ document.querySelector('form').addEventListener('submit', function() {
     document.getElementById('links-json').value = JSON.stringify(links);
 });
 
-// Init preview on load from resolved design
-const currentPreview = {{ current_preview | tojson }};
-(function() {
-    const card = document.getElementById('preview-front');
-    const back = document.getElementById('preview-back');
-    currentBg = currentPreview.bg;
-    isLight = currentPreview.light;
-    const br = currentPreview.border_renderer;
-    card.style.setProperty('--preview-accent', currentPreview.accent);
-    card.style.setProperty('--card-font-family', currentPreview.browser_family);
-    card.style.background = currentPreview.bg;
-    if (back) {
-        back.style.background = currentPreview.bg;
-        back.style.setProperty('--preview-accent', currentPreview.accent);
-    }
-    updatePreview();
-})();
-
-// New three-axis picker state
-let selectedColour = currentPreview.colour_key;
-let selectedBorder = currentPreview.border_key;
-let selectedFont = currentPreview.font_key;
-
 const newColourOptions = {{ card_colour_options | tojson }};
 const newBorderOptions = {{ card_border_options | tojson }};
 const newFontOptions = {{ card_font_options | tojson }};
+const KNOWN_LAYOUTS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule'];
+
+// New three-axis picker state
+let selectedColour = {{ seed_colour | tojson }};
+let selectedBorder = {{ seed_border | tojson }};
+let selectedFont = {{ seed_font | tojson }};
+
+// Init preview on load from seed values
+(function() {
+    document.getElementById('card_colour_input').value = selectedColour;
+    document.getElementById('card_border_input').value = selectedBorder;
+    document.getElementById('card_font_input').value = selectedFont;
+    renderNewDesignPreview();
+})();
 
 function updateNewPickerSelection(axis, selectedKey) {
     const visualSelector = axis === 'colour'
@@ -517,8 +443,6 @@ function updateNewPickerSelection(axis, selectedKey) {
         );
     });
 }
-
-const KNOWN_LAYOUTS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule'];
 
 function renderNewDesignPreview() {
     const colour = newColourOptions.find(c => c.key === selectedColour);
@@ -551,16 +475,19 @@ function renderNewDesignPreview() {
 
 function pickNewColour(key) {
     selectedColour = key;
+    document.getElementById('card_colour_input').value = key;
     updateNewPickerSelection('colour', key);
     renderNewDesignPreview();
 }
 function pickNewBorder(key) {
     selectedBorder = key;
+    document.getElementById('card_border_input').value = key;
     updateNewPickerSelection('border', key);
     renderNewDesignPreview();
 }
 function pickNewFont(key) {
     selectedFont = key;
+    document.getElementById('card_font_input').value = key;
     updateNewPickerSelection('font', key);
     renderNewDesignPreview();
 }
