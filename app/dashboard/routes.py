@@ -5,7 +5,7 @@ from flask_login import login_required, current_user
 from app.models import Client, Link, Order, db
 from app.dashboard.forms import CardForm, LinkForm
 from app.services.generator import unique_slug, save_logo, generate_assets
-from app.services.themes import theme_css, theme_picker_options, normalise_theme_key, theme_picker_option, resolve_design, design_css, card_colour_options, card_border_options, card_font_options, SELECTABLE_COLOUR_KEYS, SELECTABLE_BORDER_KEYS, SELECTABLE_FONT_KEYS
+from app.services.themes import theme_picker_options, resolve_design, design_css, card_colour_options, card_border_options, card_font_options, SELECTABLE_COLOUR_KEYS, SELECTABLE_BORDER_KEYS, SELECTABLE_FONT_KEYS
 from app.services.links import normalize_uk_phone
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -80,15 +80,12 @@ def card_new():
                 flash(str(e), 'error')
                 return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font)
 
-        card_style = normalise_theme_key(card_colour)
-
         client = Client(
             user_id=current_user.id,
             brand_name=brand_name,
             tagline=tagline,
             slug=slug,
             logo_filename=logo_filename,
-            card_style=card_style,
             card_colour=card_colour,
             card_border=card_border,
             card_font=card_font,
@@ -188,7 +185,7 @@ def card_edit(id):
             re_seed_colour = card_colour if card_colour in SELECTABLE_COLOUR_KEYS else seed_colour
             re_seed_border = card_border if card_border in SELECTABLE_BORDER_KEYS else seed_border
             re_seed_font = card_font if card_font in SELECTABLE_FONT_KEYS else seed_font
-            return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=theme_picker_option(client.card_style), current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options(), selectable_colour_keys=SELECTABLE_COLOUR_KEYS, selectable_border_keys=SELECTABLE_BORDER_KEYS, selectable_font_keys=SELECTABLE_FONT_KEYS, seed_colour=re_seed_colour, seed_border=re_seed_border, seed_font=re_seed_font), 400
+            return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options(), selectable_colour_keys=SELECTABLE_COLOUR_KEYS, selectable_border_keys=SELECTABLE_BORDER_KEYS, selectable_font_keys=SELECTABLE_FONT_KEYS, seed_colour=re_seed_colour, seed_border=re_seed_border, seed_font=re_seed_font), 400
 
         brand_name = form.brand_name.data.strip()
         client.brand_name = brand_name
@@ -208,8 +205,7 @@ def card_edit(id):
             except ValueError as e:
                 flash(str(e), 'error')
                 links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
-                current_theme_option = theme_picker_option(client.card_style)
-                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option, current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options(), selectable_colour_keys=SELECTABLE_COLOUR_KEYS, selectable_border_keys=SELECTABLE_BORDER_KEYS, selectable_font_keys=SELECTABLE_FONT_KEYS, seed_colour=submitted_seed_colour, seed_border=submitted_seed_border, seed_font=submitted_seed_font)
+                return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options(), selectable_colour_keys=SELECTABLE_COLOUR_KEYS, selectable_border_keys=SELECTABLE_BORDER_KEYS, selectable_font_keys=SELECTABLE_FONT_KEYS, seed_colour=submitted_seed_colour, seed_border=submitted_seed_border, seed_font=submitted_seed_font)
 
         Link.query.filter_by(client_id=client.id).delete()
 
@@ -241,8 +237,7 @@ def card_edit(id):
             return redirect(url_for('dashboard.card_view', id=client.id))
 
     links = Link.query.filter_by(client_id=client.id).order_by(Link.display_order).all()
-    current_theme_option = theme_picker_option(client.card_style)
-    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_theme_option=current_theme_option, current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options(), selectable_colour_keys=SELECTABLE_COLOUR_KEYS, selectable_border_keys=SELECTABLE_BORDER_KEYS, selectable_font_keys=SELECTABLE_FONT_KEYS, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font)
+    return render_template('dashboard/card_edit.html', form=form, client=client, links=links, theme_options=theme_options, current_preview=current_preview, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options(), selectable_colour_keys=SELECTABLE_COLOUR_KEYS, selectable_border_keys=SELECTABLE_BORDER_KEYS, selectable_font_keys=SELECTABLE_FONT_KEYS, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font)
 
 
 @dashboard_bp.route('/card/<int:id>/delete', methods=['POST'])
