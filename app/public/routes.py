@@ -3,7 +3,7 @@ from flask_login import current_user
 from app import limiter
 from app.models import Client, db
 from app.services.links import build_href, should_open_new_tab
-from app.services.themes import theme_css
+from app.services.themes import resolve_design, design_css
 from app.public.forms import ContactForm
 
 public_bp = Blueprint('public', __name__)
@@ -43,7 +43,14 @@ def contact():
 def card_links(slug):
     client = Client.query.filter_by(slug=slug).first_or_404()
     is_owner = current_user.is_authenticated and current_user.id == client.user_id
-    theme = theme_css(client.card_style)
+    design = resolve_design(
+        card_colour=client.card_colour,
+        card_border=client.card_border,
+        card_font=client.card_font,
+        legacy_card_style=client.card_style,
+    )
+    theme = design_css(design)
+    theme['colour_key'] = design['colour_key']
     if not client.is_published:
         if is_owner:
             return render_template('public/links.html', client=client, links=client.links.order_by('display_order').all(),
