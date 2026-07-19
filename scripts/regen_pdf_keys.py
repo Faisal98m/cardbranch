@@ -52,7 +52,6 @@ def main():
                 tagline=c.tagline,
                 site_url=SITE_URL,
                 logo_filename=c.logo_filename,
-                card_style=c.card_style,
                 card_colour=c.card_colour,
                 card_border=c.card_border,
                 card_font=c.card_font,

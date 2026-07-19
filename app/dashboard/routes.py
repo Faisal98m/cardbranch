@@ -234,7 +234,7 @@ def card_edit(id):
 
             if client.is_published:
                 site_url = current_app.config['SITE_URL']
-                client.pdf_r2_key = generate_assets(client.slug, client.brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_style=client.card_style, card_colour=client.card_colour, card_border=client.card_border, card_font=client.card_font)
+                client.pdf_r2_key = generate_assets(client.slug, client.brand_name, client.tagline, site_url, logo_filename=client.logo_filename, card_colour=client.card_colour, card_border=client.card_border, card_font=client.card_font)
                 db.session.commit()
 
             flash('Card updated successfully!', 'success')

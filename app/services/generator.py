@@ -120,7 +120,7 @@ def register_design_fonts():
             pdfmetrics.registerFont(TTFont(name, path))
 
 
-def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style='oxblood', pdf_r2_key=None, card_colour=None, card_border=None, card_font=None):
+def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key=None, card_colour=None, card_border=None, card_font=None):
     import os
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
@@ -138,7 +138,6 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
         card_colour=card_colour,
         card_border=card_border,
         card_font=card_font,
-        legacy_card_style=card_style,
     )
     name_font = design['pdf_bold']
     tag_font = design['pdf_regular']
@@ -343,12 +342,12 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, card_style
     return pdf_path
 
 
-def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_style='oxblood', card_colour=None, card_border=None, card_font=None):
+def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_colour=None, card_border=None, card_font=None):
     token = secrets.token_urlsafe(16)
     pdf_r2_key = f'generated/{slug}/{token}/card.pdf'
     qr_tmp = generate_qr(slug, site_url)
     logo_tmp = download_logo(logo_filename)
-    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, card_style=card_style, pdf_r2_key=pdf_r2_key, card_colour=card_colour, card_border=card_border, card_font=card_font)
+    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, pdf_r2_key=pdf_r2_key, card_colour=card_colour, card_border=card_border, card_font=card_font)
     if os.path.exists(qr_tmp):
         os.remove(qr_tmp)
     if pdf_tmp and os.path.exists(pdf_tmp):
