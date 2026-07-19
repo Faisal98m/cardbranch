@@ -82,7 +82,7 @@ with app.app_context():
         print(f'--- Card #{c.id}: slug="{c.slug}" brand="{c.brand_name}" ---')
         print(f'  Owner: {owner_email}')
         print(f'  Created: {fmt_ts(c.created_at)}')
-        print(f'  Card style: {c.card_style}')
+        print(f'  Colour: {c.card_colour} / Border: {c.card_border} / Font: {c.card_font}')
 
         links = Link.query.filter_by(client_id=c.id).order_by(Link.display_order).all()
         if links:

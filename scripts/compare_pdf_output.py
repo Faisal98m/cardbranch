@@ -20,7 +20,7 @@ os.environ['FLASK_CONFIG'] = 'Debug'
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from app import create_app, db
-from app.services.themes import resolve_theme, resolve_design
+from app.services.themes import resolve_design
 from reportlab.lib.units import mm as mm_unit
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -302,7 +302,7 @@ def main():
     with app.app_context():
         rows = db.session.execute(
             sa.text(
-                'SELECT id, brand_name, tagline, slug, card_style, '
+                'SELECT id, brand_name, tagline, slug, '
                 'card_colour, card_border, card_font, logo_filename '
                 'FROM clients ORDER BY id'
             )
@@ -325,55 +325,50 @@ def main():
         qr_path = os.path.join(qr_dir, '{}.png'.format(slug))
         _local_qr(slug, site_url, qr_path)
 
-        # OLD PDF (resolve_theme)
-        theme = resolve_theme(row.card_style)
-        old_path = os.path.join(out_dir, 'old_{}.pdf'.format(row.id))
-        render_two_page_pdf(old_path, theme, brand_name, tagline, slug, logo_path, qr_path)
-
-        # NEW PDF (resolve_design)
+        # Design from independent fields (no legacy card_style)
         design = resolve_design(
             card_colour=row.card_colour,
             card_border=row.card_border,
             card_font=row.card_font,
-            legacy_card_style=row.card_style,
         )
-        new_path = os.path.join(out_dir, 'new_{}.pdf'.format(row.id))
-        render_two_page_pdf(new_path, design, brand_name, tagline, slug, logo_path, qr_path)
+        pass1_path = os.path.join(out_dir, 'pass1_{}.pdf'.format(row.id))
+        render_two_page_pdf(pass1_path, design, brand_name, tagline, slug, logo_path, qr_path)
+
+        pass2_path = os.path.join(out_dir, 'pass2_{}.pdf'.format(row.id))
+        render_two_page_pdf(pass2_path, design, brand_name, tagline, slug, logo_path, qr_path)
 
         # Page counts
-        old_pages = page_count(old_path)
-        new_pages = page_count(new_path)
-        pages_ok = (old_pages == 2 and new_pages == 2)
+        p1_pages = page_count(pass1_path)
+        p2_pages = page_count(pass2_path)
+        pages_ok = (p1_pages == 2 and p2_pages == 2)
         if not pages_ok:
             all_page_counts_ok = False
 
         # Raw SHA-256
-        raw_old = sha256_raw(old_path)
-        raw_new = sha256_raw(new_path)
-        raw_match = raw_old == raw_new
+        raw_p1 = sha256_raw(pass1_path)
+        raw_p2 = sha256_raw(pass2_path)
+        raw_match = raw_p1 == raw_p2
 
         # Normalised SHA-256 (strip only /ID)
-        norm_data_old = normalized_bytes(old_path)
-        norm_data_new = normalized_bytes(new_path)
-        norm_hash_old = hashlib.sha256(norm_data_old).hexdigest()
-        norm_hash_new = hashlib.sha256(norm_data_new).hexdigest()
-        norm_match = norm_hash_old == norm_hash_new
+        norm_data_p1 = normalized_bytes(pass1_path)
+        norm_data_p2 = normalized_bytes(pass2_path)
+        norm_hash_p1 = hashlib.sha256(norm_data_p1).hexdigest()
+        norm_hash_p2 = hashlib.sha256(norm_data_p2).hexdigest()
+        norm_match = norm_hash_p1 == norm_hash_p2
         if not norm_match:
             all_normalized_match = False
 
         # Pixel comparison (only if norm content differs or as full verification)
         pixel = None
         if not norm_match:
-            pixel = pixel_compare_all(old_path, new_path)
+            pixel = pixel_compare_all(pass1_path, pass2_path)
             if isinstance(pixel, list):
                 for p in pixel:
                     if p['differing_pixels'] > 0:
                         any_pixel_diff = True
         else:
-            # Even when norm matches, do pixel compare as full verification
-            pixel = pixel_compare_all(old_path, new_path)
+            pixel = pixel_compare_all(pass1_path, pass2_path)
 
-        # Override pixel diff flag from pixel results
         if isinstance(pixel, list):
             for p in pixel:
                 if p['differing_pixels'] > 0:
@@ -381,24 +376,25 @@ def main():
 
         logo_present = row.logo_filename is not None and row.logo_filename != ''
 
+        colour_key = design['colour_key'] if design else '?'
         results.append({
             'id': row.id,
-            'card_style': row.card_style,
+            'colour': colour_key,
             'logo_present': logo_present,
-            'old_pages': old_pages,
-            'new_pages': new_pages,
+            'p1_pages': p1_pages,
+            'p2_pages': p2_pages,
             'pages_ok': pages_ok,
             'raw_match': raw_match,
-            'norm_len_old': len(norm_data_old),
-            'norm_len_new': len(norm_data_new),
+            'norm_len_p1': len(norm_data_p1),
+            'norm_len_p2': len(norm_data_p2),
             'norm_match': norm_match,
             'pixel': pixel,
         })
 
     # ── report table ──
-    header = '{:>4s}  {:25s}  {:6s}  {:>4s} {:>4s}  {:10s}  {:>12s} {:>12s}  {:10s}  {:20s} {:20s}'.format(
-        'id', 'card_style', 'logo', 'opg', 'npg', 'raw match',
-        'norm len O', 'norm len N', 'norm match',
+    header = '{:>4s}  {:20s}  {:6s}  {:>4s} {:>4s}  {:10s}  {:>12s} {:>12s}  {:10s}  {:20s} {:20s}'.format(
+        'id', 'colour', 'logo', 'p1p', 'p2p', 'raw match',
+        'norm len 1', 'norm len 2', 'norm match',
         'front px', 'back px')
     print(header)
     print('-' * 135)
@@ -420,10 +416,10 @@ def main():
             front_str = pr.get('error', str(pr))
             back_str = ''
 
-        print('{:>4d}  {:25s}  {:6s}  {:>4d} {:>4d}  {:10s}  {:>12d} {:>12d}  {:10s}  {:20s} {:20s}'.format(
-            r['id'], r['card_style'], logo_str,
-            r['old_pages'], r['new_pages'], raw_str,
-            r['norm_len_old'], r['norm_len_new'], norm_str,
+        print('{:>4d}  {:20s}  {:6s}  {:>4d} {:>4d}  {:10s}  {:>12d} {:>12d}  {:10s}  {:20s} {:20s}'.format(
+            r['id'], r['colour'], logo_str,
+            r['p1_pages'], r['p2_pages'], raw_str,
+            r['norm_len_p1'], r['norm_len_p2'], norm_str,
             front_str, back_str))
 
     print()
