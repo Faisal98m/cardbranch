@@ -47,47 +47,61 @@
         <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
       </div>
 
-      <!-- Colour picker -->
-      <div style="margin-bottom:24px;">
-        <label style="display:block; margin-bottom:12px;">Card theme</label>
-        <input type="hidden" name="card_style" id="card-style-input" value="oxblood">
+      <!-- Design picker: colour, border, font -->
+      <div style="margin-bottom:24px;" class="new-design-picker">
+        <label style="display:block; margin-bottom:8px;">Card design</label>
 
-        <p class="card-new-swatch-label">Dark</p>
+        <input type="hidden" name="card_colour" id="card_colour_input" value="{{ seed_colour }}">
+        <input type="hidden" name="card_border" id="card_border_input" value="{{ seed_border }}">
+        <input type="hidden" name="card_font" id="card_font_input" value="{{ seed_font }}">
+
+        <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Colour</div>
         <div class="card-new-swatches">
-          {% for option in theme_options if option.group == 'dark' %}
-          <div class="card-new-swatch-wrap" data-style="{{ option.key }}" data-bg="{{ option.bg }}" data-text="{{ option.text }}">
-            <div class="card-new-swatch{% if option.key == 'oxblood' %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
-            <span class="card-new-swatch-name">{{ option.name }}</span>
+          {% set _colours = [
+            {'key':'oxblood','name':'Oxblood','bg':'rgb(107,31,42)','light':False},
+            {'key':'navy','name':'Navy','bg':'rgb(26,39,68)','light':False},
+            {'key':'forest','name':'Forest','bg':'rgb(26,61,43)','light':False},
+            {'key':'linen','name':'Linen','bg':'rgb(240,235,228)','light':True},
+            {'key':'midnight_framed','name':'Midnight','bg':'rgb(18,32,58)','light':False},
+            {'key':'evergreen_classic','name':'Evergreen','bg':'rgb(20,50,31)','light':False},
+          ] %}
+          {% for opt in _colours %}
+          <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ opt.key }}" onclick="pickNewColour('{{ opt.key }}')">
+            <div class="card-new-swatch{% if seed_colour == opt.key %} selected{% endif %}" style="background:{{ opt.bg }};{% if opt.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+            <span class="card-new-swatch-name">{{ opt.name }}</span>
           </div>
           {% endfor %}
         </div>
 
-        <div style="border-top:1px solid var(--border); margin:14px 0;"></div>
-
-        <p class="card-new-swatch-label">Light</p>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Border</div>
         <div class="card-new-swatches">
-          {% for option in theme_options if option.group == 'light' %}
-          <div class="card-new-swatch-wrap" data-style="{{ option.key }}" data-bg="{{ option.bg }}" data-text="{{ option.text }}">
-            <div class="card-new-swatch{% if option.key == 'oxblood' %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
-            <span class="card-new-swatch-name">{{ option.name }}</span>
+          {% set _borders = [
+            {'key':'none','name':'None'},
+            {'key':'keyline','name':'Keyline'},
+            {'key':'corner_marks','name':'Corner Marks'},
+            {'key':'split_edge','name':'Split Edge'},
+            {'key':'top_bottom_rule','name':'Top & Bottom Rule'},
+          ] %}
+          {% for opt in _borders %}
+          <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ opt.key }}" onclick="pickNewBorder('{{ opt.key }}')">
+            <span class="card-new-swatch-name{% if seed_border == opt.key %} selected{% endif %}">{{ opt.name }}</span>
           </div>
           {% endfor %}
         </div>
 
-        <div style="border-top:1px solid var(--border); margin:14px 0;"></div>
-
-        <p class="card-new-swatch-label">Premium</p>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
         <div class="card-new-swatches">
-          {% for option in theme_options if option.group == 'premium' %}
-          <div class="card-new-swatch-wrap" data-style="{{ option.key }}" data-bg="{{ option.bg }}" data-text="{{ option.text }}">
-            <div class="card-new-swatch{% if option.key == 'oxblood' %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}">
-            </div>
-            <span class="card-new-swatch-name">{{ option.name }}</span>
-            <span class="card-new-swatch-layout" style="font-size:8px; color:var(--text-dim);">{{ option.layout_name }}</span>
+          {% set _fonts = [
+            {'key':'playfair','name':'Playfair','family':"'Playfair Display', Georgia, serif"},
+            {'key':'cormorant','name':'Cormorant','family':"'Cormorant', Georgia, serif"},
+            {'key':'poppins','name':'Poppins','family':"'Poppins', Arial, sans-serif"},
+          ] %}
+          {% for opt in _fonts %}
+          <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ opt.key }}" onclick="pickNewFont('{{ opt.key }}')">
+            <span class="card-new-swatch-name{% if seed_font == opt.key %} selected{% endif %}" style="font-family:{{ opt.family }};">{{ opt.name }}</span>
           </div>
           {% endfor %}
         </div>
-        <p style="font-size:11px; color:var(--text-dim); margin-top:8px;">Framed and accent styling appears on your printed card and links page.</p>
       </div>
 
       <input type="hidden" name="links" id="links-json" value="[]">
@@ -105,52 +119,59 @@
     <div style="display:flex; flex-direction:column; gap:16px; flex:1;">
       <div style="flex:1; display:flex; flex-direction:column;">
         <p class="card-new-face-label">FRONT</p>
-        <div class="card-new-face" id="preview-front" style="background:#6b1f2a; box-shadow:0 6px 20px rgba(107,31,42,0.35); flex:1; aspect-ratio:unset;">
-          <div class="card-new-logo-box" id="preview-logo" style="width:34px; height:34px; font-size:15px; color:#faf8f4; border:1.5px solid rgba(250,248,244,0.4);">D</div>
-          <div class="card-new-brand" id="preview-brand" style="color:#faf8f4;">Your Brand</div>
-          <div class="card-new-divider" id="preview-divider" style="width:22px; background:rgba(250,248,244,0.35); display:none;"></div>
-          <div class="card-new-tag" id="preview-tag" style="color:rgba(250,248,244,0.6); display:none;"></div>
-          <div class="preview-frame" aria-hidden="true"></div>
-          <div class="preview-brackets" aria-hidden="true">
-            <span class="pb tl"></span><span class="pb tr"></span>
-            <span class="pb bl"></span><span class="pb br"></span>
+        <div class="card-new-preview-card edit-layout-keyline" id="preview-front"
+             style="background:rgb(107,31,42); --card-font-family:'Playfair Display', Georgia, serif; --preview-accent:rgb(250,248,244); --preview-bg:rgb(107,31,42); --preview-text:rgb(250,248,244); --preview-font:'Playfair Display', Georgia, serif;">
+          <div class="card-preview-inner" id="preview-inner">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
+              <div class="card-preview-logo-box" style="width:32%; aspect-ratio:1; border:1px solid rgba(250,248,244,0.27); background:rgb(107,31,42); margin-bottom:5%;">
+                <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(12px,3vw,20px); color:rgb(250,248,244);">Y</span>
+              </div>
+              <div style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:rgba(250,248,244,0.67);">YOUR BRAND</div>
+            </div>
+          </div>
+          <div class="edit-card-decoration" aria-hidden="true">
+            <div class="edit-deco-keyline"></div>
+            <span class="edit-deco-corner edit-deco-corner-tl"></span>
+            <span class="edit-deco-corner edit-deco-corner-tr"></span>
+            <span class="edit-deco-corner edit-deco-corner-bl"></span>
+            <span class="edit-deco-corner edit-deco-corner-br"></span>
+            <div class="edit-deco-split edit-deco-split-lu"></div>
+            <div class="edit-deco-split edit-deco-split-ll"></div>
+            <div class="edit-deco-split edit-deco-split-ru"></div>
+            <div class="edit-deco-split edit-deco-split-rl"></div>
+            <div class="edit-deco-rule edit-deco-rule-top"></div>
+            <div class="edit-deco-rule edit-deco-rule-bottom"></div>
           </div>
         </div>
       </div>
       <div style="flex:1; display:flex; flex-direction:column;">
         <p class="card-new-face-label">BACK</p>
-        <div class="card-new-face" style="background:#faf8f4; border:1.5px solid #d8d0c4; box-shadow:0 4px 12px rgba(0,0,0,0.08); flex:1; aspect-ratio:unset;">
-          <svg viewBox="0 0 56 56" width="64" height="64">
-            <rect x="2" y="2" width="16" height="16" rx="1.5" fill="none" stroke="#1a1714" stroke-width="2"/>
-            <rect x="5" y="5" width="10" height="10" rx="0.5" fill="#1a1714"/>
-            <rect x="38" y="2" width="16" height="16" rx="1.5" fill="none" stroke="#1a1714" stroke-width="2"/>
-            <rect x="41" y="5" width="10" height="10" rx="0.5" fill="#1a1714"/>
-            <rect x="2" y="38" width="16" height="16" rx="1.5" fill="none" stroke="#1a1714" stroke-width="2"/>
-            <rect x="5" y="41" width="10" height="10" rx="0.5" fill="#1a1714"/>
-            <rect x="22" y="2" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="28" y="2" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="22" y="8" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="28" y="14" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="22" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="30" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="38" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="22" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="30" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="46" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="22" y="38" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="30" y="46" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="38" y="38" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="46" y="46" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="2" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="10" y="30" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="16" y="22" width="4" height="4" fill="#1a1714" opacity="0.7"/>
-            <rect x="38" y="46" width="16" height="3" fill="#1a1714" opacity="0.4"/>
-            <rect x="38" y="51" width="10" height="3" fill="#1a1714" opacity="0.4"/>
-          </svg>
+        <div class="card-new-preview-card edit-card-back edit-layout-keyline" id="preview-back"
+             style="background:rgb(107,31,42); --preview-accent:rgb(250,248,244); --preview-bg:rgb(107,31,42); --preview-text:rgb(250,248,244); --preview-font:'Playfair Display', Georgia, serif;">
+          <div class="edit-card-back-content">
+            <div style="width:31%; aspect-ratio:1; border-radius:3px; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b0a090" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+            </div>
+            <div class="edit-card-scan-label">SCAN TO CONNECT</div>
+            <div class="edit-card-url">cardbranch.co.uk/c/your-brand</div>
+          </div>
+          <div class="edit-card-decoration" aria-hidden="true">
+            <div class="edit-deco-keyline"></div>
+            <span class="edit-deco-corner edit-deco-corner-tl"></span>
+            <span class="edit-deco-corner edit-deco-corner-tr"></span>
+            <span class="edit-deco-corner edit-deco-corner-bl"></span>
+            <span class="edit-deco-corner edit-deco-corner-br"></span>
+            <div class="edit-deco-split edit-deco-split-lu"></div>
+            <div class="edit-deco-split edit-deco-split-ll"></div>
+            <div class="edit-deco-split edit-deco-split-ru"></div>
+            <div class="edit-deco-split edit-deco-split-rl"></div>
+            <div class="edit-deco-rule edit-deco-rule-top"></div>
+            <div class="edit-deco-rule edit-deco-rule-bottom"></div>
+          </div>
         </div>
       </div>
     </div>
-    <p style="font-size:10px; color:var(--text-dim); text-align:center; margin-top:10px;">85 × 55mm · Print ready</p>
+    <p style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:10px;">Front &amp; back preview · 85 × 55mm</p>
   </div>
 
 </div>
@@ -186,55 +207,134 @@
   margin-bottom: 6px;
   font-weight: 600;
 }
-.card-new-face {
-  border-radius: 10px;
-  overflow: hidden;
+.card-new-preview-card {
   width: 100%;
-  aspect-ratio: 1.75 / 1;
+  aspect-ratio: 85 / 55;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  transition: background 0.3s ease;
+}
+.edit-card-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.edit-deco-keyline,
+.edit-deco-corner,
+.edit-deco-split,
+.edit-deco-rule {
+  display: none;
+}
+.edit-layout-keyline .edit-deco-keyline {
+  display: block;
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid var(--preview-accent);
+  border-radius: 4px;
+}
+.edit-layout-corner_marks .edit-deco-corner {
+  display: block;
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--preview-accent);
+  border-style: solid;
+  border-width: 0;
+}
+.edit-layout-corner_marks .edit-deco-corner-tl { top:6px; left:6px; border-top-width:1.5px; border-left-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-tr { top:6px; right:6px; border-top-width:1.5px; border-right-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-bl { bottom:6px; left:6px; border-bottom-width:1.5px; border-left-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-br { bottom:6px; right:6px; border-bottom-width:1.5px; border-right-width:1.5px; }
+.edit-layout-split_edge .edit-deco-split {
+  display: block;
+  position: absolute;
+  width: 1.5px;
+  background: var(--preview-accent);
+}
+.edit-layout-split_edge .edit-deco-split-lu { left:6px; top:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-ll { left:6px; bottom:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-ru { right:6px; top:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-rl { right:6px; bottom:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-top_bottom_rule .edit-deco-rule {
+  display: block;
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 1.5px;
+  background: var(--preview-accent);
+}
+.edit-layout-top_bottom_rule .edit-deco-rule-top { top:6px; }
+.edit-layout-top_bottom_rule .edit-deco-rule-bottom { bottom:6px; }
+.edit-card-back {
+  background: var(--preview-bg);
+  font-family: var(--preview-font);
+  color: var(--preview-text);
+}
+.edit-card-back-content {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 16px;
-  transition: background 0.2s;
-  box-sizing: border-box;
+  gap: 6px;
+}
+.edit-card-scan-label {
+  font-family: var(--preview-font);
+  font-weight: 700;
+  font-size: 5px;
+  letter-spacing: 0.12em;
+  color: var(--preview-text);
+  text-align: center;
+}
+.edit-card-url {
+  font-family: var(--preview-font);
+  font-weight: 400;
+  font-size: 4px;
+  color: var(--preview-text);
+  text-align: center;
+}
+.card-preview-inner {
+  width: 92%;
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
   position: relative;
 }
-.preview-frame, .preview-brackets { position:absolute; inset:0; pointer-events:none; display:none; }
-.card-new-face.layout-framed .preview-frame { display:block; border:1.5px solid var(--preview-accent); border-radius:4px; margin:7px; }
-.card-new-face.layout-corner-brackets .preview-brackets { display:block; }
-.preview-brackets .pb { position:absolute; width:10px; height:10px; border:1.5px solid var(--preview-accent); }
-.preview-brackets .tl { top:7px; left:7px; border-right:none; border-bottom:none; }
-.preview-brackets .tr { top:7px; right:7px; border-left:none; border-bottom:none; }
-.preview-brackets .bl { bottom:7px; left:7px; border-right:none; border-top:none; }
-.preview-brackets .br { bottom:7px; right:7px; border-left:none; border-top:none; }
-.card-new-logo-box {
-  border-radius: 5px;
+.card-preview-logo-box {
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Playfair Display SC', Georgia, serif;
-  transition: all 0.2s;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.3s;
 }
-.card-new-brand {
-  font-family: 'Playfair Display SC', Georgia, serif;
-  font-size: 14px;
+.card-preview-name {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
   font-weight: 700;
-  transition: color 0.2s;
   text-align: center;
+  transition: color 0.3s;
+  line-height: 1.1;
 }
-.card-new-divider {
+.card-preview-divider {
+  width: 40px;
   height: 1px;
-  transition: background 0.2s;
+  transition: background 0.3s;
 }
-.card-new-tag {
-  font-family: 'Playfair Display SC', Georgia, serif;
-  font-size: 6.5px;
-  letter-spacing: 0.14em;
+.card-preview-tagline {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: color 0.2s;
   text-align: center;
+  transition: color 0.3s;
 }
 .card-new-swatches {
   display: flex;
@@ -250,16 +350,16 @@
   cursor: pointer;
 }
 .card-new-swatch {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid transparent;
-  transition: transform 0.1s;
+  transition: border-color 0.15s, transform 0.15s;
   position: relative;
 }
 .card-new-swatch.selected {
-  border-color: #6b1f2a;
-  box-shadow: 0 0 0 3px rgba(107,31,42,0.2);
+  border-color: var(--accent);
+  transform: scale(1.15);
 }
 .card-new-swatch-label {
   font-size: 11px;
@@ -273,6 +373,12 @@
   font-size: 9px;
   color: var(--text-secondary);
   font-weight: 500;
+}
+.new-design-picker .card-new-swatch-name.selected {
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 @media (max-width: 768px) {
   .card-new-layout { grid-template-columns: 1fr !important; }
@@ -337,10 +443,6 @@
 })();
 </script>
 <script>
-const themeOptions = {{ theme_options | tojson }};
-const themesByKey = Object.fromEntries(themeOptions.map(t => [t.key, t]));
-</script>
-<script>
 let linkCount = 1;
 
 const LINK_PLACEHOLDERS = {
@@ -401,86 +503,136 @@ document.getElementById('card-form').addEventListener('submit', function() {
   document.getElementById('links-json').value = JSON.stringify(links);
 });
 
-function applyThemePreview(styleKey) {
-    const theme = themesByKey[styleKey] || themesByKey['oxblood'];
-    const card = document.getElementById('preview-front');
-    currentBg = theme.bg;
-    isLight = theme.light;
-    card.style.setProperty('--preview-accent', theme.accent);
-    card.style.background = theme.bg;
-    card.classList.toggle('layout-framed', theme.layout === 'framed');
-    card.classList.toggle('layout-corner-brackets', theme.layout === 'corner_brackets');
-    updatePreview();
+const newColourOptions = [
+  {key:'oxblood', display_name:'Oxblood', bg:'rgb(107,31,42)', text:'rgb(250,248,244)', accent:'rgb(250,248,244)', light:false},
+  {key:'navy', display_name:'Navy', bg:'rgb(26,39,68)', text:'rgb(250,248,244)', accent:'rgb(250,248,244)', light:false},
+  {key:'forest', display_name:'Forest', bg:'rgb(26,61,43)', text:'rgb(250,248,244)', accent:'rgb(250,248,244)', light:false},
+  {key:'linen', display_name:'Linen', bg:'rgb(240,235,228)', text:'rgb(26,23,20)', accent:'rgb(26,23,20)', light:true},
+  {key:'midnight_framed', display_name:'Midnight', bg:'rgb(18,32,58)', text:'rgb(240,237,232)', accent:'rgb(201,162,75)', light:false},
+  {key:'evergreen_classic', display_name:'Evergreen', bg:'rgb(20,50,31)', text:'rgb(238,240,234)', accent:'rgb(199,168,102)', light:false},
+];
+const newBorderOptions = [
+  {key:'none', display_name:'None'},
+  {key:'keyline', display_name:'Keyline'},
+  {key:'corner_marks', display_name:'Corner Marks'},
+  {key:'split_edge', display_name:'Split Edge'},
+  {key:'top_bottom_rule', display_name:'Top & Bottom Rule'},
+];
+const newFontOptions = [
+  {key:'playfair', display_name:'Playfair', browser_family:"'Playfair Display', Georgia, serif"},
+  {key:'cormorant', display_name:'Cormorant', browser_family:"'Cormorant', Georgia, serif"},
+  {key:'poppins', display_name:'Poppins', browser_family:"'Poppins', Arial, sans-serif"},
+];
+const KNOWN_LAYOUTS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule'];
+
+let selectedColour = {{ seed_colour | tojson }};
+let selectedBorder = {{ seed_border | tojson }};
+let selectedFont = {{ seed_font | tojson }};
+
+function updateNewPickerSelection(axis, selectedKey) {
+  const visualSelector = axis === 'colour'
+    ? '.card-new-swatch'
+    : '.card-new-swatch-name';
+
+  document.querySelectorAll('[data-design-axis="' + axis + '"]').forEach(option => {
+    const visualElement = option.querySelector(visualSelector);
+    if (!visualElement) return;
+    visualElement.classList.toggle('selected', option.dataset.designKey === selectedKey);
+  });
+}
+
+function renderNewDesignPreview() {
+  const colour = newColourOptions.find(c => c.key === selectedColour) || newColourOptions[0];
+  const font = newFontOptions.find(f => f.key === selectedFont) || newFontOptions[0];
+  const card = document.getElementById('preview-front');
+  const back = document.getElementById('preview-back');
+
+  card.style.setProperty('--preview-accent', colour.accent);
+  card.style.setProperty('--card-font-family', font.browser_family);
+  card.style.background = colour.bg;
+
+  if (back) {
+    back.style.background = colour.bg;
+    back.style.setProperty('--preview-accent', colour.accent);
+  }
+
+  const faces = [card, back].filter(Boolean);
+  faces.forEach(face => {
+    face.style.setProperty('--preview-font', font.browser_family);
+  });
+  faces.forEach(face => {
+    KNOWN_LAYOUTS.forEach(l => face.classList.remove('edit-layout-' + l));
+    face.classList.add('edit-layout-' + selectedBorder);
+  });
+
+  updatePreview();
 }
 
 function updatePreview() {
   const brand = document.getElementById('brand-input').value.trim() || 'Your Brand';
   const tag = document.getElementById('tagline-input').value.trim();
-  const initial = brand[0].toUpperCase();
-  const logoEl = document.getElementById('preview-logo');
-  const brandEl = document.getElementById('preview-brand');
-  const dividerEl = document.getElementById('preview-divider');
-  const tagEl = document.getElementById('preview-tag');
-  const frontEl = document.getElementById('preview-front');
-  const currentKey = document.getElementById('card-style-input').value;
-  const theme = themesByKey[currentKey] || themesByKey['oxblood'];
-
-  logoEl.textContent = initial;
-  brandEl.textContent = brand;
+  const colour = newColourOptions.find(c => c.key === selectedColour) || newColourOptions[0];
+  const textColour = colour.light ? '#1a1714' : '#faf8f4';
+  const inner = document.getElementById('preview-inner');
 
   if (tag) {
-    dividerEl.style.display = 'block';
-    tagEl.style.display = 'block';
-    tagEl.textContent = tag;
-    logoEl.style.width = '34px';
-    logoEl.style.height = '34px';
-    logoEl.style.fontSize = '15px';
-    brandEl.style.fontSize = '14px';
+    inner.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
+        <div class="card-preview-logo-box"
+             style="width:22%; aspect-ratio:1; border:1px solid ${textColour}44; background:${colour.bg}; margin-bottom:6%;">
+          <span data-preview-initial style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(10px,2.5vw,16px); color:${textColour};"></span>
+        </div>
+        <div data-preview-brand class="card-preview-name" style="font-size:clamp(11px,2vw,15px); color:${colour.accent}; margin-bottom:4%;"></div>
+        <div class="card-preview-divider" style="background:${colour.accent}; margin-bottom:4%;"></div>
+        <div data-preview-tagline class="card-preview-tagline" style="font-size:clamp(7px,1.2vw,9px); color:${textColour}aa;"></div>
+      </div>`;
   } else {
-    dividerEl.style.display = 'none';
-    tagEl.style.display = 'none';
-    logoEl.style.width = '46px';
-    logoEl.style.height = '46px';
-    logoEl.style.fontSize = '22px';
-    brandEl.style.fontSize = '9px';
+    inner.innerHTML = `
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
+        <div class="card-preview-logo-box"
+             style="width:32%; aspect-ratio:1; border:1px solid ${textColour}44; background:${colour.bg}; margin-bottom:5%;">
+          <span data-preview-initial style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(12px,3vw,20px); color:${textColour};"></span>
+        </div>
+        <div data-preview-brand style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;"></div>
+      </div>`;
   }
 
-  if (isLight) {
-    logoEl.style.color = '#1a1714';
-    logoEl.style.borderColor = 'rgba(26,23,20,0.35)';
-    tagEl.style.color = 'rgba(26,23,20,0.55)';
-    frontEl.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)';
-    frontEl.style.border = '1.5px solid #d8d0c4';
-  } else {
-    logoEl.style.color = '#faf8f4';
-    logoEl.style.borderColor = 'rgba(250,248,244,0.4)';
-    tagEl.style.color = 'rgba(250,248,244,0.6)';
-    frontEl.style.boxShadow = '0 6px 20px ' + currentBg + '66';
-    frontEl.style.border = 'none';
-  }
-
-  if (tag) {
-    brandEl.style.color = theme.accent;
-    dividerEl.style.background = theme.accent;
-  } else {
-    brandEl.style.color = isLight ? '#1a1714' : '#faf8f4';
-    dividerEl.style.background = isLight ? 'rgba(26,23,20,0.25)' : 'rgba(250,248,244,0.35)';
-  }
+  const initialEl = inner.querySelector('[data-preview-initial]');
+  const brandEl = inner.querySelector('[data-preview-brand]');
+  initialEl.textContent = brand.charAt(0).toUpperCase();
+  brandEl.textContent = tag ? brand : brand.toUpperCase();
+  const taglineEl = inner.querySelector('[data-preview-tagline]');
+  if (taglineEl) taglineEl.textContent = tag.toUpperCase();
 }
 
-document.querySelectorAll('.card-new-swatch-wrap').forEach(wrap => {
-  wrap.addEventListener('click', () => {
-    document.querySelectorAll('.card-new-swatch').forEach(s => s.classList.remove('selected'));
-    wrap.querySelector('.card-new-swatch').classList.add('selected');
-    document.getElementById('card-style-input').value = wrap.dataset.style;
-    applyThemePreview(wrap.dataset.style);
-  });
-});
+function pickNewColour(key) {
+  selectedColour = key;
+  document.getElementById('card_colour_input').value = key;
+  updateNewPickerSelection('colour', key);
+  renderNewDesignPreview();
+}
+function pickNewBorder(key) {
+  selectedBorder = key;
+  document.getElementById('card_border_input').value = key;
+  updateNewPickerSelection('border', key);
+  renderNewDesignPreview();
+}
+function pickNewFont(key) {
+  selectedFont = key;
+  document.getElementById('card_font_input').value = key;
+  updateNewPickerSelection('font', key);
+  renderNewDesignPreview();
+}
+
+(function() {
+  document.getElementById('card_colour_input').value = selectedColour;
+  document.getElementById('card_border_input').value = selectedBorder;
+  document.getElementById('card_font_input').value = selectedFont;
+  renderNewDesignPreview();
+})();
 
 document.getElementById('brand-input').addEventListener('input', updatePreview);
 document.getElementById('tagline-input').addEventListener('input', updatePreview);
-
-applyThemePreview('oxblood');
 </script>
 
 <div id="card-creating-overlay" style="display:none; position:fixed; inset:0; background:var(--bg-primary); z-index:9999; align-items:center; justify-content:center; flex-direction:column; gap:1rem;">

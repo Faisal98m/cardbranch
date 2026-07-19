@@ -43,8 +43,37 @@ def index():
 @login_required
 def card_new():
     form = CardForm()
-    theme_options = theme_picker_options()
+
+    default_colour = 'oxblood'
+    default_border = 'keyline'
+    default_font = SELECTABLE_FONT_KEYS[0]
+
+    submitted_colour = request.form.get('card_colour') if request.method == 'POST' else None
+    submitted_border = request.form.get('card_border') if request.method == 'POST' else None
+    submitted_font = request.form.get('card_font') if request.method == 'POST' else None
+
+    seed_colour = submitted_colour if submitted_colour in SELECTABLE_COLOUR_KEYS else default_colour
+    seed_border = submitted_border if submitted_border in SELECTABLE_BORDER_KEYS else default_border
+    seed_font = submitted_font if submitted_font in SELECTABLE_FONT_KEYS else default_font
+
     if form.validate_on_submit():
+        card_colour = request.form.get('card_colour')
+        card_border = request.form.get('card_border')
+        card_font = request.form.get('card_font')
+
+        errors = {}
+        if card_colour not in SELECTABLE_COLOUR_KEYS:
+            errors['colour'] = card_colour
+        if card_border not in SELECTABLE_BORDER_KEYS:
+            errors['border'] = card_border
+        if card_font not in SELECTABLE_FONT_KEYS:
+            errors['font'] = card_font
+
+        if errors:
+            invalid_names = ', '.join(errors.keys())
+            flash(f'Invalid card design value(s) for: {invalid_names}', 'error')
+            return render_template('dashboard/card_new.html', form=form, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font), 400
+
         brand_name = form.brand_name.data.strip()
         tagline = form.tagline.data.strip() if form.tagline.data else ''
         slug = unique_slug(brand_name)
@@ -55,9 +84,9 @@ def card_new():
                 logo_filename = save_logo(form.logo.data)
             except ValueError as e:
                 flash(str(e), 'error')
-                return render_template('dashboard/card_new.html', form=form, theme_options=theme_options)
+                return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font)
 
-        card_style = normalise_theme_key(request.form.get('card_style'))
+        card_style = normalise_theme_key(card_colour)
 
         client = Client(
             user_id=current_user.id,
@@ -66,6 +95,9 @@ def card_new():
             slug=slug,
             logo_filename=logo_filename,
             card_style=card_style,
+            card_colour=card_colour,
+            card_border=card_border,
+            card_font=card_font,
         )
         db.session.add(client)
         db.session.flush()
@@ -77,7 +109,7 @@ def card_new():
             if link_type in ('phone', 'whatsapp') and value and not normalize_uk_phone(value):
                 db.session.rollback()
                 flash(f'"{value}" is not a valid UK phone number. Use a format like 07400 123456 or +447400123456.', 'error')
-                return render_template('dashboard/card_new.html', form=form, theme_options=theme_options)
+                return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font)
             link = Link(
                 client_id=client.id,
                 platform=LINK_TYPE_LABELS.get(link_type, 'Link'),
@@ -92,7 +124,7 @@ def card_new():
         flash('Card created successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
 
-    return render_template('dashboard/card_new.html', form=form, theme_options=theme_options)
+    return render_template('dashboard/card_new.html', form=form, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font)
 
 
 @dashboard_bp.route('/card/<int:id>')
