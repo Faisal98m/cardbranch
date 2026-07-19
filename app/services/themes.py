@@ -78,63 +78,23 @@ CARD_FONTS = {
 #   'corner_brackets' → corner_marks
 # ---------------------------------------------------------------------------
 
-LEGACY_STYLE_MAP = {
-    'oxblood':           ('oxblood',          'none',          'playfair'),
-    'navy':              ('navy',             'none',          'playfair'),
-    'forest':            ('forest',           'none',          'playfair'),
-    'slate':             ('slate',            'none',          'playfair'),
-    'charcoal':          ('charcoal',         'none',          'playfair'),
-    'linen':             ('linen',            'none',          'playfair'),
-    'sage':              ('sage',             'none',          'playfair'),
-    'blush':             ('blush',            'none',          'playfair'),
-    'midnight_framed':   ('midnight_framed',  'keyline',       'playfair'),
-    'oxblood_minimal':   ('oxblood_minimal',  'none',          'playfair'),
-    'linen_brackets':    ('linen_brackets',   'corner_marks',  'playfair'),
-    'evergreen_classic': ('evergreen_classic','keyline',       'playfair'),
-    'noir_framed':       ('noir_framed',      'keyline',       'playfair'),
-}
-
-_LEGACY_FALLBACK = ('oxblood', 'none', 'playfair')
+_DEFAULT_COLOUR = 'oxblood'
+_DEFAULT_BORDER = 'none'
+_DEFAULT_FONT = 'playfair'
 
 
-def resolve_design(card_colour=None, card_border=None, card_font=None, legacy_card_style=None):
-    """Resolve card design from either the three new fields (all-or-nothing)
-    or the legacy card_style key via LEGACY_STYLE_MAP.
+def resolve_design(card_colour=None, card_border=None, card_font=None):
+    """Resolve card design from independent card_colour, card_border, card_font.
 
-    New-style path: all three must be non-None and valid in their registries.
-    Legacy fallback path: uses LEGACY_STYLE_MAP with _LEGACY_FALLBACK for
-    None, '', 'default', or any unrecognised key.
-    Never blends new and legacy fields.
+    Each axis falls back independently:
+      - invalid/missing colour → oxblood
+      - invalid/missing border → none
+      - invalid/missing font  → playfair
     """
-    colour_valid = card_colour is not None and card_colour in CARD_COLOURS
-    border_valid = card_border is not None and card_border in CARD_BORDERS
-    font_valid = card_font is not None and card_font in CARD_FONTS
+    colour_key = card_colour if card_colour is not None and card_colour in CARD_COLOURS else _DEFAULT_COLOUR
+    border_key = card_border if card_border is not None and card_border in CARD_BORDERS else _DEFAULT_BORDER
+    font_key = card_font if card_font is not None and card_font in CARD_FONTS else _DEFAULT_FONT
 
-    if colour_valid and border_valid and font_valid:
-        colour = CARD_COLOURS[card_colour]
-        border = CARD_BORDERS[card_border]
-        font = CARD_FONTS[card_font]
-        return {
-            'colour_key': card_colour,
-            'border_key': card_border,
-            'font_key': card_font,
-            'bg': colour['bg'],
-            'text': colour['text'],
-            'accent': colour['accent'],
-            'light': colour['light'],
-            'border_renderer': border['border_renderer'],
-            'browser_family': font['browser_family'],
-            'pdf_regular': font['pdf_regular'],
-            'pdf_bold': font['pdf_bold'],
-        }
-
-    # Legacy fallback
-    if legacy_card_style is None or legacy_card_style == '' or legacy_card_style not in LEGACY_STYLE_MAP:
-        resolved = _LEGACY_FALLBACK
-    else:
-        resolved = LEGACY_STYLE_MAP[legacy_card_style]
-
-    colour_key, border_key, font_key = resolved
     colour = CARD_COLOURS[colour_key]
     border = CARD_BORDERS[border_key]
     font = CARD_FONTS[font_key]

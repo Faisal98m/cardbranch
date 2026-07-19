@@ -28,7 +28,7 @@ def index():
     clients = Client.query.filter_by(user_id=current_user.id).order_by(Client.created_at.desc()).all()
     design_map = {}
     for c in clients:
-        d = resolve_design(c.card_colour, c.card_border, c.card_font, legacy_card_style=c.card_style)
+        d = resolve_design(c.card_colour, c.card_border, c.card_font)
         design_map[c.id] = design_css(d)
     return render_template('dashboard/index.html', clients=clients, design_map=design_map)
 
@@ -127,7 +127,6 @@ def card_view(id):
         client.card_colour,
         client.card_border,
         client.card_font,
-        legacy_card_style=client.card_style,
     )
     theme = design_css(design)
     theme['layout'] = {
@@ -150,7 +149,6 @@ def card_edit(id):
         client.card_colour,
         client.card_border,
         client.card_font,
-        legacy_card_style=client.card_style,
     )
     current_preview = design_css(design)
     current_preview['colour_key'] = design['colour_key']

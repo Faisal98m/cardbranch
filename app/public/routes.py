@@ -47,7 +47,6 @@ def card_links(slug):
         card_colour=client.card_colour,
         card_border=client.card_border,
         card_font=client.card_font,
-        legacy_card_style=client.card_style,
     )
     theme = design_css(design)
     theme['colour_key'] = design['colour_key']
