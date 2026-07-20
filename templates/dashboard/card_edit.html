@@ -234,8 +234,8 @@
                 <div style="margin-bottom: 20px;" class="new-design-picker">
                     <label style="display:block; margin-bottom:8px; margin-top:24px;">Card design</label>
 
-                    <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Colour</div>
-                    <div class="card-new-swatches">
+                    <div style="font-size:11px; color:var(--text-dim); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;">Colour</div>
+                    <div class="card-new-swatches" style="gap:12px;">
                         {% for option in card_colour_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ option.key }}" onclick="pickNewColour('{{ option.key }}')">
                             <div class="card-new-swatch {% if seed_colour == option.key %}selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
@@ -244,24 +244,24 @@
                         {% endfor %}
                     </div>
 
-                    <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Border</div>
-                    <div class="card-new-swatches">
+                    <div style="font-size:11px; color:var(--text-dim); margin-top:18px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;">Border</div>
+                    <div class="card-new-swatches" style="gap:12px;">
                         {% for option in card_border_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ option.key }}" onclick="pickNewBorder('{{ option.key }}')">
                             <span class="card-new-swatch-name {% if seed_border == option.key %}selected{% endif %}">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
                     </div>
-                    <p style="font-size:11px; color:var(--text-dim); margin-top:4px;">Changes apply when you click Save Card.</p>
 
-                    <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
-                    <div class="card-new-swatches">
+                    <div style="font-size:11px; color:var(--text-dim); margin-top:18px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
+                    <div class="card-new-swatches" style="gap:12px;">
                         {% for option in card_font_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ option.key }}" onclick="pickNewFont('{{ option.key }}')">
                             <span class="card-new-swatch-name {% if seed_font == option.key %}selected{% endif %}" style="font-family: {{ option.browser_family }};">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
                     </div>
+                    <p style="font-size:11px; color:var(--text-dim); margin-top:12px;">Changes apply when you click Save Card.</p>
                 </div>
 
                 <div style="margin-bottom: 20px;">
