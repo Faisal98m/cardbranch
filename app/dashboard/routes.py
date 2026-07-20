@@ -209,14 +209,22 @@ def card_edit(id):
         links_data = json.loads(request.form.get('links', '[]'))
         for i, link_data in enumerate(links_data):
             link_type = link_data.get('link_type', 'custom')
+            if link_type not in LINK_TYPE_LABELS:
+                link_type = 'custom'
             value = link_data.get('url', '').strip()
             if link_type in ('phone', 'whatsapp') and value and not normalize_uk_phone(value):
                 db.session.rollback()
                 flash(f'"{value}" is not a valid UK phone number. Use a format like 07400 123456 or +447400123456.', 'error')
                 break
+            if link_type == 'custom':
+                platform = (link_data.get('platform') or '').strip()
+                if not platform:
+                    platform = 'Link'
+            else:
+                platform = LINK_TYPE_LABELS.get(link_type, 'Link')
             link = Link(
                 client_id=client.id,
-                platform=LINK_TYPE_LABELS.get(link_type, 'Link'),
+                platform=platform,
                 link_type=link_type,
                 url=value,
                 display_order=i,
