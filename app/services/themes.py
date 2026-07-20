@@ -127,7 +127,7 @@ def design_css(resolved):
     }
 
 
-SELECTABLE_COLOUR_KEYS = ['oxblood', 'navy', 'forest', 'linen', 'midnight_framed', 'evergreen_classic']
+SELECTABLE_COLOUR_KEYS = ['oxblood', 'navy', 'forest', 'linen', 'sage', 'blush', 'midnight_framed', 'evergreen_classic']
 SELECTABLE_BORDER_KEYS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule']
 SELECTABLE_FONT_KEYS = ['playfair', 'cormorant', 'poppins']
 
