@@ -196,6 +196,90 @@
     padding: 2px 8px;
     border-radius: 4px;
 }
+.card-new-border-thumb {
+  width: 48px;
+  height: 32px;
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+  background: var(--bg-card, #fff);
+}
+.card-new-border-thumb.selected {
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+.edit-card-decoration-sm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.edit-card-decoration-sm .edit-deco-keyline,
+.edit-card-decoration-sm .edit-deco-corner,
+.edit-card-decoration-sm .edit-deco-split,
+.edit-card-decoration-sm .edit-deco-rule {
+  display: none;
+}
+.edit-layout-keyline .edit-card-decoration-sm .edit-deco-keyline {
+  display: block;
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--text-dim);
+  border-radius: 2px;
+}
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner {
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: var(--text-dim);
+  border-style: solid;
+  border-width: 0;
+}
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-tl { top:2px; left:2px; border-top-width:1px; border-left-width:1px; }
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-tr { top:2px; right:2px; border-top-width:1px; border-right-width:1px; }
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-bl { bottom:2px; left:2px; border-bottom-width:1px; border-left-width:1px; }
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-br { bottom:2px; right:2px; border-bottom-width:1px; border-right-width:1px; }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split {
+  display: block;
+  position: absolute;
+  width: 1px;
+  background: var(--text-dim);
+}
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-lu { left:2px; top:2px; height:calc(50% - 4px); }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-ll { left:2px; bottom:2px; height:calc(50% - 4px); }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-ru { right:2px; top:2px; height:calc(50% - 4px); }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-rl { right:2px; bottom:2px; height:calc(50% - 4px); }
+.edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule {
+  display: block;
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 1px;
+  background: var(--text-dim);
+}
+.edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule-top { top:3px; }
+.edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule-bottom { bottom:3px; }
+.card-new-font-tile {
+  width: 40px;
+  height: 32px;
+  border-radius: 3px;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  background: var(--bg-card, #fff);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.card-new-font-tile.selected {
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
 </style>
 
 <h2 class="page-title">Edit {{ client.brand_name }}</h2>
@@ -248,7 +332,22 @@
                     <div class="card-new-swatches" style="gap:12px;">
                         {% for option in card_border_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ option.key }}" onclick="pickNewBorder('{{ option.key }}')">
-                            <span class="card-new-swatch-name {% if seed_border == option.key %}selected{% endif %}">{{ option.display_name }}</span>
+                            <div class="card-new-border-thumb edit-layout-{{ option.key }}{% if seed_border == option.key %} selected{% endif %}">
+                                <div class="edit-card-decoration-sm">
+                                    <div class="edit-deco-keyline"></div>
+                                    <span class="edit-deco-corner edit-deco-corner-tl"></span>
+                                    <span class="edit-deco-corner edit-deco-corner-tr"></span>
+                                    <span class="edit-deco-corner edit-deco-corner-bl"></span>
+                                    <span class="edit-deco-corner edit-deco-corner-br"></span>
+                                    <div class="edit-deco-split edit-deco-split-lu"></div>
+                                    <div class="edit-deco-split edit-deco-split-ll"></div>
+                                    <div class="edit-deco-split edit-deco-split-ru"></div>
+                                    <div class="edit-deco-split edit-deco-split-rl"></div>
+                                    <div class="edit-deco-rule edit-deco-rule-top"></div>
+                                    <div class="edit-deco-rule edit-deco-rule-bottom"></div>
+                                </div>
+                            </div>
+                            <span class="card-new-swatch-name">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -257,7 +356,8 @@
                     <div class="card-new-swatches" style="gap:12px;">
                         {% for option in card_font_options %}
                         <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ option.key }}" onclick="pickNewFont('{{ option.key }}')">
-                            <span class="card-new-swatch-name {% if seed_font == option.key %}selected{% endif %}" style="font-family: {{ option.browser_family }};">{{ option.display_name }}</span>
+                            <div class="card-new-font-tile{% if seed_font == option.key %} selected{% endif %}" style="font-family: {{ option.browser_family }};">Aa</div>
+                            <span class="card-new-swatch-name">{{ option.display_name }}</span>
                         </div>
                         {% endfor %}
                     </div>
@@ -489,7 +589,9 @@ let selectedFont = {{ seed_font | tojson }};
 function updateNewPickerSelection(axis, selectedKey) {
     const visualSelector = axis === 'colour'
         ? '.card-new-swatch'
-        : '.card-new-swatch-name';
+        : axis === 'border'
+        ? '.card-new-border-thumb'
+        : '.card-new-font-tile';
 
     document.querySelectorAll(`[data-design-axis="${axis}"]`).forEach(option => {
         const visualElement = option.querySelector(visualSelector);
