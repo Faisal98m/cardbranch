@@ -82,9 +82,13 @@ def design_css(resolved):
     """Convert a resolved design dict into CSS-ready string values."""
     def rgb(tup):
         return 'rgb(%d, %d, %d)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255))
+    def rgba(tup, alpha):
+        return 'rgba(%d, %d, %d, %s)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255), alpha)
     return {
         'bg': rgb(resolved['bg']),
         'text': rgb(resolved['text']),
+        'text_soft': rgba(resolved['text'], 0.6),
+        'text_faint': rgba(resolved['text'], 0.27),
         'accent': rgb(resolved['accent']),
         'light': resolved['light'],
         'border_renderer': resolved['border_renderer'],
