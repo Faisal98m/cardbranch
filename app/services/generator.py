@@ -75,6 +75,22 @@ def generate_qr(slug, site_url):
     return tmp_path
 
 
+def _rgb_hex(tup):
+    return '#%02X%02X%02X' % (round(tup[0] * 255), round(tup[1] * 255), round(tup[2] * 255))
+
+
+def generate_card_qr(slug, site_url, module_colour, background_colour, r2_key):
+    url = f'{site_url.rstrip("/")}/c/{slug}'
+    qr = qrcode.QRCode(box_size=10, border=4)
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color=module_colour, back_color=background_colour)
+    tmp_path = f'/tmp/{slug}_{secrets.token_hex(8)}_qr_card.png'
+    img.save(tmp_path)
+    upload_file(tmp_path, r2_key)
+    return tmp_path
+
+
 def download_logo(logo_filename):
     import boto3
     from botocore.config import Config
@@ -120,7 +136,7 @@ def register_design_fonts():
             pdfmetrics.registerFont(TTFont(name, path))
 
 
-def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key=None, card_colour=None, card_border=None, card_font=None):
+def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key=None, card_colour=None, card_border=None, card_font=None, qr_img_path=None):
     import os
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
@@ -128,7 +144,9 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
     card_w = 85 * mm_unit
     card_h = 55 * mm_unit
     pdf_path = f'/tmp/{slug}_card.pdf'
-    qr_img_path = f'/tmp/{slug}_qr.png'
+
+    if qr_img_path is None:
+        raise ValueError('generate_pdf requires an explicit qr_img_path')
 
     register_design_fonts()
 
@@ -345,13 +363,23 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
 def generate_assets(slug, brand_name, tagline, site_url, logo_filename=None, card_colour=None, card_border=None, card_font=None):
     token = secrets.token_urlsafe(16)
     pdf_r2_key = f'generated/{slug}/{token}/card.pdf'
-    qr_tmp = generate_qr(slug, site_url)
-    logo_tmp = download_logo(logo_filename)
-    pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, pdf_r2_key=pdf_r2_key, card_colour=card_colour, card_border=card_border, card_font=card_font)
-    if os.path.exists(qr_tmp):
-        os.remove(qr_tmp)
-    if pdf_tmp and os.path.exists(pdf_tmp):
-        os.remove(pdf_tmp)
-    if logo_tmp and os.path.exists(logo_tmp):
-        os.remove(logo_tmp)
-    return pdf_r2_key
+    qr_card_r2_key = f'generated/{slug}/{token}/qr_card.png'
+
+    design = resolve_design(card_colour=card_colour, card_border=card_border, card_font=card_font)
+    module_colour = '#1F5C46' if design['light'] else _rgb_hex(design['text'])
+    background_colour = _rgb_hex(design['bg'])
+
+    qr_tmp = None
+    qr_card_tmp = None
+    logo_tmp = None
+    pdf_tmp = None
+    try:
+        qr_tmp = generate_qr(slug, site_url)
+        qr_card_tmp = generate_card_qr(slug, site_url, module_colour, background_colour, qr_card_r2_key)
+        logo_tmp = download_logo(logo_filename)
+        pdf_tmp = generate_pdf(slug, brand_name, tagline, site_url, logo_path=logo_tmp, pdf_r2_key=pdf_r2_key, card_colour=card_colour, card_border=card_border, card_font=card_font, qr_img_path=qr_card_tmp)
+        return pdf_r2_key
+    finally:
+        for path in (qr_tmp, qr_card_tmp, pdf_tmp, logo_tmp):
+            if path and os.path.exists(path):
+                os.remove(path)

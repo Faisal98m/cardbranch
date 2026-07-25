@@ -136,7 +136,8 @@ def card_view(id):
         'split_edge': 'split_edge',
         'top_bottom_rule': 'top_bottom_rule',
     }[design['border_renderer']]
-    return render_template('dashboard/card_view.html', client=client, links=links, theme=theme)
+    qr_card_key = client.pdf_r2_key.rsplit('/', 1)[0] + '/qr_card.png' if client.pdf_r2_key else None
+    return render_template('dashboard/card_view.html', client=client, links=links, theme=theme, qr_card_key=qr_card_key)
 
 
 @dashboard_bp.route('/card/<int:id>/edit', methods=['GET', 'POST'])
