@@ -57,35 +57,19 @@
 
         <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Colour</div>
         <div class="card-new-swatches">
-          {% set _colours = [
-            {'key':'oxblood','name':'Oxblood','bg':'rgb(107,31,42)','light':False},
-            {'key':'navy','name':'Navy','bg':'rgb(26,39,68)','light':False},
-            {'key':'forest','name':'Forest','bg':'rgb(26,61,43)','light':False},
-            {'key':'linen','name':'Linen','bg':'rgb(240,235,228)','light':True},
-            {'key':'midnight_framed','name':'Midnight','bg':'rgb(18,32,58)','light':False},
-            {'key':'evergreen_classic','name':'Evergreen','bg':'rgb(20,50,31)','light':False},
-            {'key':'noir_framed','name':'Noir','bg':'rgb(22,22,22)','light':False},
-          ] %}
-          {% for opt in _colours %}
-          <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ opt.key }}" onclick="pickNewColour('{{ opt.key }}')">
-            <div class="card-new-swatch{% if seed_colour == opt.key %} selected{% endif %}" style="background:{{ opt.bg }};{% if opt.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
-            <span class="card-new-swatch-name">{{ opt.name }}</span>
+          {% for option in card_colour_options %}
+          <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ option.key }}" onclick="pickNewColour('{{ option.key }}')">
+            <div class="card-new-swatch{% if seed_colour == option.key %} selected{% endif %}" style="background:{{ option.bg }};{% if option.light %} border:1.5px solid rgba(0,0,0,0.12);{% endif %}"></div>
+            <span class="card-new-swatch-name">{{ option.display_name }}</span>
           </div>
           {% endfor %}
         </div>
 
         <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Border</div>
         <div class="card-new-swatches">
-          {% set _borders = [
-            {'key':'none','name':'None'},
-            {'key':'keyline','name':'Keyline'},
-            {'key':'corner_marks','name':'Corner Marks'},
-            {'key':'split_edge','name':'Split Edge'},
-            {'key':'top_bottom_rule','name':'Top & Bottom Rule'},
-          ] %}
-          {% for opt in _borders %}
-          <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ opt.key }}" onclick="pickNewBorder('{{ opt.key }}')">
-            <div class="card-new-border-thumb edit-layout-{{ opt.key }}{% if seed_border == opt.key %} selected{% endif %}">
+          {% for option in card_border_options %}
+          <div class="card-new-swatch-wrap" data-design-axis="border" data-design-key="{{ option.key }}" onclick="pickNewBorder('{{ option.key }}')">
+            <div class="card-new-border-thumb edit-layout-{{ option.key }}{% if seed_border == option.key %} selected{% endif %}">
               <div class="edit-card-decoration-sm">
                 <div class="edit-deco-keyline"></div>
                 <span class="edit-deco-corner edit-deco-corner-tl"></span>
@@ -100,22 +84,17 @@
                 <div class="edit-deco-rule edit-deco-rule-bottom"></div>
               </div>
             </div>
-            <span class="card-new-swatch-name">{{ opt.name }}</span>
+            <span class="card-new-swatch-name">{{ option.display_name }}</span>
           </div>
           {% endfor %}
         </div>
 
         <div style="font-size:11px; color:var(--text-dim); margin-top:12px; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.08em;">Font</div>
         <div class="card-new-swatches">
-          {% set _fonts = [
-            {'key':'playfair','name':'Playfair','family':"'Playfair Display', Georgia, serif"},
-            {'key':'cormorant','name':'Cormorant','family':"'Cormorant', Georgia, serif"},
-            {'key':'poppins','name':'Poppins','family':"'Poppins', Arial, sans-serif"},
-          ] %}
-          {% for opt in _fonts %}
-          <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ opt.key }}" onclick="pickNewFont('{{ opt.key }}')">
-            <div class="card-new-font-tile{% if seed_font == opt.key %} selected{% endif %}" style="font-family:{{ opt.family }};">Aa</div>
-            <span class="card-new-swatch-name">{{ opt.name }}</span>
+          {% for option in card_font_options %}
+          <div class="card-new-swatch-wrap" data-design-axis="font" data-design-key="{{ option.key }}" onclick="pickNewFont('{{ option.key }}')">
+            <div class="card-new-font-tile{% if seed_font == option.key %} selected{% endif %}" style="font-family: {{ option.browser_family }};">Aa</div>
+            <span class="card-new-swatch-name">{{ option.display_name }}</span>
           </div>
           {% endfor %}
         </div>
@@ -604,27 +583,9 @@ document.getElementById('card-form').addEventListener('submit', function() {
   document.getElementById('links-json').value = JSON.stringify(links);
 });
 
-const newColourOptions = [
-  {key:'oxblood', display_name:'Oxblood', bg:'rgb(107,31,42)', text:'rgb(250,248,244)', accent:'rgb(250,248,244)', light:false},
-  {key:'navy', display_name:'Navy', bg:'rgb(26,39,68)', text:'rgb(250,248,244)', accent:'rgb(250,248,244)', light:false},
-  {key:'forest', display_name:'Forest', bg:'rgb(26,61,43)', text:'rgb(250,248,244)', accent:'rgb(250,248,244)', light:false},
-  {key:'linen', display_name:'Linen', bg:'rgb(240,235,228)', text:'rgb(26,23,20)', accent:'rgb(26,23,20)', light:true},
-  {key:'midnight_framed', display_name:'Midnight', bg:'rgb(18,32,58)', text:'rgb(240,237,232)', accent:'rgb(201,162,75)', light:false},
-  {key:'evergreen_classic', display_name:'Evergreen', bg:'rgb(20,50,31)', text:'rgb(238,240,234)', accent:'rgb(199,168,102)', light:false},
-  {key:'noir_framed', display_name:'Noir', bg:'rgb(22,22,22)', text:'rgb(240,237,232)', accent:'rgb(201,162,75)', light:false},
-];
-const newBorderOptions = [
-  {key:'none', display_name:'None'},
-  {key:'keyline', display_name:'Keyline'},
-  {key:'corner_marks', display_name:'Corner Marks'},
-  {key:'split_edge', display_name:'Split Edge'},
-  {key:'top_bottom_rule', display_name:'Top & Bottom Rule'},
-];
-const newFontOptions = [
-  {key:'playfair', display_name:'Playfair', browser_family:"'Playfair Display', Georgia, serif"},
-  {key:'cormorant', display_name:'Cormorant', browser_family:"'Cormorant', Georgia, serif"},
-  {key:'poppins', display_name:'Poppins', browser_family:"'Poppins', Arial, sans-serif"},
-];
+const newColourOptions = {{ card_colour_options | tojson }};
+const newBorderOptions = {{ card_border_options | tojson }};
+const newFontOptions = {{ card_font_options | tojson }};
 const KNOWN_LAYOUTS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule'];
 
 let selectedColour = {{ seed_colour | tojson }};

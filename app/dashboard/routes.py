@@ -66,7 +66,7 @@ def card_new():
         if errors:
             invalid_names = ', '.join(errors.keys())
             flash(f'Invalid card design value(s) for: {invalid_names}', 'error')
-            return render_template('dashboard/card_new.html', form=form, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font), 400
+            return render_template('dashboard/card_new.html', form=form, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options()), 400
 
         brand_name = form.brand_name.data.strip()
         tagline = form.tagline.data.strip() if form.tagline.data else ''
@@ -78,7 +78,7 @@ def card_new():
                 logo_filename = save_logo(form.logo.data)
             except ValueError as e:
                 flash(str(e), 'error')
-                return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font)
+                return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options())
 
         client = Client(
             user_id=current_user.id,
@@ -100,7 +100,7 @@ def card_new():
             if link_type in ('phone', 'whatsapp') and value and not normalize_uk_phone(value):
                 db.session.rollback()
                 flash(f'"{value}" is not a valid UK phone number. Use a format like 07400 123456 or +447400123456.', 'error')
-                return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font)
+                return render_template('dashboard/card_new.html', form=form, seed_colour=card_colour, seed_border=card_border, seed_font=card_font, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options())
             link = Link(
                 client_id=client.id,
                 platform=LINK_TYPE_LABELS.get(link_type, 'Link'),
@@ -115,7 +115,7 @@ def card_new():
         flash('Card created successfully!', 'success')
         return redirect(url_for('dashboard.card_view', id=client.id))
 
-    return render_template('dashboard/card_new.html', form=form, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font)
+    return render_template('dashboard/card_new.html', form=form, seed_colour=seed_colour, seed_border=seed_border, seed_font=seed_font, card_colour_options=card_colour_options(), card_border_options=card_border_options(), card_font_options=card_font_options())
 
 
 @dashboard_bp.route('/card/<int:id>')
