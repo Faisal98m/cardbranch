@@ -127,17 +127,18 @@ def design_css(resolved):
     }
 
 
-SELECTABLE_COLOUR_KEYS = ['oxblood', 'navy', 'forest', 'linen', 'sage', 'blush', 'midnight_framed', 'evergreen_classic']
+SELECTABLE_COLOUR_KEYS = ['oxblood', 'navy', 'forest', 'linen', 'sage', 'blush', 'midnight_framed', 'evergreen_classic', 'noir_framed']
 SELECTABLE_BORDER_KEYS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule']
 SELECTABLE_FONT_KEYS = ['playfair', 'cormorant', 'poppins']
 
 _COLOUR_DISPLAY_OVERRIDES = {
     'midnight_framed': 'Midnight',
     'evergreen_classic': 'Evergreen',
+    'noir_framed': 'Noir',
 }
 
 def card_colour_options():
-    """Presentation-ready options for the 6 selectable new-style colours."""
+    """Presentation-ready options for the 9 selectable new-style colours."""
     def rgb(tup):
         return 'rgb(%d, %d, %d)' % (round(tup[0]*255), round(tup[1]*255), round(tup[2]*255))
     opts = []
