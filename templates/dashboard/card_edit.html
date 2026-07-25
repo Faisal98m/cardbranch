@@ -617,11 +617,15 @@ function renderNewDesignPreview() {
     isLight = colour.light;
     card.style.setProperty('--preview-accent', colour.accent);
     card.style.setProperty('--card-font-family', font.browser_family);
+    card.style.setProperty('--preview-bg', colour.bg);
+    card.style.setProperty('--preview-text', colour.text);
     card.style.background = colour.bg;
 
     if (back) {
         back.style.background = colour.bg;
         back.style.setProperty('--preview-accent', colour.accent);
+        back.style.setProperty('--preview-bg', colour.bg);
+        back.style.setProperty('--preview-text', colour.text);
     }
 
     const faces = [card, back].filter(Boolean);

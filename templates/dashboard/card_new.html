@@ -64,6 +64,7 @@
             {'key':'linen','name':'Linen','bg':'rgb(240,235,228)','light':True},
             {'key':'midnight_framed','name':'Midnight','bg':'rgb(18,32,58)','light':False},
             {'key':'evergreen_classic','name':'Evergreen','bg':'rgb(20,50,31)','light':False},
+            {'key':'noir_framed','name':'Noir','bg':'rgb(22,22,22)','light':False},
           ] %}
           {% for opt in _colours %}
           <div class="card-new-swatch-wrap" data-design-axis="colour" data-design-key="{{ opt.key }}" onclick="pickNewColour('{{ opt.key }}')">
@@ -610,6 +611,7 @@ const newColourOptions = [
   {key:'linen', display_name:'Linen', bg:'rgb(240,235,228)', text:'rgb(26,23,20)', accent:'rgb(26,23,20)', light:true},
   {key:'midnight_framed', display_name:'Midnight', bg:'rgb(18,32,58)', text:'rgb(240,237,232)', accent:'rgb(201,162,75)', light:false},
   {key:'evergreen_classic', display_name:'Evergreen', bg:'rgb(20,50,31)', text:'rgb(238,240,234)', accent:'rgb(199,168,102)', light:false},
+  {key:'noir_framed', display_name:'Noir', bg:'rgb(22,22,22)', text:'rgb(240,237,232)', accent:'rgb(201,162,75)', light:false},
 ];
 const newBorderOptions = [
   {key:'none', display_name:'None'},
@@ -651,11 +653,15 @@ function renderNewDesignPreview() {
 
   card.style.setProperty('--preview-accent', colour.accent);
   card.style.setProperty('--card-font-family', font.browser_family);
+  card.style.setProperty('--preview-bg', colour.bg);
+  card.style.setProperty('--preview-text', colour.text);
   card.style.background = colour.bg;
 
   if (back) {
     back.style.background = colour.bg;
     back.style.setProperty('--preview-accent', colour.accent);
+    back.style.setProperty('--preview-bg', colour.bg);
+    back.style.setProperty('--preview-text', colour.text);
   }
 
   const faces = [card, back].filter(Boolean);
