@@ -226,12 +226,6 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
             logo_box_x = (card_w - logo_box_size) / 2
             logo_box_y = group_y_start - logo_box_size - (group_h * 0.05)
 
-            # Logo border box
-            c.setStrokeColorRGB(*text_colour)
-            c.setLineWidth(0.35)
-            c.setFillColorRGB(*front_bg)
-            c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.2 * mm_unit, fill=1, stroke=1)
-
             # Logo or initial inside box
             if logo_path and os.path.exists(logo_path):
                 padding = 1.5 * mm_unit
@@ -245,6 +239,10 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
                     preserveAspectRatio=True
                 )
             else:
+                c.setStrokeColorRGB(*text_colour)
+                c.setLineWidth(0.35)
+                c.setFillColorRGB(*front_bg)
+                c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.2 * mm_unit, fill=1, stroke=1)
                 c.setFillColorRGB(*text_colour)
                 c.setFont(name_font, 9)
                 c.drawCentredString(
@@ -282,11 +280,6 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
             logo_box_x = (card_w - logo_box_size) / 2
             logo_box_y = (card_h - logo_box_size) / 2 + 3 * mm_unit
 
-            c.setStrokeColorRGB(*text_colour)
-            c.setLineWidth(0.35)
-            c.setFillColorRGB(*front_bg)
-            c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 2 * mm_unit, fill=1, stroke=1)
-
             if logo_path and os.path.exists(logo_path):
                 padding = 2 * mm_unit
                 c.drawImage(
@@ -299,6 +292,10 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
                     preserveAspectRatio=True
                 )
             else:
+                c.setStrokeColorRGB(*text_colour)
+                c.setLineWidth(0.35)
+                c.setFillColorRGB(*front_bg)
+                c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 2 * mm_unit, fill=1, stroke=1)
                 c.setFillColorRGB(*text_colour)
                 c.setFont(name_font, 14)
                 c.drawCentredString(

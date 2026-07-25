@@ -36,7 +36,7 @@
         <div class="card-front cv-card-face cv-layout-{{ theme.layout }}" style="background: {{ theme.bg }}; width:100%; aspect-ratio:85/55; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; --card-font-family: {{ theme.browser_family }}; --cv-card-accent: {{ theme.accent }};">
           <div class="card-inner">
             {% if client.tagline %}
-            <div class="logo-box" style="border-color: {{ theme.text_faint }};">
+            <div class="logo-box" style="{% if client.logo_filename %}border:none{% else %}border-color:{{ theme.text_faint }}{% endif %};">
               {% if client.logo_filename %}
               <img src="{{ r2_url }}/{{ client.logo_filename }}"
                    style="width:100%; height:100%; object-fit:contain; border-radius:3px;"
@@ -49,7 +49,7 @@
             <div class="preview-divider" style="background: {{ theme.accent }};"></div>
             <div class="preview-tagline" style="color: {{ theme.text_soft }};">{{ client.tagline }}</div>
             {% else %}
-            <div class="logo-box logo-box-lg" style="border-color: {{ theme.text_faint }};">
+            <div class="logo-box logo-box-lg" style="{% if client.logo_filename %}border:none{% else %}border-color:{{ theme.text_faint }}{% endif %};">
               {% if client.logo_filename %}
               <img src="{{ r2_url }}/{{ client.logo_filename }}"
                    style="width:100%; height:100%; object-fit:contain; border-radius:4px;"
