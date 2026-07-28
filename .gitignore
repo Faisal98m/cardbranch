@@ -7,3 +7,5 @@ instance/
 static/generated/
 static/uploads/
 .agents/
+.venv/
+.venv/

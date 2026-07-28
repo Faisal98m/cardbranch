@@ -1,0 +1,169 @@
+.edit-card-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.edit-deco-keyline,
+.edit-deco-corner,
+.edit-deco-split,
+.edit-deco-rule {
+  display: none;
+}
+.edit-layout-keyline .edit-deco-keyline {
+  display: block;
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid var(--preview-accent);
+  border-radius: 4px;
+}
+.edit-layout-corner_marks .edit-deco-corner {
+  display: block;
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--preview-accent);
+  border-style: solid;
+  border-width: 0;
+}
+.edit-layout-corner_marks .edit-deco-corner-tl { top:6px; left:6px; border-top-width:1.5px; border-left-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-tr { top:6px; right:6px; border-top-width:1.5px; border-right-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-bl { bottom:6px; left:6px; border-bottom-width:1.5px; border-left-width:1.5px; }
+.edit-layout-corner_marks .edit-deco-corner-br { bottom:6px; right:6px; border-bottom-width:1.5px; border-right-width:1.5px; }
+.edit-layout-split_edge .edit-deco-split {
+  display: block;
+  position: absolute;
+  width: 1.5px;
+  background: var(--preview-accent);
+}
+.edit-layout-split_edge .edit-deco-split-lu { left:6px; top:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-ll { left:6px; bottom:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-ru { right:6px; top:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-split_edge .edit-deco-split-rl { right:6px; bottom:6px; height:calc(50% - 7.2725% - 6px); }
+.edit-layout-top_bottom_rule .edit-deco-rule {
+  display: block;
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 1.5px;
+  background: var(--preview-accent);
+}
+.edit-layout-top_bottom_rule .edit-deco-rule-top { top:6px; }
+.edit-layout-top_bottom_rule .edit-deco-rule-bottom { bottom:6px; }
+.edit-card-back {
+  background: var(--preview-bg);
+  font-family: var(--preview-font);
+  color: var(--preview-text);
+}
+.edit-card-back-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.edit-card-scan-label {
+  font-family: var(--preview-font);
+  font-weight: 700;
+  font-size: 5px;
+  letter-spacing: 0.12em;
+  color: var(--preview-text);
+  text-align: center;
+}
+.edit-card-url {
+  font-family: var(--preview-font);
+  font-weight: 400;
+  font-size: 4px;
+  color: var(--preview-text);
+  text-align: center;
+}
+.card-preview-inner {
+  width: 92%;
+  height: 88%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+}
+.card-preview-logo-box {
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.3s;
+}
+.card-preview-name {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  font-weight: 700;
+  text-align: center;
+  transition: color 0.3s;
+  line-height: 1.1;
+}
+.card-preview-divider {
+  width: 40px;
+  height: 1px;
+  transition: background 0.3s;
+}
+.card-preview-tagline {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  transition: color 0.3s;
+}
+.edit-card-decoration-sm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.edit-card-decoration-sm .edit-deco-keyline,
+.edit-card-decoration-sm .edit-deco-corner,
+.edit-card-decoration-sm .edit-deco-split,
+.edit-card-decoration-sm .edit-deco-rule {
+  display: none;
+}
+.edit-layout-keyline .edit-card-decoration-sm .edit-deco-keyline {
+  display: block;
+  position: absolute;
+  inset: 3px;
+  border: 1px solid var(--text-dim);
+  border-radius: 2px;
+}
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner {
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-color: var(--text-dim);
+  border-style: solid;
+  border-width: 0;
+}
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-tl { top:2px; left:2px; border-top-width:1px; border-left-width:1px; }
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-tr { top:2px; right:2px; border-top-width:1px; border-right-width:1px; }
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-bl { bottom:2px; left:2px; border-bottom-width:1px; border-left-width:1px; }
+.edit-layout-corner_marks .edit-card-decoration-sm .edit-deco-corner-br { bottom:2px; right:2px; border-bottom-width:1px; border-right-width:1px; }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split {
+  display: block;
+  position: absolute;
+  width: 1px;
+  background: var(--text-dim);
+}
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-lu { left:2px; top:2px; height:calc(50% - 4px); }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-ll { left:2px; bottom:2px; height:calc(50% - 4px); }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-ru { right:2px; top:2px; height:calc(50% - 4px); }
+.edit-layout-split_edge .edit-card-decoration-sm .edit-deco-split-rl { right:2px; bottom:2px; height:calc(50% - 4px); }
+.edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule {
+  display: block;
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  height: 1px;
+  background: var(--text-dim);
+}
+.edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule-top { top:3px; }
+.edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule-bottom { bottom:3px; }
