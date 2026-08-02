@@ -53,7 +53,7 @@
           <div class="cb-design-swatches">
             {% for option in card_font_options %}
             <button type="button" class="cb-design-control" data-axis="font" data-key="{{ option.key }}" aria-label="Font: {{ option.display_name }}">
-              <span class="cb-design-font-tile" style="font-family: {{ option.browser_family }};">Halstead</span>
+              <span class="cb-design-font-tile" style="font-family: {{ option.browser_family }};">Ashford</span>
               <span class="cb-design-swatch-name">{{ option.display_name }}</span>
             </button>
             {% endfor %}
@@ -88,9 +88,9 @@
         <div class="cb-design-phone">
           <div class="cb-design-phone-screen" id="cb-design-phone-screen">
             <div class="cb-design-phone-panel">
-              <div class="cb-design-phone-avatar">H</div>
-              <div class="cb-design-phone-brand">Halstead Plumbing</div>
-              <div class="cb-design-phone-tagline">GAS SAFE &middot; BIRMINGHAM</div>
+              <div class="cb-design-phone-avatar">A</div>
+              <div class="cb-design-phone-brand">Ashford Roofing</div>
+              <div class="cb-design-phone-tagline">FLAT &amp; PITCHED</div>
               <div class="cb-design-phone-links">
                 <div class="cb-design-phone-link">Website</div>
                 <div class="cb-design-phone-link">Call</div>
@@ -518,11 +518,11 @@
       face.innerHTML =
         '<div class="cb-design-face-front">' +
           '<div class="cb-design-face-monogram" style="border:1px solid ' + toTranslucent(colour.text) + '; background:' + colour.bg + ';">' +
-            '<span class="cb-design-face-initial" style="color:' + colour.text + ';">H</span>' +
+            '<span class="cb-design-face-initial" style="color:' + colour.text + ';">A</span>' +
           '</div>' +
-          '<div class="cb-design-face-brand" style="color:' + colour.accent + ';">Halstead Plumbing</div>' +
+          '<div class="cb-design-face-brand" style="color:' + colour.accent + ';">Ashford Roofing</div>' +
           '<div class="cb-design-face-divider" style="background:' + colour.accent + ';"></div>' +
-          '<div class="cb-design-face-tagline" style="color:' + colour.text + ';">GAS SAFE \u00b7 BIRMINGHAM</div>' +
+          '<div class="cb-design-face-tagline" style="color:' + colour.text + ';">FLAT &amp; PITCHED \u00b7 BIRMINGHAM</div>' +
         '</div>';
     } else {
       var qrModule = colour.light ? '#1F5C46' : colour.text;
@@ -539,7 +539,7 @@
         '<div class="cb-design-face-back">' +
           '<div class="cb-design-face-qr">' + qrSvg + '</div>' +
           '<div class="cb-design-face-scan" style="color:' + colour.text + ';">SCAN TO CONNECT</div>' +
-          '<div class="cb-design-face-url" style="color:' + colour.text + ';">cardbranch.co.uk/c/halstead</div>' +
+          '<div class="cb-design-face-url" style="color:' + colour.text + ';">cardbranch.co.uk/c/ashford</div>' +
         '</div>';
     }
 
