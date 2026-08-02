@@ -1,0 +1,574 @@
+<section class="cb-design" id="design">
+  <div class="cb-container">
+
+    <div class="cb-design-head">
+      <div class="cb-eyebrow" style="justify-content:center;"><span class="cb-line"></span>Design preview</div>
+      <h2>Pick a card, any card</h2>
+      <p>Cycle the colour, border and font to see the card and its links page come together.</p>
+    </div>
+
+    <div class="cb-design-grid">
+
+      <div class="cb-design-controls">
+        <div class="cb-design-axis">
+          <span class="cb-design-label">Colour</span>
+          <div class="cb-design-swatches">
+            {% for option in card_colour_options %}
+                <button type="button" class="cb-design-control" data-axis="colour" data-key="{{ option.key }}" aria-label="Colour: {{ option.display_name }}">
+                <span class="cb-design-swatch{% if option.light %} cb-design-swatch-light{% endif %}" style="background:{{ option.bg }};"></span>
+              <span class="cb-design-swatch-name">{{ option.display_name }}</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="cb-design-axis">
+          <span class="cb-design-label">Border</span>
+          <div class="cb-design-swatches">
+            {% for option in card_border_options %}
+            <button type="button" class="cb-design-control" data-axis="border" data-key="{{ option.key }}" aria-label="Border: {{ option.display_name }}">
+              <div class="cb-design-border-thumb edit-layout-{{ option.key }}">
+                <div class="edit-card-decoration-sm">
+                  <div class="edit-deco-keyline"></div>
+                  <span class="edit-deco-corner edit-deco-corner-tl"></span>
+                  <span class="edit-deco-corner edit-deco-corner-tr"></span>
+                  <span class="edit-deco-corner edit-deco-corner-bl"></span>
+                  <span class="edit-deco-corner edit-deco-corner-br"></span>
+                  <div class="edit-deco-split edit-deco-split-lu"></div>
+                  <div class="edit-deco-split edit-deco-split-ll"></div>
+                  <div class="edit-deco-split edit-deco-split-ru"></div>
+                  <div class="edit-deco-split edit-deco-split-rl"></div>
+                  <div class="edit-deco-rule edit-deco-rule-top"></div>
+                  <div class="edit-deco-rule edit-deco-rule-bottom"></div>
+                </div>
+              </div>
+              <span class="cb-design-swatch-name">{{ option.display_name }}</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="cb-design-axis">
+          <span class="cb-design-label">Font</span>
+          <div class="cb-design-swatches">
+            {% for option in card_font_options %}
+            <button type="button" class="cb-design-control" data-axis="font" data-key="{{ option.key }}" aria-label="Font: {{ option.display_name }}">
+              <span class="cb-design-font-tile" style="font-family: {{ option.browser_family }};">Halstead</span>
+              <span class="cb-design-swatch-name">{{ option.display_name }}</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="cb-design-preview">
+        <div class="cb-design-card edit-layout-none" id="cb-design-card">
+          <div class="cb-design-face" id="cb-design-face"></div>
+          <div class="edit-card-decoration" aria-hidden="true">
+            <div class="edit-deco-keyline"></div>
+            <span class="edit-deco-corner edit-deco-corner-tl"></span>
+            <span class="edit-deco-corner edit-deco-corner-tr"></span>
+            <span class="edit-deco-corner edit-deco-corner-bl"></span>
+            <span class="edit-deco-corner edit-deco-corner-br"></span>
+            <div class="edit-deco-split edit-deco-split-lu"></div>
+            <div class="edit-deco-split edit-deco-split-ll"></div>
+            <div class="edit-deco-split edit-deco-split-ru"></div>
+            <div class="edit-deco-split edit-deco-split-rl"></div>
+            <div class="edit-deco-rule edit-deco-rule-top"></div>
+            <div class="edit-deco-rule edit-deco-rule-bottom"></div>
+          </div>
+        </div>
+        <div class="cb-design-card-actions">
+          <button type="button" id="cb-design-flip" aria-pressed="false">Flip card</button>
+          <span class="cb-design-card-caption">85 &times; 55mm &middot; printed both sides</span>
+        </div>
+      </div>
+
+      <div class="cb-design-phone-col">
+        <div class="cb-design-phone">
+          <div class="cb-design-phone-screen" id="cb-design-phone-screen">
+            <div class="cb-design-phone-panel">
+              <div class="cb-design-phone-avatar">H</div>
+              <div class="cb-design-phone-brand">Halstead Plumbing</div>
+              <div class="cb-design-phone-tagline">GAS SAFE &middot; BIRMINGHAM</div>
+              <div class="cb-design-phone-links">
+                <div class="cb-design-phone-link">Website</div>
+                <div class="cb-design-phone-link">Call</div>
+                <div class="cb-design-phone-link">WhatsApp</div>
+                <div class="cb-design-phone-link">Email</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="cb-design-phone-caption">Your links page</p>
+      </div>
+
+    </div>
+
+    <div class="cb-design-cta">
+      <a id="cb-design-cta" class="btn btn-primary" href="{{ url_for('auth.register') }}">Create your card</a>
+      <p>One-time payment. No subscription.</p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.cb-design {
+  padding: 90px 0;
+  border-top: 1px solid var(--border);
+}
+.cb-design-head {
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto 64px;
+}
+.cb-design-head h2 {
+  font-family: 'Newsreader', serif;
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+.cb-design-head p {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.cb-design-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 200px;
+  gap: 40px;
+  align-items: start;
+}
+
+.cb-design-axis {
+  margin-bottom: 26px;
+}
+.cb-design-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.cb-design-swatches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.cb-design-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.cb-design-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.cb-design-swatch-light {
+  border: 1.5px solid rgba(0,0,0,0.12);
+}
+.cb-design-border-thumb {
+  width: 44px;
+  height: 32px;
+  border-radius: 3px;
+  border: 2px solid transparent;
+  background: var(--bg-card);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.cb-design-font-tile {
+  width: 44px;
+  height: 32px;
+  border-radius: 3px;
+  border: 2px solid transparent;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.cb-design-swatch-name {
+  font-size: 9px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.cb-design-control.selected .cb-design-swatch,
+.cb-design-control.selected .cb-design-border-thumb,
+.cb-design-control.selected .cb-design-font-tile {
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+
+.cb-design-preview {
+  width: 100%;
+  max-width: 410px;
+  margin: 0 auto;
+}
+.cb-design-card {
+  aspect-ratio: 85 / 55;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+.cb-design-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cb-design-face-front,
+.cb-design-face-back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.cb-design-face-front {
+  width: 100%;
+}
+.cb-design-face-monogram {
+  width: 22%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6%;
+}
+.cb-design-face-initial {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  font-weight: 700;
+  font-size: clamp(14px, 3vw, 22px);
+  line-height: 1;
+}
+.cb-design-face-brand {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.cb-design-face-divider {
+  width: 44px;
+  height: 2px;
+  margin-bottom: 12px;
+}
+.cb-design-face-tagline {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.cb-design-face-qr {
+  margin-bottom: 9px;
+  line-height: 0;
+}
+.cb-design-face-scan {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+.cb-design-face-url {
+  font-family: var(--card-font-family, 'Playfair Display', serif);
+  font-size: 10px;
+}
+.cb-design-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 14px;
+}
+#cb-design-flip {
+  font-family: 'Schibsted Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#cb-design-flip:hover {
+  background: var(--accent-subtle);
+}
+.cb-design-card-caption {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.cb-design-phone-col {
+  max-width: 220px;
+  margin: 0 auto;
+}
+.cb-design-phone {
+  aspect-ratio: 9 / 16;
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  padding: 8px;
+  display: flex;
+  min-height: 0;
+}
+.cb-design-phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  padding: 20px 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  box-sizing: border-box;
+}
+.cb-design-phone-panel {
+  background: #fbf8f3;
+  border-radius: 16px;
+  width: 100%;
+  height: auto;
+  flex: none;
+  align-self: center;
+  padding: 18px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+.cb-design-phone-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Newsreader', serif;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.cb-design-phone-brand {
+  font-family: 'Newsreader', serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 2px;
+}
+.cb-design-phone-tagline {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  margin-bottom: 14px;
+  white-space: nowrap;
+}
+.cb-design-phone-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.cb-design-phone-link {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+}
+.cb-design-phone-caption {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+.cb-design-cta {
+  text-align: center;
+  margin-top: 56px;
+}
+.cb-design-cta p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+}
+
+@media (max-width: 900px) {
+  .cb-design-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+</style>
+
+<script>
+(function() {
+  var colourOptions = {{ card_colour_options | tojson }};
+  var borderOptions = {{ card_border_options | tojson }};
+  var fontOptions = {{ card_font_options | tojson }};
+  var KNOWN_LAYOUTS = ['none', 'keyline', 'corner_marks', 'split_edge', 'top_bottom_rule'];
+
+  var state = {
+    colour: colourOptions[0].key,
+    border: borderOptions[0].key,
+    font: fontOptions[0].key,
+    facing: 'front'
+  };
+
+  var card = document.getElementById('cb-design-card');
+  var face = document.getElementById('cb-design-face');
+  var phoneScreen = document.getElementById('cb-design-phone-screen');
+  var flipBtn = document.getElementById('cb-design-flip');
+  var cta = document.getElementById('cb-design-cta');
+  var baseHref = cta.getAttribute('href');
+
+  function optionFor(list, key) {
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].key === key) return list[i];
+    }
+    return list[0];
+  }
+
+  function selectAxis(axis, key) {
+    state[axis] = key;
+    var controls = document.querySelectorAll('[data-axis="' + axis + '"]');
+    for (var i = 0; i < controls.length; i++) {
+      controls[i].classList.toggle('selected', controls[i].getAttribute('data-key') === key);
+    }
+  }
+
+  function toTranslucent(rgb) {
+    return rgb.replace(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/, 'rgba($1, $2, $3, 0.27)');
+  }
+
+  function finderPattern(fx, fy, moduleColour, bgColour) {
+    return '<rect x="' + fx + '" y="' + fy + '" width="7" height="7" fill="' + moduleColour + '"/>' +
+           '<rect x="' + (fx + 1) + '" y="' + (fy + 1) + '" width="5" height="5" fill="' + bgColour + '"/>' +
+           '<rect x="' + (fx + 2) + '" y="' + (fy + 2) + '" width="3" height="3" fill="' + moduleColour + '"/>';
+  }
+
+  var qrSeed = 42;
+  function qrRandom() {
+    qrSeed = (qrSeed * 1103515245 + 12345) % 2147483648;
+    return qrSeed / 2147483648;
+  }
+
+  function qrCells(moduleColour) {
+    qrSeed = 42;
+    var cells = '';
+    for (var cy = 0; cy < 21; cy++) {
+      for (var cx = 0; cx < 21; cx++) {
+        if ((cx < 8 && cy < 8) || (cx >= 14 && cy < 8) || (cx < 8 && cy >= 14)) continue;
+        if (qrRandom() < 0.5) {
+          cells += '<rect x="' + cx + '" y="' + cy + '" width="1" height="1" fill="' + moduleColour + '"/>';
+        }
+      }
+    }
+    return cells;
+  }
+
+  function paint() {
+    var colour = optionFor(colourOptions, state.colour);
+    var font = optionFor(fontOptions, state.font);
+
+    card.style.background = colour.bg;
+    card.style.setProperty('--preview-accent', colour.accent);
+    card.style.setProperty('--preview-bg', colour.bg);
+    card.style.setProperty('--preview-text', colour.text);
+    card.style.setProperty('--preview-font', font.browser_family);
+    card.style.setProperty('--card-font-family', font.browser_family);
+
+    for (var i = 0; i < KNOWN_LAYOUTS.length; i++) {
+      card.classList.remove('edit-layout-' + KNOWN_LAYOUTS[i]);
+    }
+    card.classList.add('edit-layout-' + state.border);
+
+    if (state.facing === 'front') {
+      face.innerHTML =
+        '<div class="cb-design-face-front">' +
+          '<div class="cb-design-face-monogram" style="border:1px solid ' + toTranslucent(colour.text) + '; background:' + colour.bg + ';">' +
+            '<span class="cb-design-face-initial" style="color:' + colour.text + ';">H</span>' +
+          '</div>' +
+          '<div class="cb-design-face-brand" style="color:' + colour.accent + ';">Halstead Plumbing</div>' +
+          '<div class="cb-design-face-divider" style="background:' + colour.accent + ';"></div>' +
+          '<div class="cb-design-face-tagline" style="color:' + colour.text + ';">GAS SAFE \u00b7 BIRMINGHAM</div>' +
+        '</div>';
+    } else {
+      var qrModule = colour.light ? '#1F5C46' : colour.text;
+      var qrBgColour = colour.bg;
+      var qrSvg =
+        '<svg viewBox="0 0 21 21" width="120" height="120" aria-hidden="true" shape-rendering="crispEdges">' +
+          '<rect width="21" height="21" fill="' + qrBgColour + '"/>' +
+          finderPattern(0, 0, qrModule, qrBgColour) +
+          finderPattern(14, 0, qrModule, qrBgColour) +
+          finderPattern(0, 14, qrModule, qrBgColour) +
+          qrCells(qrModule) +
+        '</svg>';
+      face.innerHTML =
+        '<div class="cb-design-face-back">' +
+          '<div class="cb-design-face-qr">' + qrSvg + '</div>' +
+          '<div class="cb-design-face-scan" style="color:' + colour.text + ';">SCAN TO CONNECT</div>' +
+          '<div class="cb-design-face-url" style="color:' + colour.text + ';">cardbranch.co.uk/c/halstead</div>' +
+        '</div>';
+    }
+
+    phoneScreen.style.background = colour.bg;
+    cta.setAttribute('href', baseHref + '?colour=' + encodeURIComponent(state.colour) + '&border=' + encodeURIComponent(state.border) + '&font=' + encodeURIComponent(state.font));
+  }
+
+  var controls = document.querySelectorAll('[data-axis]');
+  for (var i = 0; i < controls.length; i++) {
+    (function(control) {
+      control.addEventListener('click', function() {
+        var axis = control.getAttribute('data-axis');
+        var key = control.getAttribute('data-key');
+        if (state[axis] === key) return;
+        selectAxis(axis, key);
+        paint();
+      });
+    })(controls[i]);
+  }
+
+  flipBtn.addEventListener('click', function() {
+    state.facing = state.facing === 'front' ? 'back' : 'front';
+    flipBtn.setAttribute('aria-pressed', state.facing === 'back' ? 'true' : 'false');
+    paint();
+  });
+
+  selectAxis('colour', state.colour);
+  selectAxis('border', state.border);
+  selectAxis('font', state.font);
+  paint();
+})();
+</script>

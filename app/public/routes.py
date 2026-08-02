@@ -3,7 +3,7 @@ from flask_login import current_user
 from app import limiter
 from app.models import Client, db
 from app.services.links import build_href, should_open_new_tab
-from app.services.themes import resolve_design, design_css
+from app.services.themes import resolve_design, design_css, card_colour_options, card_border_options, card_font_options
 from app.public.forms import ContactForm
 
 public_bp = Blueprint('public', __name__)
@@ -11,7 +11,12 @@ public_bp = Blueprint('public', __name__)
 
 @public_bp.route('/')
 def index():
-    return render_template('public/index.html')
+    return render_template(
+        'public/index.html',
+        card_colour_options=card_colour_options(),
+        card_border_options=card_border_options(),
+        card_font_options=card_font_options(),
+    )
 
 
 @public_bp.route('/contact', methods=['GET', 'POST'])
