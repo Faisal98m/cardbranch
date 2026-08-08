@@ -107,6 +107,16 @@
 .cb-qr-photo-wrap { display:flex; flex-direction:column; align-items:center; gap:20px; }
 .cb-qr-photo { width:100%; max-width:280px; height:auto; display:block; }
 .cb-example-phone-img { width:100%; max-width:320px; height:auto; }
+.cb-guides { padding:76px 0; border-top:1px solid var(--border); background:var(--bg-secondary); }
+.cb-guides-head { max-width:620px; margin-bottom:34px; }
+.cb-guides-head h2 { font-size:34px; margin-bottom:10px; }
+.cb-guides-head p { color:var(--text-secondary); font-size:15px; line-height:1.6; }
+.cb-guides-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.cb-guide-card { display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:26px; }
+.cb-guide-card:hover { opacity:1; border-color:var(--accent); }
+.cb-guide-card h3 { font-size:18px; margin-bottom:10px; }
+.cb-guide-card p { color:var(--text-secondary); font-size:13px; line-height:1.6; margin-bottom:18px; }
+.cb-guide-card span { color:var(--accent); font-size:13px; font-weight:600; }
 
 @media (max-width: 900px) {
     .cb-row { grid-template-columns:1fr; gap:32px; margin-bottom:56px; }
@@ -116,6 +126,7 @@
     .cb-hero h1 { font-size:42px; }
     .cb-features-grid { grid-template-columns:1fr; gap:36px; }
     .cb-pricing-grid { grid-template-columns:1fr; }
+    .cb-guides-grid { grid-template-columns:1fr; }
     .cb-nav-links { display:none; }
     .cb-footer-inner { flex-direction:column; gap:16px; text-align:center; }
 }
@@ -131,6 +142,7 @@
       <a href="#design">Design</a>
       <a href="#pricing">Pricing</a>
       <a href="#examples">Examples</a>
+      <a href="{{ url_for('public.qr_business_cards_uk') }}">Guides</a>
       <a href="{{ url_for('public.contact') }}">Contact</a>
     </div>
     <div class="cb-nav-actions">
@@ -277,6 +289,33 @@
   </div>
 </section>
 
+<section class="cb-guides">
+  <div class="cb-container">
+    <div class="cb-guides-head">
+      <div class="cb-eyebrow"><span class="cb-line"></span>Practical guides</div>
+      <h2>Choose the right way to share your business</h2>
+      <p>Clear guidance for UK small businesses deciding between printed cards, QR sharing and digital business cards.</p>
+    </div>
+    <div class="cb-guides-grid">
+      <a class="cb-guide-card" href="{{ url_for('public.qr_business_cards_uk') }}">
+        <h3>QR code business cards</h3>
+        <p>How an editable links destination keeps a printed QR card useful when your business links change.</p>
+        <span>Read the UK guide →</span>
+      </a>
+      <a class="cb-guide-card" href="{{ url_for('public.digital_business_card_uk') }}">
+        <h3>Digital business cards</h3>
+        <p>What a digital card is, how to share it without an app and when a printed fallback still helps.</p>
+        <span>Compare the options →</span>
+      </a>
+      <a class="cb-guide-card" href="{{ url_for('public.business_cards_for_tradespeople') }}">
+        <h3>Business cards for trades</h3>
+        <p>A practical setup for referrals, quote requests, review links and examples of recent work.</p>
+        <span>See the trades guide →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="cb-cta-band">
   <div class="cb-container">
     <h2>Your brand, <em>ready to hand over.</em></h2>
@@ -293,6 +332,9 @@
       <a href="#design">Design</a>
       <a href="#pricing">Pricing</a>
       <a href="#examples">Examples</a>
+      <a href="{{ url_for('public.qr_business_cards_uk') }}">QR cards</a>
+      <a href="{{ url_for('public.digital_business_card_uk') }}">Digital cards</a>
+      <a href="{{ url_for('public.business_cards_for_tradespeople') }}">For trades</a>
       <a href="{{ url_for('auth.login') }}">Sign in</a>
       <a href="{{ url_for('public.contact') }}">Contact</a>
     </div>
