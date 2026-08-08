@@ -6,6 +6,7 @@ from app.services.links import build_href, should_open_new_tab
 from app.services.themes import resolve_design, design_css, card_colour_options, card_border_options, card_font_options
 from app.public.forms import ContactForm
 from app.public.seo_content import SEO_PAGES
+from app.public.examples_content import EXAMPLE_PROFILES, EXAMPLE_FAQS
 
 public_bp = Blueprint('public', __name__)
 SITE_ORIGIN = 'https://cardbranch.co.uk'
@@ -49,6 +50,15 @@ def digital_business_card_uk():
 @public_bp.route('/business-cards-for-tradespeople')
 def business_cards_for_tradespeople():
     return _render_seo_page('business-cards-for-tradespeople')
+
+
+@public_bp.route('/qr-business-card-examples')
+def qr_business_card_examples():
+    return render_template(
+        'public/qr_business_card_examples.html',
+        profiles=EXAMPLE_PROFILES,
+        faqs=EXAMPLE_FAQS,
+    )
 
 
 @public_bp.route('/contact', methods=['GET', 'POST'])
@@ -114,6 +124,7 @@ def sitemap():
     urls = [
         f'{SITE_ORIGIN}/',
         f'{SITE_ORIGIN}/contact',
+        f'{SITE_ORIGIN}/qr-business-card-examples',
         *(f'{SITE_ORIGIN}/{slug}' for slug in SEO_PAGES),
     ]
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

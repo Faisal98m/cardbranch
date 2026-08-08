@@ -10,6 +10,7 @@ class SeoResponseTests(unittest.TestCase):
         '/qr-business-cards-uk': 'QR code business cards that stay useful after printing',
         '/digital-business-card-uk': 'A digital business card without another monthly subscription',
         '/business-cards-for-tradespeople': 'Business cards built for the way tradespeople get referred',
+        '/qr-business-card-examples': 'QR business card examples for every kind of business',
     }
 
     @classmethod
@@ -98,6 +99,18 @@ class SeoResponseTests(unittest.TestCase):
                     '<meta name="robots" content="noindex, nofollow">',
                     response.get_data(as_text=True),
                 )
+
+    def test_examples_page_uses_realistic_fictional_profiles(self):
+        response = self.client.get('/qr-business-card-examples')
+        html = response.get_data(as_text=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Fictional example', html)
+        self.assertIn('Maya Creates', html)
+        self.assertIn('Spark &amp; Sons Electrical', html)
+        self.assertIn('Powered by <span>CardBranch</span>', html)
+        self.assertIn('var(--accent)', html)
+        self.assertNotIn('#6b1f2a', html.lower())
 
 
 if __name__ == '__main__':

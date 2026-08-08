@@ -96,6 +96,7 @@
       <a href="{{ url_for('public.qr_business_cards_uk') }}">QR business cards</a>
       <a href="{{ url_for('public.digital_business_card_uk') }}">Digital cards</a>
       <a href="{{ url_for('public.business_cards_for_tradespeople') }}">For trades</a>
+      <a href="{{ url_for('public.qr_business_card_examples') }}">Examples</a>
       <a href="{{ url_for('public.contact') }}">Contact</a>
     </div>
     <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Create your card</a>
@@ -166,6 +167,7 @@
       {% for related_slug, related in related_pages.items() %}
       <a class="seo-related-card" href="{{ url_for(related.endpoint) }}"><strong>{{ related.heading }}</strong><span>Read the guide →</span></a>
       {% endfor %}
+      <a class="seo-related-card" href="{{ url_for('public.qr_business_card_examples') }}"><strong>See QR business card examples</strong><span>Explore examples →</span></a>
       <a class="seo-related-card" href="{{ url_for('public.index') }}#pricing"><strong>See CardBranch packages and pricing</strong><span>Compare packages →</span></a>
     </div>
   </div>
