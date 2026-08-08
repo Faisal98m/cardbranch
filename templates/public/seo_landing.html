@@ -1,0 +1,185 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ page.title }}{% endblock %}
+{% block meta_description %}{{ page.meta_description }}{% endblock %}
+{% block canonical_url %}https://cardbranch.co.uk/{{ slug }}{% endblock %}
+{% block og_title %}{{ page.title }}{% endblock %}
+{% block og_description %}{{ page.meta_description }}{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": {{ page.title | tojson }},
+      "description": {{ page.meta_description | tojson }},
+      "url": {{ ("https://cardbranch.co.uk/" ~ slug) | tojson }},
+      "isPartOf": {"@type": "WebSite", "name": "CardBranch", "url": "https://cardbranch.co.uk/"}
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for item in page.faqs %}{
+          "@type": "Question",
+          "name": {{ item[0] | tojson }},
+          "acceptedAnswer": {"@type": "Answer", "text": {{ item[1] | tojson }}}
+        }{% if not loop.last %},{% endif %}{% endfor %}
+      ]
+    }
+  ]
+}
+</script>
+{% endblock %}
+{% block extra_head %}
+<style>
+.seo-nav { border-bottom:1px solid var(--border); background:var(--bg-secondary); }
+.seo-nav-inner { max-width:1080px; height:68px; margin:0 auto; padding:0 28px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.seo-logo { font-family:'Newsreader',serif; font-size:20px; font-weight:500; }
+.seo-nav-links { display:flex; align-items:center; gap:24px; font-size:13px; color:var(--text-secondary); }
+.seo-wrap { max-width:1080px; margin:0 auto; padding:0 28px; }
+.seo-hero { padding:84px 0 70px; background:var(--bg-secondary); }
+.seo-kicker { color:var(--accent); font-size:11px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; margin-bottom:18px; }
+.seo-hero h1 { max-width:820px; font-size:54px; line-height:1.08; letter-spacing:-.015em; }
+.seo-lead { max-width:720px; margin:24px 0 30px; color:var(--text-secondary); font-size:18px; line-height:1.7; }
+.seo-actions { display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+.seo-price-note { color:var(--text-secondary); font-size:13px; }
+.seo-summary { padding:42px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.seo-summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.seo-summary-item { font-size:14px; line-height:1.55; color:var(--text-secondary); padding-left:18px; border-left:2px solid var(--accent); }
+.seo-content { padding:76px 0; }
+.seo-content-grid { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:72px; align-items:start; }
+.seo-article section { margin-bottom:56px; }
+.seo-article h2 { font-size:34px; line-height:1.2; margin-bottom:18px; }
+.seo-article p { font-size:16px; line-height:1.78; color:var(--text-secondary); margin-bottom:16px; }
+.seo-article ul { margin:20px 0 0 20px; color:var(--text-secondary); }
+.seo-article li { margin-bottom:10px; line-height:1.55; }
+.seo-side { position:sticky; top:24px; background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:24px; }
+.seo-side h2 { font-size:22px; margin-bottom:10px; }
+.seo-side p { color:var(--text-secondary); font-size:13px; line-height:1.55; margin-bottom:18px; }
+.seo-side .btn { width:100%; }
+.seo-table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:12px; }
+.seo-table th,.seo-table td { padding:16px; vertical-align:top; }
+.seo-table th { background:var(--bg-inset); }
+.seo-faq { padding:74px 0; background:var(--bg-secondary); border-top:1px solid var(--border); }
+.seo-faq h2 { font-size:36px; margin-bottom:34px; }
+.seo-faq-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.seo-faq-item { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:24px; }
+.seo-faq-item h3 { font-size:16px; margin-bottom:9px; }
+.seo-faq-item p { color:var(--text-secondary); font-size:14px; line-height:1.6; }
+.seo-related { padding:64px 0; }
+.seo-related h2 { font-size:30px; margin-bottom:24px; }
+.seo-related-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.seo-related-card { border:1px solid var(--border); background:var(--bg-card); border-radius:12px; padding:22px; }
+.seo-related-card strong { display:block; margin-bottom:8px; }
+.seo-related-card span { color:var(--accent); font-size:13px; font-weight:600; }
+.seo-footer { padding:30px 0; background:#1b1a16; color:#fff; }
+.seo-footer-inner { display:flex; justify-content:space-between; gap:24px; align-items:center; }
+.seo-footer-links { display:flex; flex-wrap:wrap; gap:20px; color:rgba(255,255,255,.65); font-size:12px; }
+@media (max-width:800px) {
+  .seo-nav-links { display:none; }
+  .seo-wrap { padding:0 18px; }
+  .seo-hero { padding:58px 0 52px; }
+  .seo-hero h1 { font-size:40px; }
+  .seo-summary-grid { grid-template-columns:1fr 1fr; }
+  .seo-content-grid { grid-template-columns:1fr; gap:20px; }
+  .seo-side { position:static; }
+  .seo-faq-grid,.seo-related-grid { grid-template-columns:1fr; }
+  .seo-footer-inner { flex-direction:column; align-items:flex-start; }
+}
+</style>
+{% endblock %}
+{% block content %}
+<nav class="seo-nav">
+  <div class="seo-nav-inner">
+    <a class="seo-logo" href="{{ url_for('public.index') }}">CardBranch</a>
+    <div class="seo-nav-links">
+      <a href="{{ url_for('public.qr_business_cards_uk') }}">QR business cards</a>
+      <a href="{{ url_for('public.digital_business_card_uk') }}">Digital cards</a>
+      <a href="{{ url_for('public.business_cards_for_tradespeople') }}">For trades</a>
+      <a href="{{ url_for('public.contact') }}">Contact</a>
+    </div>
+    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Create your card</a>
+  </div>
+</nav>
+
+<header class="seo-hero">
+  <div class="seo-wrap">
+    <div class="seo-kicker">{{ page.eyebrow }}</div>
+    <h1>{{ page.heading }}</h1>
+    <p class="seo-lead">{{ page.intro }}</p>
+    <div class="seo-actions">
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Create your card</a>
+      <a href="{{ url_for('public.index') }}#examples" class="btn btn-ghost">See what you get</a>
+      <span class="seo-price-note">One-off pricing from £19</span>
+    </div>
+  </div>
+</header>
+
+<section class="seo-summary">
+  <div class="seo-wrap seo-summary-grid">
+    {% for item in page.summary %}<div class="seo-summary-item">{{ item }}</div>{% endfor %}
+  </div>
+</section>
+
+<main class="seo-content">
+  <div class="seo-wrap seo-content-grid">
+    <article class="seo-article">
+      {% for section in page.sections %}
+      <section>
+        <h2>{{ section.heading }}</h2>
+        {% for paragraph in section.paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+        {% if section.bullets %}<ul>{% for bullet in section.bullets %}<li>{{ bullet }}</li>{% endfor %}</ul>{% endif %}
+      </section>
+      {% endfor %}
+      <section>
+        <h2>{{ page.comparison_heading }}</h2>
+        <div class="seo-table-wrap">
+          <table class="seo-table">
+            <thead><tr><th>Format</th><th>Best part</th><th>What to know</th></tr></thead>
+            <tbody>{% for row in page.comparison %}<tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+          </table>
+        </div>
+      </section>
+    </article>
+    <aside class="seo-side">
+      <div class="seo-kicker">Start with the digital package</div>
+      <h2>Your page, QR and print-ready design</h2>
+      <p>Build the card online, preview it before paying and choose printed delivery only when you need it.</p>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Get started from £19</a>
+    </aside>
+  </div>
+</main>
+
+<section class="seo-faq">
+  <div class="seo-wrap">
+    <h2>Questions people ask</h2>
+    <div class="seo-faq-grid">
+      {% for item in page.faqs %}<div class="seo-faq-item"><h3>{{ item[0] }}</h3><p>{{ item[1] }}</p></div>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="seo-related">
+  <div class="seo-wrap">
+    <h2>Explore CardBranch</h2>
+    <div class="seo-related-grid">
+      {% for related_slug, related in related_pages.items() %}
+      <a class="seo-related-card" href="{{ url_for(related.endpoint) }}"><strong>{{ related.heading }}</strong><span>Read the guide →</span></a>
+      {% endfor %}
+      <a class="seo-related-card" href="{{ url_for('public.index') }}#pricing"><strong>See CardBranch packages and pricing</strong><span>Compare packages →</span></a>
+    </div>
+  </div>
+</section>
+
+<footer class="seo-footer">
+  <div class="seo-wrap seo-footer-inner">
+    <span class="seo-logo">CardBranch</span>
+    <div class="seo-footer-links">
+      <a href="{{ url_for('public.index') }}">Home</a>
+      <a href="{{ url_for('public.contact') }}">Contact</a>
+      <a href="{{ url_for('auth.login') }}">Sign in</a>
+    </div>
+    <span style="font-size:12px;color:rgba(255,255,255,.45);">© 2026 CardBranch</span>
+  </div>
+</footer>
+{% endblock %}

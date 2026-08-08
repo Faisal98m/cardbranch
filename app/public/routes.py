@@ -5,6 +5,7 @@ from app.models import Client, db
 from app.services.links import build_href, should_open_new_tab
 from app.services.themes import resolve_design, design_css, card_colour_options, card_border_options, card_font_options
 from app.public.forms import ContactForm
+from app.public.seo_content import SEO_PAGES
 
 public_bp = Blueprint('public', __name__)
 SITE_ORIGIN = 'https://cardbranch.co.uk'
@@ -18,6 +19,36 @@ def index():
         card_border_options=card_border_options(),
         card_font_options=card_font_options(),
     )
+
+
+def _render_seo_page(slug):
+    page = SEO_PAGES[slug]
+    related_pages = {
+        related_slug: related
+        for related_slug, related in SEO_PAGES.items()
+        if related_slug != slug
+    }
+    return render_template(
+        'public/seo_landing.html',
+        slug=slug,
+        page=page,
+        related_pages=related_pages,
+    )
+
+
+@public_bp.route('/qr-business-cards-uk')
+def qr_business_cards_uk():
+    return _render_seo_page('qr-business-cards-uk')
+
+
+@public_bp.route('/digital-business-card-uk')
+def digital_business_card_uk():
+    return _render_seo_page('digital-business-card-uk')
+
+
+@public_bp.route('/business-cards-for-tradespeople')
+def business_cards_for_tradespeople():
+    return _render_seo_page('business-cards-for-tradespeople')
 
 
 @public_bp.route('/contact', methods=['GET', 'POST'])
@@ -80,7 +111,11 @@ def robots():
 def sitemap():
     # Customer card pages intentionally carry `noindex`; only advertise public
     # marketing pages that we actually want search engines to index.
-    urls = [f'{SITE_ORIGIN}/', f'{SITE_ORIGIN}/contact']
+    urls = [
+        f'{SITE_ORIGIN}/',
+        f'{SITE_ORIGIN}/contact',
+        *(f'{SITE_ORIGIN}/{slug}' for slug in SEO_PAGES),
+    ]
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for url in urls:
         xml += f'  <url><loc>{url}</loc></url>\n'
