@@ -7,6 +7,7 @@ from app.services.themes import resolve_design, design_css, card_colour_options,
 from app.public.forms import ContactForm
 
 public_bp = Blueprint('public', __name__)
+SITE_ORIGIN = 'https://cardbranch.co.uk'
 
 
 @public_bp.route('/')
@@ -68,17 +69,18 @@ def card_links(slug):
 
 @public_bp.route('/robots.txt')
 def robots():
-    resp = make_response("User-agent: *\nAllow: /\n\nSitemap: https://www.cardbranch.co.uk/sitemap.xml\n")
+    resp = make_response(
+        f"User-agent: *\nAllow: /\n\nSitemap: {SITE_ORIGIN}/sitemap.xml\n"
+    )
     resp.headers['Content-Type'] = 'text/plain; charset=utf-8'
     return resp
 
 
 @public_bp.route('/sitemap.xml')
 def sitemap():
-    published = Client.query.filter_by(is_published=True).all()
-    urls = ['https://www.cardbranch.co.uk/']
-    for c in published:
-        urls.append(f'https://www.cardbranch.co.uk/c/{c.slug}')
+    # Customer card pages intentionally carry `noindex`; only advertise public
+    # marketing pages that we actually want search engines to index.
+    urls = [f'{SITE_ORIGIN}/', f'{SITE_ORIGIN}/contact']
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for url in urls:
         xml += f'  <url><loc>{url}</loc></url>\n'

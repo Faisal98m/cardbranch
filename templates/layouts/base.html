@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CardBranch — QR Business Cards for Small Businesses{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Create a digital business card, hosted links page, QR code and print-ready business card PDF for your business. One-time pricing, no subscription.{% endblock %}">
-    <link rel="canonical" href="{% block canonical_url %}{{ request.url }}{% endblock %}">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}https://cardbranch.co.uk{{ request.path }}{% endblock %}">
     <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
     <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
     <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/logo.png', _external=True) }}{% endblock %}">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:url" content="{{ self.canonical_url() }}">
     <meta name="twitter:card" content="{% block twitter_card %}summary_large_image{% endblock %}">
     <meta name="twitter:title" content="{{ self.og_title() }}">
     <meta name="twitter:description" content="{{ self.og_description() }}">

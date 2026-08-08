@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% block robots %}noindex, nofollow{% endblock %}
 {% block title %}Dashboard - CardBranch{% endblock %}
 {% block content %}
 {% set current = request.endpoint %}

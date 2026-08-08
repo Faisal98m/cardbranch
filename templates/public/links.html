@@ -1,14 +1,10 @@
 {% extends "layouts/base.html" %}
+{% block robots %}noindex, nofollow{% endblock %}
 {% block title %}{{ client.brand_name }} - CardBranch{% endblock %}
 {% block meta_description %}{{ client.brand_name }}'s digital business card. View contact links and social media profiles.{% endblock %}
-{% block canonical_url %}https://www.cardbranch.co.uk/c/{{ client.slug }}{% endblock %}
+{% block canonical_url %}https://cardbranch.co.uk/c/{{ client.slug }}{% endblock %}
 {% block og_title %}{{ client.brand_name }} - CardBranch{% endblock %}
 {% block og_description %}{{ client.brand_name }}'s digital business card. View their links and connect.{% endblock %}
-{% block extra_head %}
-{% if preview_mode or not client.is_published %}
-<meta name="robots" content="noindex, nofollow">
-{% endif %}
-{% endblock %}
 {% block content %}
 {% set panel_bg = '#fbf8f3' %}
 {% set row_bg = '#ffffff' %}
