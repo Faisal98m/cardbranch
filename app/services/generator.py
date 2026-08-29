@@ -136,6 +136,33 @@ def register_design_fonts():
             pdfmetrics.registerFont(TTFont(name, path))
 
 
+def _fitted_logo_size(logo_path, max_w, max_h):
+    """Return (width, height) for logo_path scaled proportionally to fit
+    inside max_w x max_h without distortion or exceeding the bounds.
+    Returns (max_w, max_h) if dimensions cannot be read."""
+    try:
+        with Image.open(logo_path) as im:
+            src_w, src_h = im.size
+        if src_w <= 0 or src_h <= 0:
+            return (max_w, max_h)
+        scale = min(max_w / src_w, max_h / src_h)
+        return (src_w * scale, src_h * scale)
+    except Exception:
+        return (max_w, max_h)
+
+
+def _fit_text_size(text, font_name, max_width, start_size, min_size, step=0.25):
+    """Step font size down from start_size until text fits max_width.
+    Returns min_size if it never fits; does not wrap."""
+    from reportlab.pdfbase import pdfmetrics
+    size = start_size
+    while size > min_size:
+        if pdfmetrics.stringWidth(text, font_name, size) <= max_width:
+            return size
+        size -= step
+    return min_size
+
+
 def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key=None, card_colour=None, card_border=None, card_font=None, qr_img_path=None):
     import os
     from reportlab.pdfbase import pdfmetrics
@@ -275,43 +302,69 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
                 c.drawCentredString(card_w / 2, divider_y - 5.5 * mm_unit, "www.cardbranch.co.uk")
 
         else:
-            # A3 layout — large logo box centred, brand name small below
-            logo_box_size = 18 * mm_unit
-            logo_box_x = (card_w - logo_box_size) / 2
-            logo_box_y = (card_h - logo_box_size) / 2 + 3 * mm_unit
+            # No-tagline layout. Logo and business name are geometrically
+            # centred as one group; the logo fits proportionally inside a
+            # square bound and its real drawn height feeds the group maths so
+            # non-square marks centre correctly. The CardBranch demo URL below
+            # is an intentionally separate annotation and is deliberately not
+            # included in the group-height calculation.
+            logo_bound = 21.7 * mm_unit
+            gap_logo_name = 3.5 * mm_unit
+            name_size = 8
+            # Cap height approximation for the serif/sans faces in use.
+            name_cap_h = name_size * 0.70
+            safe_w = 75 * mm_unit
 
-            if logo_path and os.path.exists(logo_path):
-                padding = 2 * mm_unit
+            has_logo = bool(logo_path and os.path.exists(logo_path))
+
+            if has_logo:
+                draw_w, draw_h = _fitted_logo_size(logo_path, logo_bound, logo_bound)
+            else:
+                draw_w = draw_h = logo_bound
+
+            name_text = brand_name.upper()
+            fitted_name_size = _fit_text_size(
+                name_text, tag_font, safe_w, name_size, 6.0
+            )
+            fitted_cap_h = fitted_name_size * 0.70
+
+            group_h = draw_h + gap_logo_name + fitted_cap_h
+            group_top = (card_h + group_h) / 2
+            logo_y = group_top - draw_h
+            logo_x = (card_w - draw_w) / 2
+            name_y = logo_y - gap_logo_name - fitted_cap_h
+
+            if has_logo:
                 c.drawImage(
                     logo_path,
-                    logo_box_x + padding,
-                    logo_box_y + padding,
-                    width=logo_box_size - 2 * padding,
-                    height=logo_box_size - 2 * padding,
+                    logo_x,
+                    logo_y,
+                    width=draw_w,
+                    height=draw_h,
                     mask='auto' if logo_path.endswith('.png') else None,
                     preserveAspectRatio=True
                 )
             else:
+                mono_size = 17
                 c.setStrokeColorRGB(*text_colour)
                 c.setLineWidth(0.35)
                 c.setFillColorRGB(*front_bg)
-                c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 2 * mm_unit, fill=1, stroke=1)
+                c.roundRect(logo_x, logo_y, draw_w, draw_h, 2 * mm_unit, fill=1, stroke=1)
                 c.setFillColorRGB(*text_colour)
-                c.setFont(name_font, 14)
+                c.setFont(name_font, mono_size)
                 c.drawCentredString(
-                    logo_box_x + logo_box_size / 2,
-                    logo_box_y + logo_box_size / 2 - 5,
+                    logo_x + draw_w / 2,
+                    logo_y + draw_h / 2 - (mono_size * 0.36),
                     initial
                 )
 
             c.setFillColorRGB(*text_colour)
-            c.setFont(tag_font, 6.5)
-            c.drawCentredString(card_w / 2, logo_box_y - 4.5 * mm_unit, brand_name.upper())
+            c.setFont(tag_font, fitted_name_size)
+            c.drawCentredString(card_w / 2, name_y, name_text)
 
-            # URL for cardbranch card
             if slug == "cardbranch":
                 c.setFont(tag_font, 4)
-                c.drawCentredString(card_w / 2, logo_box_y - 6.5 * mm_unit, "www.cardbranch.co.uk")
+                c.drawCentredString(card_w / 2, name_y - 2.5 * mm_unit, "www.cardbranch.co.uk")
 
         draw_border_treatment(design['border_renderer'])
 

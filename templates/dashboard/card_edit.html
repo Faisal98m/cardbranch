@@ -341,12 +341,12 @@ function updatePreview() {
         inner.innerHTML = `
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
                 <div class="card-preview-logo-box"
-                     style="width:32%; aspect-ratio:1; border:1px solid ${textColour}44; background:${currentBg}; margin-bottom:5%;">
-                    <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(12px,3vw,20px); color:${textColour};">
+                     style="width:25.5%; aspect-ratio:1; border:1px solid ${textColour}44; background:${currentBg}; margin-bottom:4.1%;">
+                    <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(10px,2.4vw,16px); color:${textColour};">
                         ${brand.charAt(0).toUpperCase()}
                     </span>
                 </div>
-                <div style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;">${brand.toUpperCase()}</div>
+                <div style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(10px,1.7vw,12px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;">${brand.toUpperCase()}</div>
             </div>`;
     }
 }

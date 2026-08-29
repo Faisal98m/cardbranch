@@ -119,10 +119,10 @@
              style="background:rgb(107,31,42); --card-font-family:'Playfair Display', Georgia, serif; --preview-accent:rgb(250,248,244); --preview-bg:rgb(107,31,42); --preview-text:rgb(250,248,244); --preview-font:'Playfair Display', Georgia, serif;">
           <div class="card-preview-inner" id="preview-inner">
             <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
-              <div class="card-preview-logo-box" style="width:32%; aspect-ratio:1; border:1px solid rgba(250,248,244,0.27); background:rgb(107,31,42); margin-bottom:5%;">
-                <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(12px,3vw,20px); color:rgb(250,248,244);">Y</span>
+              <div class="card-preview-logo-box" style="width:25.5%; aspect-ratio:1; border:1px solid rgba(250,248,244,0.27); background:rgb(107,31,42); margin-bottom:4.1%;">
+                <span style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(10px,2.4vw,16px); color:rgb(250,248,244);">Y</span>
               </div>
-              <div style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:rgba(250,248,244,0.67);">YOUR BRAND</div>
+              <div style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(10px,1.7vw,12px); letter-spacing:0.12em; text-transform:uppercase; color:rgba(250,248,244,0.67);">YOUR BRAND</div>
             </div>
           </div>
           <div class="edit-card-decoration" aria-hidden="true">
@@ -490,10 +490,10 @@ function updatePreview() {
     inner.innerHTML = `
       <div style="display:flex; flex-direction:column; align-items:center; gap:0; width:100%;">
         <div class="card-preview-logo-box"
-             style="width:32%; aspect-ratio:1; border:1px solid ${textColour}44; background:${colour.bg}; margin-bottom:5%;">
-          <span data-preview-initial style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(12px,3vw,20px); color:${textColour};"></span>
+             style="width:25.5%; aspect-ratio:1; border:1px solid ${textColour}44; background:${colour.bg}; margin-bottom:4.1%;">
+          <span data-preview-initial style="font-family:var(--card-font-family,'Playfair Display',serif); font-weight:700; font-size:clamp(10px,2.4vw,16px); color:${textColour};"></span>
         </div>
-        <div data-preview-brand style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(8px,1.4vw,10px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;"></div>
+        <div data-preview-brand style="font-family:var(--card-font-family,'Playfair Display',serif); font-size:clamp(10px,1.7vw,12px); letter-spacing:0.12em; text-transform:uppercase; color:${textColour}aa;"></div>
       </div>`;
   }
 
