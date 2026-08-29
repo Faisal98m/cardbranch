@@ -163,6 +163,34 @@ def _fit_text_size(text, font_name, max_width, start_size, min_size, step=0.25):
     return min_size
 
 
+def _cap_height(font_name, size):
+    """Height of an uppercase glyph above the baseline, in points.
+
+    pdfmetrics.getAscentDescent returns the font's ascent, which includes
+    clearance for accents and ascenders and therefore sits above the cap.
+    The TrueType OS/2 capHeight is the height that actually renders, so
+    centring maths matches what the eye sees. Falls back to a glyph
+    bounding box where the face exposes one, then to a ratio of the font
+    ascent."""
+    from reportlab.pdfbase import pdfmetrics
+    try:
+        face = pdfmetrics.getFont(font_name).face
+        cap = getattr(face, 'capHeight', None)
+        if cap:
+            units_per_em = getattr(face, 'unitsPerEm', 1000) or 1000
+            return (float(cap) / units_per_em) * size
+        box = face.getCharBBox(ord('H'))
+        if box and box[3] > 0:
+            return (box[3] / 1000.0) * size
+    except Exception:
+        pass
+    try:
+        ascent, _ = pdfmetrics.getAscentDescent(font_name, size)
+        return abs(ascent) * 0.72
+    except Exception:
+        return size * 0.70
+
+
 def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key=None, card_colour=None, card_border=None, card_font=None, qr_img_path=None):
     import os
     from reportlab.pdfbase import pdfmetrics
@@ -309,13 +337,15 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
             # is an intentionally separate annotation and is deliberately not
             # included in the group-height calculation.
             logo_bound = 21.7 * mm_unit
-            gap_logo_name = 3.5 * mm_unit
-            name_size = 8
-            # Cap height approximation for the serif/sans faces in use.
-            name_cap_h = name_size * 0.70
+            # A bleeding photograph and a stroked monogram box present different
+            # optical edges, so the gap below each differs.
+            gap_uploaded = 2.5 * mm_unit
+            gap_monogram = 3.5 * mm_unit
+            name_size = 9
             safe_w = 75 * mm_unit
 
             has_logo = bool(logo_path and os.path.exists(logo_path))
+            gap_logo_name = gap_uploaded if has_logo else gap_monogram
 
             if has_logo:
                 draw_w, draw_h = _fitted_logo_size(logo_path, logo_bound, logo_bound)
@@ -326,7 +356,7 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
             fitted_name_size = _fit_text_size(
                 name_text, tag_font, safe_w, name_size, 6.0
             )
-            fitted_cap_h = fitted_name_size * 0.70
+            fitted_cap_h = _cap_height(tag_font, fitted_name_size)
 
             group_h = draw_h + gap_logo_name + fitted_cap_h
             group_top = (card_h + group_h) / 2
@@ -345,16 +375,20 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
                     preserveAspectRatio=True
                 )
             else:
-                mono_size = 17
+                mono_size = 24
                 c.setStrokeColorRGB(*text_colour)
                 c.setLineWidth(0.35)
                 c.setFillColorRGB(*front_bg)
                 c.roundRect(logo_x, logo_y, draw_w, draw_h, 2 * mm_unit, fill=1, stroke=1)
                 c.setFillColorRGB(*text_colour)
                 c.setFont(name_font, mono_size)
+                # A capital has no descender, so its visual centre is the
+                # midpoint of the cap height. Sit the baseline half a cap
+                # below the box centre.
+                mono_cap_h = _cap_height(name_font, mono_size)
                 c.drawCentredString(
                     logo_x + draw_w / 2,
-                    logo_y + draw_h / 2 - (mono_size * 0.36),
+                    logo_y + draw_h / 2 - (mono_cap_h / 2),
                     initial
                 )
 
