@@ -268,66 +268,104 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
         c.rect(0, 0, card_w, card_h, fill=1, stroke=0)
 
         if has_tagline:
-            # A1 layout — logo box, name, divider, tagline — vertically centred as a group
-            logo_box_size = 12 * mm_unit
-            gap_logo_name = 4 * mm_unit
-            name_h = 5 * mm_unit
+            # With-tagline layout. Logo, brand name, divider and tagline are
+            # centred as one group. The logo fits proportionally inside a
+            # square bound and its real drawn height feeds the group maths so
+            # non-square marks centre correctly. Name and tagline heights come
+            # from the _cap_height() font-metric helper rather than fixed
+            # millimetre estimates. Note this is a font-level cap height, not a
+            # per-string bounding box: a mixed-case name with descenders has
+            # ink below the baseline that the group height does not count.
+            # The logo bound is smaller than the no-tagline branch's because
+            # three further elements compete for vertical space here.
+            logo_bound = 17.5 * mm_unit
+            gap_logo_name = 3 * mm_unit
+            # Baseline-to-divider, not glyph-edge-to-divider.
             gap_name_div = 3.5 * mm_unit
             gap_div_tag = 3.5 * mm_unit
-            tag_h = 2 * mm_unit
-            group_h = logo_box_size + gap_logo_name + name_h + gap_name_div + gap_div_tag + tag_h
-            group_y_start = (card_h / 2) + (group_h / 2)
+            divider_w = 10 * mm_unit
+            name_size = 13
+            tag_size = 5.5
+            safe_w = 75 * mm_unit
 
-            logo_box_x = (card_w - logo_box_size) / 2
-            logo_box_y = group_y_start - logo_box_size - (group_h * 0.05)
+            has_logo = bool(logo_path and os.path.exists(logo_path))
 
-            # Logo or initial inside box
-            if logo_path and os.path.exists(logo_path):
-                padding = 1.5 * mm_unit
+            if has_logo:
+                draw_w, draw_h = _fitted_logo_size(logo_path, logo_bound, logo_bound)
+            else:
+                draw_w = draw_h = logo_bound
+
+            name_text = brand_name
+            fitted_name_size = _fit_text_size(
+                name_text, name_font, safe_w, name_size, 8.0
+            )
+            name_cap_h = _cap_height(name_font, fitted_name_size)
+
+            tag_text = tagline.upper()
+            fitted_tag_size = _fit_text_size(
+                tag_text, tag_font, safe_w, tag_size, 4.0
+            )
+            tag_cap_h = _cap_height(tag_font, fitted_tag_size)
+
+            # The divider is a hairline rule; its own thickness is negligible
+            # against the group height but the two gaps around it are not.
+            group_h = (
+                draw_h
+                + gap_logo_name + name_cap_h
+                + gap_name_div
+                + gap_div_tag + tag_cap_h
+            )
+            group_top = (card_h + group_h) / 2
+
+            logo_y = group_top - draw_h
+            logo_x = (card_w - draw_w) / 2
+
+            if has_logo:
                 c.drawImage(
                     logo_path,
-                    logo_box_x + padding,
-                    logo_box_y + padding,
-                    width=logo_box_size - 2 * padding,
-                    height=logo_box_size - 2 * padding,
+                    logo_x,
+                    logo_y,
+                    width=draw_w,
+                    height=draw_h,
                     mask='auto' if logo_path.endswith('.png') else None,
                     preserveAspectRatio=True
                 )
             else:
+                mono_size = 17
                 c.setStrokeColorRGB(*text_colour)
                 c.setLineWidth(0.35)
                 c.setFillColorRGB(*front_bg)
-                c.roundRect(logo_box_x, logo_box_y, logo_box_size, logo_box_size, 1.2 * mm_unit, fill=1, stroke=1)
+                c.roundRect(logo_x, logo_y, draw_w, draw_h, 1.2 * mm_unit, fill=1, stroke=1)
                 c.setFillColorRGB(*text_colour)
-                c.setFont(name_font, 9)
+                c.setFont(name_font, mono_size)
+                # A capital has no descender, so its visual centre is the
+                # midpoint of the cap height. Sit the baseline half a cap
+                # below the box centre.
+                mono_cap_h = _cap_height(name_font, mono_size)
                 c.drawCentredString(
-                    logo_box_x + logo_box_size / 2,
-                    logo_box_y + logo_box_size / 2 - 3,
+                    logo_x + draw_w / 2,
+                    logo_y + draw_h / 2 - (mono_cap_h / 2),
                     initial
                 )
 
-            # Brand name
-            name_y = logo_box_y - 6 * mm_unit
+            name_y = logo_y - gap_logo_name - name_cap_h
             c.setFillColorRGB(*accent_colour)
-            c.setFont(name_font, 13)
-            c.drawCentredString(card_w / 2, name_y, brand_name)
+            c.setFont(name_font, fitted_name_size)
+            c.drawCentredString(card_w / 2, name_y, name_text)
 
-            # Divider
-            divider_w = 10 * mm_unit
-            divider_y = name_y - 3.5 * mm_unit
+            divider_y = name_y - gap_name_div
             c.setStrokeColorRGB(*accent_colour)
             c.setLineWidth(0.7)
             c.line(card_w / 2 - divider_w / 2, divider_y, card_w / 2 + divider_w / 2, divider_y)
 
-            # Tagline
+            tag_y = divider_y - gap_div_tag - tag_cap_h
             c.setFillColorRGB(*text_colour)
-            c.setFont(tag_font, 5.5)
-            c.drawCentredString(card_w / 2, divider_y - 3.5 * mm_unit, tagline.upper())
+            c.setFont(tag_font, fitted_tag_size)
+            c.drawCentredString(card_w / 2, tag_y, tag_text)
 
-            # URL for cardbranch card
             if slug == "cardbranch":
                 c.setFont(tag_font, 4)
-                c.drawCentredString(card_w / 2, divider_y - 5.5 * mm_unit, "www.cardbranch.co.uk")
+                c.drawCentredString(card_w / 2, tag_y - 2 * mm_unit, "www.cardbranch.co.uk")
 
         else:
             # No-tagline layout. Logo and business name are geometrically
