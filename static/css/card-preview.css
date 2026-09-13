@@ -160,3 +160,22 @@
 }
 .edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule-top { top:3px; }
 .edit-layout-top_bottom_rule .edit-card-decoration-sm .edit-deco-rule-bottom { bottom:3px; }
+.link-remove-btn {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.link-remove-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}

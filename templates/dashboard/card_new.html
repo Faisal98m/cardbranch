@@ -30,7 +30,7 @@
       <div style="margin-bottom:20px;">
         <label>Links</label>
         <div id="links-container">
-          <div class="link-row" style="display:flex; gap:8px; margin-bottom:8px;">
+          <div class="link-row" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
             <select class="link-type-select" style="flex:0 0 130px;" onchange="updateLinkRowInput(this)">
               <option value="website">Website</option>
               <option value="phone">Phone call</option>
@@ -42,6 +42,7 @@
               <option value="custom">Custom link</option>
             </select>
             <input type="text" class="link-value-input" name="url_0" placeholder="https://..." style="flex:2;" required>
+            <button type="button" class="link-remove-btn" onclick="removeLink(this)">Remove</button>
           </div>
         </div>
         <button type="button" onclick="addLink()" class="btn btn-ghost btn-sm" style="margin-top:8px;">+ Add Link</button>
@@ -385,7 +386,7 @@ function addLink() {
   const container = document.getElementById('links-container');
   const row = document.createElement('div');
   row.className = 'link-row';
-  row.style.cssText = 'display:flex; gap:8px; margin-bottom:8px;';
+  row.style.cssText = 'display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;';
   row.innerHTML = `
     <select class="link-type-select" style="flex:0 0 130px;" onchange="updateLinkRowInput(this)">
       <option value="website">Website</option>
@@ -398,9 +399,15 @@ function addLink() {
       <option value="custom">Custom link</option>
     </select>
     <input type="text" class="link-value-input" name="url_${linkCount}" placeholder="https://..." style="flex:2;" required>
+    <button type="button" class="link-remove-btn" onclick="removeLink(this)">Remove</button>
   `;
   container.appendChild(row);
   linkCount++;
+}
+
+function removeLink(btn) {
+  const row = btn.closest('.link-row');
+  if (row) row.remove();
 }
 
 document.getElementById('card-form').addEventListener('submit', function() {
