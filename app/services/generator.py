@@ -446,14 +446,11 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
 
         qr_size = 26 * mm_unit
         label_gap = 2.5 * mm_unit
-        url_gap = 1.5 * mm_unit
         scan_label = "SCAN TO CONNECT"
-        url_text = f"cardbranch.co.uk/c/{slug}"
 
         scan_label_h = 2 * mm_unit
-        url_h = 1.5 * mm_unit
 
-        group_h = qr_size + label_gap + scan_label_h + url_gap + url_h
+        group_h = qr_size + label_gap + scan_label_h
         group_y_top = (card_h / 2) + (group_h / 2)
 
         qr_y = group_y_top - qr_size
@@ -466,10 +463,6 @@ def generate_pdf(slug, brand_name, tagline, site_url, logo_path=None, pdf_r2_key
         c.setFillColorRGB(*text_colour)
         c.setFont(name_font, 5)
         c.drawCentredString(card_w / 2, label_y, scan_label)
-
-        url_y = label_y - url_gap - url_h
-        c.setFont(tag_font, 4)
-        c.drawCentredString(card_w / 2, url_y, url_text)
 
         draw_border_treatment(design['border_renderer'])
 
