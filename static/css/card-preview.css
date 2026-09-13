@@ -71,13 +71,6 @@
   color: var(--preview-text);
   text-align: center;
 }
-.edit-card-url {
-  font-family: var(--preview-font);
-  font-weight: 400;
-  font-size: 4px;
-  color: var(--preview-text);
-  text-align: center;
-}
 .card-preview-inner {
   width: 92%;
   height: 88%;
